@@ -1,43 +1,59 @@
 /*
- * File: Symbol.cpp
+ * File: Symbol.h
  *
  * Copyright (C) 2021, Albert Krzymowski
  *
+
  */
 
-#include "Symbol.h"
 
-#include <elf/impl/Component.h>
+#ifndef _ELF_Template_Symbol_H_
+#define _ELF_Template_Symbol_H_
+
+
+#include <tools/common.h>
 #include <elf/utils/Converter.h>
-#include <string.h>
-
-#include "SymbolTable.h"
-#include "Section.h"
-#include "Header.h"
-
-
-#define ELF32_ST_BIND(i) ((i)>>4)
-#define ELF32_ST_TYPE(i) ((i)&0xf)
-#define ELF32_ST_INFO(b,t) (((b)<<4)+((t)&0xf))
+#include <elf/impl/Component.h>
+#include <elf/Image.h>
 
 namespace ELF {
-namespace Elf32 {
+namespace Template {
 
 /*************************************************************************/
-Symbol::Symbol(const SymbolTable* pSymbolTable, const Symbol_* pSymbolData):
+/** The Symbol class.
+ *T
+ */
+template<class S>
+class SymbolTable;
+
+template<class S>
+class Symbol {
+public:
+
+
+	inline static size_t CElfSize = sizeof(typename S::Symbol_);
+
+	template<class T>
+	const T* getData()const{
+		return reinterpret_cast<const T*>(getData());
+	}
+
+
+/*************************************************************************/
+Symbol(const SymbolTable<S>* pSymbolTable, const typename S::Symbol_* pSymbolData):
 	pSymbolTable(pSymbolTable){
 
 	memcpy(&symbol, pSymbolData, CElfSize);
 }
 /*************************************************************************/
-Symbol::~Symbol() throw(){	
+~Symbol() throw(){	
 }
 /*************************************************************************/
-const char* Symbol::getName()const{
+const char* getName()const{
 	return pSymbolTable->getSymStrSection()->getString(get_name());
 }
 /*************************************************************************/
-const uint8_t* Symbol::getData()const{
+const uint8_t* getData()const{
 	
 	std::cerr<<" 1: "<<(void*)(long)get_value()<<std::endl;
 	std::cerr<<" 2: "<<(void*)(long)pSymbolTable->getHeader()->getSections()[get_shndx()]->get_offset()<<std::endl;
@@ -49,24 +65,34 @@ const uint8_t* Symbol::getData()const{
 
 }
 /*************************************************************************/
-Elf32::Word Symbol::get_name()const{
+typename S::Word get_name()const{
 	return pSymbolTable->getConverter()->convert(symbol.st_name);
 }
-Elf32::Addr Symbol::get_value()const{
+typename S::Addr get_value()const{
 	return pSymbolTable->getConverter()->convert(symbol.st_value);
 }
-Elf32::Word Symbol::get_size()const{
+typename S::Word get_size()const{
 	return pSymbolTable->getConverter()->convert(symbol.st_size);
 }
-uint8_t     Symbol::get_info()const{
+uint8_t     get_info()const{
 	return symbol.st_info;
 }
-uint8_t     Symbol::get_other()const{
+uint8_t     get_other()const{
 	return symbol.st_other;
 }
-Elf32::Half Symbol::get_shndx()const{
+typename S::Half get_shndx()const{
 	return pSymbolTable->getConverter()->convert(symbol.st_shndx);
 }
 
+
+protected:
+	const SymbolTable<S>* pSymbolTable;
+
+	typename S::Symbol_ symbol;
+};
+
+/*************************************************************************/
 }
 }
+
+#endif /* _ELF_Template_Symbol_H_ */

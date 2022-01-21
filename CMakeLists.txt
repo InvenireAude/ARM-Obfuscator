@@ -24,12 +24,12 @@ add_library(elf OBJECT
     src/elf/utils/Converter.cpp
     src/elf/utils/Helper.cpp
 
-    src/elf/elf32/Printer.cpp
-    src/elf/elf32/Header.cpp
-    src/elf/elf32/Section.cpp
-    src/elf/elf32/Segment.cpp
-    src/elf/elf32/Symbol.cpp
-    src/elf/elf32/SymbolTable.cpp
+    # src/elf/elf32/Printer.cpp
+    # src/elf/elf32/Header.cpp
+    # src/elf/elf32/Section.cpp
+    # src/elf/elf32/Segment.cpp
+    # src/elf/elf32/Symbol.cpp
+    # src/elf/elf32/SymbolTable.cpp
 )
 
 add_executable(armob src/main.cpp)

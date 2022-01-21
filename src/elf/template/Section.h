@@ -1,23 +1,46 @@
 /*
- * File: Section.cpp
+ * File: Section.h
  *
  * Copyright (C) 2021, Albert Krzymowski
  *
+
  */
 
-#include "Section.h"
 
-#include "Header.h"
+#ifndef _ELF_Template_Section_H_
+#define _ELF_Template_Section_H_
 
-#include <string.h>
-#include <elf/Image.h>
+#include <tools/common.h>
 #include <elf/utils/Converter.h>
+#include <elf/impl/Component.h>
+#include <elf/Image.h>
 
 namespace ELF {
-namespace Elf32 {
+namespace Template {
+
+template<class S>
+class Header;
 
 /*************************************************************************/
-Section::Section( const Header *pHeader, size_t iOffset):
+/** The Section class.
+ *
+ */
+template<class S>
+class Section : public Impl::Component {
+public:
+
+	const typename S::Section_*  getRaw()const{
+		return &section;
+	}
+
+	template<class T>
+	const T* getData()const{
+		std::cerr<<"Get data for offset: "<<get_offset();
+		return reinterpret_cast<const T*>(pImage->getData(get_offset()));
+	}
+
+/*************************************************************************/
+Section( const Header<S> *pHeader, size_t iOffset):
 	Impl::Component(pHeader->getImage()),
 	pHeader(pHeader){
 	std::cerr<<"Offset :"<<iOffset<<", sizeof: "<<sizeof(section)<<std::endl;
@@ -26,14 +49,14 @@ Section::Section( const Header *pHeader, size_t iOffset):
 	 	sizeof(section));
 }
 /*************************************************************************/
-Section::~Section() throw(){
+~Section() throw(){
 }
 /*************************************************************************/
-const char* Section::getName()const{
+const char* getName()const{
 	return pHeader->getStringsSection()->getString(get_name());
 }
 /*************************************************************************/
-const char* Section::getString(size_t iOffset)const{
+const char* getString(size_t iOffset)const{
 	
 	if(iOffset > get_size())
 		throw Tools::Exception()<<"String offset is out of bounds, section size: "<<get_size();
@@ -41,36 +64,47 @@ const char* Section::getString(size_t iOffset)const{
 	return reinterpret_cast<const char*>(pImage->getData(get_offset()) + iOffset);
 }
 /*************************************************************************/
-Elf32::Word Section::get_name()const{
+typename S::Word get_name()const{
 	return pConverter->convert(section.sh_name);
 }
-Elf32::Word Section::get_type()const{
+typename S::Word get_type()const{
 	return pConverter->convert(section.sh_type);
 }
-Elf32::Word Section::get_flags()const{
+typename S::Word get_flags()const{
 	return pConverter->convert(section.sh_flags);
 }
-Elf32::Addr Section::get_addr()const{
+typename S::Addr get_addr()const{
 	return pConverter->convert(section.sh_addr);
 }
-Elf32::Off  Section::get_offset()const{
+typename S::Off  get_offset()const{
 	return pConverter->convert(section.sh_offset);
 }
-Elf32::Word Section::get_size()const{
+typename S::Word get_size()const{
 	return pConverter->convert(section.sh_size);
 }
-Elf32::Word Section::get_link()const{
+typename S::Word get_link()const{
 	return pConverter->convert(section.sh_link);
 }
-Elf32::Word Section::get_info()const{
+typename S::Word get_info()const{
 	return pConverter->convert(section.sh_info);
 }
-Elf32::Word Section::get_addralign()const{
+typename S::Word get_addralign()const{
 	return pConverter->convert(section.sh_addralign);
 }
-Elf32::Word Section::get_entsize()const{
+typename S::Word get_entsize()const{
 	return pConverter->convert(section.sh_entsize);
 }
+
+protected:
+	
+	const Header<S> *pHeader;
+
+	typename S::Section_ section;
+	
+};
+
 /*************************************************************************/
 }
 }
+
+#endif /* _ELF_Template_Section_H_ */

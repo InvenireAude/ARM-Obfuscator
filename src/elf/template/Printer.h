@@ -1,40 +1,60 @@
 /*
- * File: Printer.cpp
+ * File: Printer.h
  *
  * Copyright (C) 2021, Albert Krzymowski
  *
+
  */
 
-#include "Printer.h"
 
-#include "Header.h"
-#include "Section.h"
-#include "Segment.h"
-#include "Symbol.h"
-#include "SymbolTable.h"
+#ifndef _ELF_Template_Printer_H_
+#define _ELF_Template_Printer_H_
+
+
+#include "../Printer.h"
 
 #include <elf/utils/Helper.h>
-#include <elf/Image.h>
-
 #include <iomanip>
 
 namespace ELF {
-namespace Elf32 {
-using namespace Utils;
+namespace Template {
+
+template<class S>
+class Header;
+
+template<class S>
+class Section;
+
+template<class S>
+class Segment;
+
+template<class S>
+class Symbol;
+
+template<class S>
+class SymbolTable;
 
 /*************************************************************************/
-Printer::Printer(std::ostream& os, const Header* pHeader):
+/** The Printer class.
+ *
+ */
+template<class S>
+class Printer : public ELF::Printer {
+public:
+
+/*************************************************************************/
+Printer(std::ostream& os, const Header<S>* pHeader):
 	ELF::Printer(os),
 	pHeader(pHeader){
 	
 	pStringsSection = pHeader->getStringsSection();
 }
 /*************************************************************************/
-Printer::~Printer() throw(){
+~Printer() throw(){
 	
 }
-/*************************************************************************/
-void Printer::printHeader(){
+/************************************************************************/
+void printHeader(){
 
 	os<<"Header "<<std::endl;
 
@@ -54,9 +74,9 @@ void Printer::printHeader(){
 	os<<"\t shnum:    \t"<<pHeader->get_shnum()<<std::endl;
 	os<<"\t shstrndx: \t"<<pHeader->get_shstrndx()<<std::endl;
 
-	os<<Helper::BinarytoHex(pHeader->getRaw(), sizeof(Header_))<<std::endl;
+	os<<Utils::Helper::BinarytoHex(pHeader->getRaw(), sizeof(typename S::Header_))<<std::endl;
 
-	const Header::SectionList& lstSections(pHeader->getSections());
+	const typename Header<S>::SectionList& lstSections(pHeader->getSections());
 
 	int iIdx = 0;
 	for(const auto& s: lstSections){
@@ -64,7 +84,7 @@ void Printer::printHeader(){
 		printSection(s.get());
 	}
 
-	const Header::SegmentList& lstSegments(pHeader->getSegments());
+	const typename Header<S>::SegmentList& lstSegments(pHeader->getSegments());
 
 	for(const auto& s: lstSegments){
 		printSegment(s.get());
@@ -76,8 +96,8 @@ void Printer::printHeader(){
 		printSymbolTable(pHeader->getSymbolTable());
 	}
 }
-/*************************************************************************/
-void Printer::printSection(const Section* pSection){
+/************************************************************************/
+void printSection(const Section<S>* pSection){
 
 	//os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_name()<<std::dec;
 
@@ -96,8 +116,8 @@ void Printer::printSection(const Section* pSection){
 
 	os<<std::endl;
 }
-/*************************************************************************/
-void Printer::printSegment(const Segment* pSegment){
+/************************************************************************/
+void printSegment(const Segment<S>* pSegment){
 
 	os<<" "<<std::setw(8)<<pSegment->get_type();
 
@@ -113,8 +133,8 @@ void Printer::printSegment(const Segment* pSegment){
 
 	os<<std::endl;
 }
-/*************************************************************************/
-void Printer::printSymbol(const Symbol* pSymbol){
+/************************************************************************/
+void printSymbol(const Symbol<S>* pSymbol){
 
 	os<<std::setfill(' ')<<std::setw(32)<<pSymbol->getName();
 	os<<" 0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<pSymbol->get_value()<<std::dec;
@@ -125,10 +145,10 @@ void Printer::printSymbol(const Symbol* pSymbol){
 
 	os<<std::endl;
 }
-/*************************************************************************/
-void Printer::printSymbolTable(const SymbolTable* pSymbolTable){
+/************************************************************************/
+void printSymbolTable(const SymbolTable<S>* pSymbolTable){
 
-	const SymbolTable::SymbolList& lstSymbols(pSymbolTable->getSymbols());
+	const typename SymbolTable<S>::SymbolList& lstSymbols(pSymbolTable->getSymbols());
 
 	for(const auto& s : lstSymbols){
 		printSymbol(s.get());
@@ -139,6 +159,12 @@ void Printer::printSymbolTable(const SymbolTable* pSymbolTable){
 	// os<<Utils::Helper::BinarytoHex(pMain->getData<uint8_t>(), pMain->get_size());
 	// os<<std::endl;
 }
+	const  Header<S>* pHeader;
+	const  Section<S>* pStringsSection;
+};
+
 /*************************************************************************/
 }
 }
+
+#endif /* _ELF_Template_Printer_H_ */

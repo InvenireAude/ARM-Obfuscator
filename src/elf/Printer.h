@@ -15,11 +15,6 @@
 namespace ELF {
 
 class Image;
-
-namespace Elf32{
-class Header;
-}
-
 class Identification;
 
 /*************************************************************************/
@@ -30,7 +25,7 @@ class Printer {
 public:
 
 	static void Print(std::ostream& os, Image* pImage);
-	static void Print(std::ostream& os, Elf32::Header* pHeader);
+	//static void Print(std::ostream& os, Template::Header<ElfXYZ::S>* pHeader);
 
 	void printIdentification(Identification* pHeader);
 

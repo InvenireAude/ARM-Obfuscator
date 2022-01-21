@@ -18,7 +18,12 @@
 #include "Identification.h"
 #include "utils/Converter.h"
 
-#include "elf32/Header.h"
+#include <elf/template/Header.h>
+#include <elf/template/Segment.h>
+#include <elf/template/Section.h>
+#include <elf/template/Symbol.h>
+#include <elf/template/SymbolTable.h>
+
 
 namespace ELF {
 
@@ -57,21 +62,23 @@ void Image::identify(){
 	ptrIdentification.reset(new Identification(this));
    ptrConverter.reset(Utils::Converter::Create(ptrIdentification->getDataEncoding()));
    
-   if(ptrIdentification->getClass() == ELFCLASS32){
-         h.ptrHeader32.reset(new Elf32::Header(this));
-   }
+   // if(ptrIdentification->getClass() == ELFCLASS32){
+   //    //h.ptrHeader32.reset(
+   //       new ::ELF::Template::Header<ElfXYZ::S>(this);
+   //      //  );         
+   // }
 
 }
 /*************************************************************************/
-Elf32::Header* Image::getHeader32()const{
+// Template::Header<ElfXYZ::S>* Image::getHeader32()const{
  
-   if(ptrIdentification->getClass() == ELFCLASS32){
-      return h.ptrHeader32.get();
-   }
+//    if(ptrIdentification->getClass() == ELFCLASS32){
+//       return h.ptrHeader32.get();
+//    }
 
-   throw Tools::Exception()<<"Requested 32bit header in image class :"<<
-      Map::Class.getString(ptrIdentification->getClass());
+//    throw Tools::Exception()<<"Requested 32bit header in image class :"<<
+//       Map::Class.getString(ptrIdentification->getClass());
 
-}
+// }
 /*************************************************************************/
 }

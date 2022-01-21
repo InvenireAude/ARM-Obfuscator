@@ -16,11 +16,11 @@
 
 namespace ELF::Elf32 {
 
-typedef uint32_t Addr;
-typedef uint16_t Half;
-typedef uint32_t Off;
-typedef int32_t  Sword;
-typedef uint32_t Word;
+// typedef uint32_t Addr;
+// typedef uint16_t Half;
+// typedef uint32_t Off;
+// typedef int32_t  Sword;
+// typedef uint32_t Word;
 
 enum Type {
     ET_NONE = 0,

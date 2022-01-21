@@ -20,9 +20,6 @@ namespace ELF {
  */
 class Identification;
 
-namespace Elf32{
-	class Header;
-};
 
 namespace Utils {
 	class Converter;
@@ -43,8 +40,6 @@ public:
 	inline const Utils::Converter* getConverter()const{
 		return ptrConverter.get();
 	}
-
-	Elf32::Header* getHeader32()const;
 
 	const uint8_t* getData(size_t iOffset)const{
 		
@@ -76,11 +71,6 @@ protected:
 
 	void identify();
 
-	struct HeaderPtr{
-		std::unique_ptr<Elf32::Header> ptrHeader32;
-	};
-
-	HeaderPtr h;
 };
 
 /*************************************************************************/

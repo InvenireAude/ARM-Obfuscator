@@ -14,7 +14,7 @@
 #include <tools/common.h>
 #include <elf/utils/Converter.h>
 #include <elf/impl/Component.h>
-#include <elf/Image.h>
+#include <elf/Content.h>
 
 #include<list>
 #include<vector>
@@ -87,11 +87,11 @@ public:
 
 
 /*************************************************************************/
-Header(const ELF::Image* pImage):
-	Impl::Component(pImage){
+Header(const ELF::Content* pContent):
+	Impl::Component(pContent){
 
 	memcpy(&header, 
-		   pImage->getData(0, sizeof(header)), 
+		   pContent->getData(0, sizeof(header)), 
 		   sizeof(header));
 	
 	if(get_shnum() != 0 && get_shoff() != 0){
@@ -110,7 +110,7 @@ Header(const ELF::Image* pImage):
 		
 		for(int i=0; i<get_phnum(); i++, iOffset+=get_phentsize()){
 			std::cerr<<"Offset :"<<iOffset<<std::endl;
-			lstSegments.emplace_back(new Segment<S>(pImage, iOffset));
+			lstSegments.emplace_back(new Segment<S>(pContent, iOffset));
 		}
 
 	}

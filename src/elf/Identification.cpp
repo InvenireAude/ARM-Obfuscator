@@ -7,7 +7,7 @@
 
 #include "Identification.h"
 
-#include "Image.h"
+#include "Content.h"
 
 #include <string.h>
 
@@ -15,9 +15,9 @@ namespace ELF {
 
 
 /*************************************************************************/
-Identification::Identification(const Image* pImage){
+Identification::Identification(const Content* pContent){
 
-	const uint8_t* pData = pImage->getData(0x0L, EI_NIDENT);
+	const uint8_t* pData = pContent->getData(0x0L, EI_NIDENT);
 
 	memcpy(_d, pData, EI_NIDENT);
 

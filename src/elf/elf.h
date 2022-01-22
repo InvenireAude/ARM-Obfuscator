@@ -4,13 +4,13 @@
 
 #include "Specification.h"
 #include "Identification.h"
-#include "Image.h"
+#include "Content.h"
+#include "ContentFile.h"
+
 #include "Printer.h"
 
-// #include "elf32/Specification.h"
-// #include "elf32/Structures.h"
-// #include "elf32/Header.h"
-// #include "elf32/Section.h"
-// #include "elf32/Segment.h"
+#include "Artefact.h"
+#include "ArtefactFromFile.h"
+
 
 #endif

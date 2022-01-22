@@ -7,16 +7,16 @@
 
 #include "Component.h"
 
-#include <elf/Image.h>
+#include <elf/Content.h>
 #include <elf/utils/Converter.h>
 
 namespace ELF {
 namespace Impl {
 
 /*************************************************************************/
-Component::Component(const ELF::Image *pImage):
-	pImage(pImage),
-	pConverter(pImage->getConverter()){
+Component::Component(const ELF::Content *pContent):
+	pContent(pContent),
+	pConverter(pContent->getConverter()){
 }
 
 /*************************************************************************/

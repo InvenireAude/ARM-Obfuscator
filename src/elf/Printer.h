@@ -11,10 +11,11 @@
 #define _ELF_Printer_H_
 
 #include <tools/common.h>
+#include <elf/elf32/elf32.h>
 
 namespace ELF {
 
-class Image;
+class Artefact;
 class Identification;
 
 /*************************************************************************/
@@ -24,14 +25,14 @@ class Identification;
 class Printer {
 public:
 
-	static void Print(std::ostream& os, Image* pImage);
-	//static void Print(std::ostream& os, Template::Header<ElfXYZ::S>* pHeader);
+	static void Print(std::ostream& os, Artefact*     pArtefact);
+	static void Print(std::ostream& os, Elf32::Header* pHeader);
 
 	void printIdentification(Identification* pHeader);
 
-	Printer(std::ostream& os);
 
 protected:
+	Printer(std::ostream& os);
 	std::ostream& os;
 };
 

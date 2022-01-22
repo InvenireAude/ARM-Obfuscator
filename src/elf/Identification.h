@@ -15,7 +15,7 @@
 
 namespace ELF {
 
-class Image;
+class Content;
 
 /*************************************************************************/
 /** The Identification class.
@@ -25,7 +25,7 @@ class Identification {
 public:
 
 	virtual ~Identification() throw();
-	Identification(const Image* pImage);
+	Identification(const Content* pContent);
 
 	Class   getClass()const;
 	Data    getDataEncoding()const;

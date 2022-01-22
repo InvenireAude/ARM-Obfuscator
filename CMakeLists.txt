@@ -14,8 +14,13 @@ add_library(tools OBJECT
 )
 
 add_library(elf OBJECT
+
     src/elf/Identification.cpp
-    src/elf/Image.cpp
+    src/elf/Content.cpp
+    src/elf/ContentFile.cpp
+    src/elf/Artefact.cpp
+    src/elf/ArtefactFromFile.cpp
+
     src/elf/Printer.cpp
     src/elf/Specification.cpp
 
@@ -24,12 +29,6 @@ add_library(elf OBJECT
     src/elf/utils/Converter.cpp
     src/elf/utils/Helper.cpp
 
-    # src/elf/elf32/Printer.cpp
-    # src/elf/elf32/Header.cpp
-    # src/elf/elf32/Section.cpp
-    # src/elf/elf32/Segment.cpp
-    # src/elf/elf32/Symbol.cpp
-    # src/elf/elf32/SymbolTable.cpp
 )
 
 add_executable(armob src/main.cpp)

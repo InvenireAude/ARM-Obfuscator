@@ -13,7 +13,7 @@
 #include <tools/common.h>
 #include <elf/utils/Converter.h>
 #include <elf/impl/Component.h>
-#include <elf/Image.h>
+#include <elf/Content.h>
 
 #include <list>
 #include <unordered_map>
@@ -69,7 +69,7 @@ public:
 
 
 SymbolTable(const Header<S> *pHeader):
- 	ELF::Impl::Component(pHeader->getImage()),
+ 	ELF::Impl::Component(pHeader->getContent()),
  	pHeader(pHeader){
 
  pSymbolSection = pHeader->lookup(".symtab");

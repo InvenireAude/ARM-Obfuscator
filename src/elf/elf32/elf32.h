@@ -10,16 +10,6 @@
 #include <elf/template/Section.h>
 #include <elf/template/Symbol.h>
 #include <elf/template/SymbolTable.h>
-#include <elf/template/Printer.h>
-
-// namespace Template{
-//     template<class C> class Header;
-//     template<class C> class Header;
-//     template<class C> class Segment;
-//     template<class C> class Section;
-//     template<class C> class Symbol;
-//     template<class C> class SymbolTable;
-// }
 
 namespace ELF {
 namespace Elf32 {
@@ -29,7 +19,6 @@ namespace Elf32 {
     typedef Template::Section<Elf32::S> Section;
     typedef Template::Symbol<Elf32::S>  Symbol;
     typedef Template::SymbolTable<Elf32::S> SymbolTable;
-    typedef Template::Printer<Elf32::S>  Printer;
 }
 }
 

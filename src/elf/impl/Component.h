@@ -18,7 +18,7 @@ namespace Utils {
 	class Converter;
 };
 
-class Image;
+class Content;
 
 namespace Impl {
 
@@ -30,10 +30,10 @@ class Component {
 public:
 
 	virtual ~Component() throw();
-	Component(const ELF::Image       *pImage);
+	Component(const ELF::Content       *pContent);
 
-	const ELF::Image* getImage()const{
-		return pImage;
+	const ELF::Content* getContent()const{
+		return pContent;
 	}
 
 	const Utils::Converter* getConverter()const{
@@ -42,7 +42,7 @@ public:
 
 protected:
 
-	const ELF::Image       *pImage;
+	const ELF::Content       *pContent;
 	const Utils::Converter *pConverter;
 
 };

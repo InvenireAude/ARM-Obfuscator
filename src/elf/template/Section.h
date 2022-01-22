@@ -13,7 +13,7 @@
 #include <tools/common.h>
 #include <elf/utils/Converter.h>
 #include <elf/impl/Component.h>
-#include <elf/Image.h>
+#include <elf/Content.h>
 
 namespace ELF {
 namespace Template {
@@ -36,16 +36,16 @@ public:
 	template<class T>
 	const T* getData()const{
 		std::cerr<<"Get data for offset: "<<get_offset();
-		return reinterpret_cast<const T*>(pImage->getData(get_offset()));
+		return reinterpret_cast<const T*>(pContent->getData(get_offset()));
 	}
 
 /*************************************************************************/
 Section( const Header<S> *pHeader, size_t iOffset):
-	Impl::Component(pHeader->getImage()),
+	Impl::Component(pHeader->getContent()),
 	pHeader(pHeader){
 	std::cerr<<"Offset :"<<iOffset<<", sizeof: "<<sizeof(section)<<std::endl;
 	 memcpy(&section, 
-	 	pImage->getData(iOffset, sizeof(section)), 
+	 	pContent->getData(iOffset, sizeof(section)), 
 	 	sizeof(section));
 }
 /*************************************************************************/
@@ -61,7 +61,7 @@ const char* getString(size_t iOffset)const{
 	if(iOffset > get_size())
 		throw Tools::Exception()<<"String offset is out of bounds, section size: "<<get_size();
 
-	return reinterpret_cast<const char*>(pImage->getData(get_offset()) + iOffset);
+	return reinterpret_cast<const char*>(pContent->getData(get_offset()) + iOffset);
 }
 /*************************************************************************/
 typename S::Word get_name()const{

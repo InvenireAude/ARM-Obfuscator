@@ -1,11 +1,11 @@
 /*
- * File: Image.cpp
+ * File: ContentFile.cpp
  *
  * Copyright (C) 2021, Albert Krzymowski
  *
  */
 
-#include "Image.h"
+#include "ContentFile.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,7 +28,7 @@
 namespace ELF {
 
 /*************************************************************************/
-Image::Image(const std::string& strName){
+ContentFile::ContentFile(const std::string& strName){
 	
 	struct stat sb;
 
@@ -51,34 +51,31 @@ Image::Image(const std::string& strName){
 		throw Tools::Exception()<<"MMap failed: ["<<strName<<"]";
    }
 
-   identify();
+   std::unique_ptr<Identification>   ptrIdentification(new Identification(this));
+
+   setup(std::move(ptrIdentification));   
 }
 /*************************************************************************/
-Image::~Image() throw(){
+ContentFile::~ContentFile() throw(){
 }
 /*************************************************************************/
-void Image::identify(){
-	
-	ptrIdentification.reset(new Identification(this));
-   ptrConverter.reset(Utils::Converter::Create(ptrIdentification->getDataEncoding()));
+const uint8_t* ContentFile::getData(size_t iOffset)const{
    
-   // if(ptrIdentification->getClass() == ELFCLASS32){
-   //    //h.ptrHeader32.reset(
-   //       new ::ELF::Template::Header<ElfXYZ::S>(this);
-   //      //  );         
-   // }
+   if(iOffset >= iSize){
+      throw Tools::Exception()<<"Bad offset: "<<iOffset<<", size is: "<<iSize;
+   }
 
+   return pMemory + iOffset;
 }
 /*************************************************************************/
-// Template::Header<ElfXYZ::S>* Image::getHeader32()const{
- 
-//    if(ptrIdentification->getClass() == ELFCLASS32){
-//       return h.ptrHeader32.get();
-//    }
+const uint8_t* ContentFile::getData(size_t iOffset, size_t iDataLen)const{
+   
+   if(iOffset >= iSize || iOffset + iDataLen > iSize){
+      throw Tools::Exception()<<"Bad offset: "<<iOffset
+         <<", or data length: "<<iDataLen<<", size is: "<<iSize;
+   }
 
-//    throw Tools::Exception()<<"Requested 32bit header in image class :"<<
-//       Map::Class.getString(ptrIdentification->getClass());
-
-// }
+   return pMemory + iOffset;
+}
 /*************************************************************************/
 }

@@ -13,7 +13,7 @@
 #include <tools/common.h>
 #include <elf/utils/Converter.h>
 #include <elf/impl/Component.h>
-#include <elf/Image.h>
+#include <elf/Content.h>
 
 #include <string.h>
 
@@ -34,11 +34,11 @@ public:
 		return &segment;
 	}
 
-Segment(const ELF::Image *pImage, size_t iOffset):
-	Impl::Component(pImage){
+Segment(const ELF::Content *pContent, size_t iOffset):
+	Impl::Component(pContent){
 	std::cerr<<"Offset :"<<iOffset<<", sizeof: "<<sizeof(segment)<<std::endl;
 	 memcpy(&segment, 
-	 	pImage->getData(iOffset, sizeof(segment)), 
+	 	pContent->getData(iOffset, sizeof(segment)), 
 	 	sizeof(segment));
 }
 

@@ -14,7 +14,7 @@
 #include <tools/common.h>
 #include <elf/utils/Converter.h>
 #include <elf/impl/Component.h>
-#include <elf/Image.h>
+#include <elf/Content.h>
 
 namespace ELF {
 namespace Template {
@@ -59,7 +59,7 @@ const uint8_t* getData()const{
 	std::cerr<<" 2: "<<(void*)(long)pSymbolTable->getHeader()->getSections()[get_shndx()]->get_offset()<<std::endl;
 	std::cerr<<" 3: "<<(void*)(long)pSymbolTable->getHeader()->getSections()[get_shndx()]->get_addr()<<std::endl;
 
-	return pSymbolTable->getImage()->getData(
+	return pSymbolTable->getContent()->getData(
 		pSymbolTable->getHeader()->getSections()[get_shndx()]->get_offset() +
 		get_value() - pSymbolTable->getHeader()->getSections()[get_shndx()]->get_addr());
 

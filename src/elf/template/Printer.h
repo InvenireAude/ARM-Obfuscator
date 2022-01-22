@@ -11,7 +11,7 @@
 #define _ELF_Template_Printer_H_
 
 
-#include "../Printer.h"
+#include <elf/Printer.h>
 
 #include <elf/utils/Helper.h>
 #include <iomanip>
@@ -58,7 +58,7 @@ void printHeader(){
 
 	os<<"Header "<<std::endl;
 
-	printIdentification(pHeader	->getImage()->getIdentification());
+	printIdentification(pHeader	->getContent()->getIdentification());
 
 	os<<"\t type:     \t"<<pHeader->get_type()<<std::endl;
 	os<<"\t machine:  \t"<<pHeader->get_machine()<<std::endl;

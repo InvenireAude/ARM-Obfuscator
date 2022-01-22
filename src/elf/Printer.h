@@ -12,6 +12,7 @@
 
 #include <tools/common.h>
 #include <elf/elf32/elf32.h>
+#include <elf/elf64/elf64.h>
 
 namespace ELF {
 
@@ -27,6 +28,7 @@ public:
 
 	static void Print(std::ostream& os, Artefact*     pArtefact);
 	static void Print(std::ostream& os, Elf32::Header* pHeader);
+	static void Print(std::ostream& os, Elf64::Header* pHeader);
 
 	void printIdentification(Identification* pHeader);
 

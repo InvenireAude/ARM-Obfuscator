@@ -16,39 +16,6 @@
 
 namespace ELF::Elf32 {
 
-// typedef uint32_t Addr;
-// typedef uint16_t Half;
-// typedef uint32_t Off;
-// typedef int32_t  Sword;
-// typedef uint32_t Word;
-
-enum Type {
-    ET_NONE = 0,
-    ET_REL = 1,
-    ET_EXEC = 2,
-    ET_DYN = 3,
-    ET_CORE = 4,
-    ET_LOPROC = 0xff00,
-    ET_HIPROC = 0xffff,
-};
-
-enum Machine {
-    EM_NONE = 0,
-    EM_M32 = 1,
-    EM_SPARC = 2,
-    EM_386 = 3,
-    EM_68K = 4,
-    EM_88K = 5,
-    EM_860 = 7,
-    EM_MIPS = 8,
-    EM_MIPS_RS4_BE = 10,
-    EM_RESERVED11 = 11,
-    EM_RESERVED12 = 12,
-    EM_RESERVED13 = 13,
-    EM_RESERVED14 = 14,
-    EM_RESERVED15 = 15,
-    EM_RESERVED16 = 16,
-};
 
 enum SectionIndex {
     SHN_UNDEF     = 0,

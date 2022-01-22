@@ -7,8 +7,8 @@
  */
 
 
-#ifndef _ELF_ElfXYZ_Structures_H_
-#define _ELF_ElfXYZ_Structures_H_
+#ifndef _ELF_Elf32_Structures_H_
+#define _ELF_Elf32_Structures_H_
 
 #include <inttypes.h>
 

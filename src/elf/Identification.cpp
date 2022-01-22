@@ -45,11 +45,15 @@ Class Identification::getClass()const{
 }
 /*************************************************************************/
 Data Identification::getDataEncoding()const{
-		return static_cast<Data>(_d[EI_DATA]);
+	return static_cast<Data>(_d[EI_DATA]);
 }
 /*************************************************************************/
 Version Identification::getVersion()const{
-		return static_cast<Version>(_d[EI_VERSION]);
+	return static_cast<Version>(_d[EI_VERSION]);
+}
+/*************************************************************************/
+OSABI Identification::getOSABI()const{
+	return static_cast<OSABI>(_d[EI_OSABI]);
 }
 /*************************************************************************/
 }

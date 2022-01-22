@@ -30,6 +30,8 @@ public:
 	Class   getClass()const;
 	Data    getDataEncoding()const;
 	Version getVersion()const;
+	OSABI   getOSABI()const;
+	
 
 protected:
 

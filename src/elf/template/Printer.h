@@ -134,14 +134,21 @@ void printSegment(const Segment<S>* pSegment){
 	os<<std::endl;
 }
 /************************************************************************/
-void printSymbol(const Symbol<S>* pSymbol){
+void printSymbol(size_t iIdx, const Symbol<S>* pSymbol){
 
-	os<<std::setfill(' ')<<std::setw(32)<<pSymbol->getName();
-	os<<" 0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<pSymbol->get_value()<<std::dec;
+	std::string strName(pSymbol->getName());
+
+	if(strName.length() > 20){
+		strName = strName.substr(0,18) + "[...]";
+	}
+
+	os<<std::setw(6)<<iIdx;
+	os<<" 0x"<<std::hex<<std::setfill('0')<<std::setw(2*sizeof(typename S::Addr))<<pSymbol->get_value()<<std::dec;
 	os<<" 0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<pSymbol->get_size()<<std::dec;
 	os<<" "<<(int)pSymbol->get_info();
 	os<<" "<<(int)pSymbol->get_other();
 	os<<" "<<std::setw(3)<<pSymbol->get_shndx();
+	os<<" "<<strName;
 
 	os<<std::endl;
 }
@@ -150,8 +157,9 @@ void printSymbolTable(const SymbolTable<S>* pSymbolTable){
 
 	const typename SymbolTable<S>::SymbolList& lstSymbols(pSymbolTable->getSymbols());
 
+	int iIdx = 0;
 	for(const auto& s : lstSymbols){
-		printSymbol(s.get());
+		printSymbol(iIdx++, s.get());
 	}
 
 	// const Symbol* pMain = pSymbolTable->lookup("main");

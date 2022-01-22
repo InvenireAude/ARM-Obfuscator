@@ -12,6 +12,7 @@
 
 #include <tools/common.h>
 #include <elf/elf32/elf32.h>
+#include <elf/elf64/elf64.h>
 
 namespace ELF {
 
@@ -35,6 +36,15 @@ public:
 		return ptrHeader32.get();
 	}
 
+	inline Elf64::Header* getHeader64()const{
+		
+		if(!ptrHeader64){
+			throw Tools::Exception()<<"Header for 32bit not set, wrong ELF type ?";
+		}
+
+		return ptrHeader64.get();
+	}
+
 	Identification* getIdentification()const;
 
 	static Artefact* CreateFromFile(const std::string& strName);
@@ -42,6 +52,8 @@ public:
 protected:
 
 	std::unique_ptr<Elf32::Header>   ptrHeader32;
+	std::unique_ptr<Elf64::Header>   ptrHeader64;
+
 	virtual Content*                 getContent()const = 0;
 
 };

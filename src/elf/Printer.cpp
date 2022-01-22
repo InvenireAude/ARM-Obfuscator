@@ -10,6 +10,7 @@
 #include <elf/utils/Helper.h>
 
 #include <elf/elf32/elf32printer.h>
+#include <elf/elf64/elf64printer.h>
 
 #include "Artefact.h"
 #include "Identification.h"
@@ -31,7 +32,9 @@ void Printer::Print(std::ostream& os, Artefact* pArtefact){
     case ELFCLASS32:
             Print(os, pArtefact->getHeader32());
         break;
-    
+    case ELFCLASS64:
+            Print(os, pArtefact->getHeader64());
+        break;
     default:
          throw Tools::Exception()<<"Unsupported image class in the printer:"<<
              Map::Class.getString(pIdentification->getClass());
@@ -42,6 +45,13 @@ void Printer::Print(std::ostream& os, Artefact* pArtefact){
 void Printer::Print(std::ostream& os, Elf32::Header* pHeader){
 
     std::unique_ptr<Elf32::Printer> ptrPrinter(new Elf32::Printer(os, pHeader));
+    ptrPrinter->printHeader();
+
+}
+/*************************************************************************/
+void Printer::Print(std::ostream& os, Elf64::Header* pHeader){
+
+    std::unique_ptr<Elf64::Printer> ptrPrinter(new Elf64::Printer(os, pHeader));
     ptrPrinter->printHeader();
 
 }

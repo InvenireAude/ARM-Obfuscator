@@ -15,6 +15,7 @@
 #include <list>
 #include <vector>
 #include <unordered_map>
+#include <string>
 
 namespace ASM {
 namespace ARM {
@@ -60,6 +61,7 @@ public:
 	Field();
 
 	const char* getName(FieldId iFieldId)const;
+	const FieldId getId(const std::string& strName)const;
 
 	static const Field TheInstance;
 
@@ -67,6 +69,9 @@ protected:
 
 	typedef std::unordered_map< FieldId , const char*>   NameByIdMap;
 	static const NameByIdMap                             TheNameById;
+
+	typedef std::unordered_map< std::string, FieldId >   IdByNameMap;
+	IdByNameMap                                          hmIdByName;
 };
 
 /*************************************************************************/

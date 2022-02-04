@@ -27,7 +27,7 @@ enum ClassId : uint16_t {
 #include "auto_class_enums.h.in"
 };
 
-enum OperandId : uint16_t {
+enum OperandId : uint8_t {
 #include "auto_operand_enums.h.in"
 };
 

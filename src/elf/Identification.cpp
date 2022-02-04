@@ -56,5 +56,17 @@ OSABI Identification::getOSABI()const{
 	return static_cast<OSABI>(_d[EI_OSABI]);
 }
 /*************************************************************************/
+uint8_t Identification::getModeBits()const{
+
+	switch(getClass()){
+		case ELFCLASS32:
+			return 32;
+		case ELFCLASS64:
+			return 64;
+		default:
+			throw Tools::Exception()<<"Uknown bits for this class :"<<getClass();
+	}
+}
+/*************************************************************************/
 }
 ;

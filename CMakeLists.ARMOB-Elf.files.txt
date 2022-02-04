@@ -1,0 +1,12 @@
+add_library(ARMOB-Elf OBJECT
+src/elf/impl/Component.cpp
+src/elf/Printer.cpp
+src/elf/Specification.cpp
+src/elf/ContentFile.cpp
+src/elf/Content.cpp
+src/elf/Identification.cpp
+src/elf/Artefact.cpp
+src/elf/ArtefactFromFile.cpp
+src/elf/utils/Helper.cpp
+src/elf/utils/Converter.cpp
+)

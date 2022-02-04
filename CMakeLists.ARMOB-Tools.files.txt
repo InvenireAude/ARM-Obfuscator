@@ -1,0 +1,5 @@
+add_library(ARMOB-Tools OBJECT
+src/tools/common.cpp
+src/tools/Exception.cpp
+src/tools/ValueMap.cpp
+)

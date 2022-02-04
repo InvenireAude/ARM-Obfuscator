@@ -31,8 +31,9 @@ public:
 	Data    getDataEncoding()const;
 	Version getVersion()const;
 	OSABI   getOSABI()const;
-	
 
+	uint8_t getModeBits()const;
+	
 protected:
 
 	uint8_t _d[EI_NIDENT];

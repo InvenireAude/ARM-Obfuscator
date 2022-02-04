@@ -14,10 +14,10 @@
 namespace ELF {
 namespace Elf64 {
 
-    typedef Template::Header<Elf64::S>  Header;
-    typedef Template::Segment<Elf64::S> Segment;
-    typedef Template::Section<Elf64::S> Section;
-    typedef Template::Symbol<Elf64::S>  Symbol;
+    typedef Template::Header<Elf64::S>      Header;
+    typedef Template::Segment<Elf64::S>     Segment;
+    typedef Template::Section<Elf64::S>     Section;
+    typedef Template::Symbol<Elf64::S>      Symbol;
     typedef Template::SymbolTable<Elf64::S> SymbolTable;
 }
 }

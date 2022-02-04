@@ -7,40 +7,29 @@ configure_file(src/armob/config.h.in src/armob/config.h)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_library(tools OBJECT
-  src/tools/common.cpp
-  src/tools/Exception.cpp
-  src/tools/ValueMap.cpp  
-)
-
-add_library(elf OBJECT
-
-    src/elf/Identification.cpp
-    src/elf/Content.cpp
-    src/elf/ContentFile.cpp
-    src/elf/Artefact.cpp
-    src/elf/ArtefactFromFile.cpp
-
-    src/elf/Printer.cpp
-    src/elf/Specification.cpp
-
-    src/elf/impl/Component.cpp
-
-    src/elf/utils/Converter.cpp
-    src/elf/utils/Helper.cpp
-
-)
+include(CMakeLists.ARMOB-Asm.files.txt)
+include(CMakeLists.ARMOB-Elf.files.txt)
+include(CMakeLists.ARMOB-Tools.files.txt)
 
 add_executable(armob src/main.cpp)
 
-target_link_libraries(armob PRIVATE elf tools)
+target_link_libraries(armob PRIVATE ARMOB-Asm ARMOB-Elf ARMOB-Tools)
 
 #target_link_libraries(armob)
 
-target_include_directories(elf PRIVATE src)
-target_include_directories(elf PUBLIC ${PROJECT_BINARY_DIR}/src)
+target_include_directories(ARMOB-Asm PRIVATE src)
+target_include_directories(ARMOB-Asm PUBLIC ${PROJECT_BINARY_DIR}/src)
 
+target_include_directories(ARMOB-Elf PRIVATE src)
+target_include_directories(ARMOB-Elf PUBLIC ${PROJECT_BINARY_DIR}/src)
+
+target_include_directories(ARMOB-Tools PRIVATE src)
+target_include_directories(ARMOB-Tools PUBLIC ${PROJECT_BINARY_DIR}/src)
 
 target_include_directories(armob PRIVATE src)
 target_include_directories(armob PUBLIC ${PROJECT_BINARY_DIR}/src)
 
+
+install(TARGETS armob DESTINATION bin)
+
+#add_subdirectory(../ARM-Helpers ../ARM-Helpers/Debug)

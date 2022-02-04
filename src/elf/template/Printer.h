@@ -162,10 +162,6 @@ void printSymbolTable(const SymbolTable<S>* pSymbolTable){
 		printSymbol(iIdx++, s.get());
 	}
 
-	// const Symbol* pMain = pSymbolTable->lookup("main");
-	// printSymbol(pMain);
-	// os<<Utils::Helper::BinarytoHex(pMain->getData<uint8_t>(), pMain->get_size());
-	// os<<std::endl;
 }
 	const  Header<S>* pHeader;
 	const  Section<S>* pStringsSection;

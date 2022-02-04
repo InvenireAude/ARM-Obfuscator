@@ -1,16 +1,12 @@
 /*
- * File: Operand.h
+ * File: OperandFactory.cpp
  *
  * Copyright (C) 2021, Albert Krzymowski
  *
-
  */
 
+#include "OperandFactory.h"
 
-#ifndef _ASM_ARM_ARM64_Spec_Operand_H_
-#define _ASM_ARM_ARM64_Spec_Operand_H_
-
-#include "enums.h"
 
 namespace ASM {
 namespace ARM {
@@ -18,22 +14,16 @@ namespace ARM64 {
 namespace Spec {
 
 /*************************************************************************/
-/** The Operand class.
- *
- */
-class Operand {
-public:
+// OperandFactory::OperandFactory(){
 
-	virtual ~Operand() throw();
-	Operand();
-protected:
+// }
 
-};
+// /*************************************************************************/
+// OperandFactory::~OperandFactory() throw(){
 
+// }
 /*************************************************************************/
 }
 }
 }
 }
-
-#endif /* _ASM_ARM_ARM64_Spec_Operand_H_ */

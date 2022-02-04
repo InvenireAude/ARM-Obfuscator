@@ -23,6 +23,14 @@ enum InstructionId : uint16_t {
 #include "auto_instruction_enums.h.in"
 };
 
+enum ClassId : uint16_t {
+#include "auto_class_enums.h.in"
+};
+
+enum OperandId : uint16_t {
+#include "auto_operand_enums.h.in"
+};
+
 enum EncodingId : uint16_t {
 #include "auto_encoding_enums.h.in"
 };

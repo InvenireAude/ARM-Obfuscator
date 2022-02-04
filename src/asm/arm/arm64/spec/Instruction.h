@@ -41,11 +41,12 @@ public:
 	struct Encoding {
 		EncodingId 		    iEncodingId;
 		InstructionId       iInstructionId;
+		ClassId 	        iClass;
 		InstructionId       iAliasInstructionId;
 		uint32_t      		opCode;
 		uint32_t      		opCodeMask;
 		Field::Bits         fields[CMaxFields];
-		//InstructionClass 	instructionClass;
+		OperandId           operands[CMaxFields];
 		//InstructionFlags    flags; // ?
 	};
 

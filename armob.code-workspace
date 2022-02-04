@@ -68,7 +68,8 @@
 			"thread": "cpp",
 			"list": "cpp",
 			"bitset": "cpp",
-			"*.def": "cpp"
+			"*.def": "cpp",
+			"*.in": "cpp"
 		}
 	}
 }

@@ -21,7 +21,7 @@ const Instruction::DefinitionTable Instruction::TheDefinitions = {
 };
 
  const Instruction::NameByIdMap Instruction::TheNameById = {
-#include "auto_encoding_names.h.in"
+ #include "auto_encoding_names.h.in"
  };
 
 const Instruction::MnemonicByIdMap Instruction::TheMnemonicById = {

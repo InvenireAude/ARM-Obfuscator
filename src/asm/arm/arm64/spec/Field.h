@@ -12,11 +12,6 @@
 
 #include "enums.h"
 
-#include <list>
-#include <vector>
-#include <unordered_map>
-#include <string>
-
 namespace ASM {
 namespace ARM {
 namespace ARM64 {
@@ -29,11 +24,9 @@ namespace Spec {
 class Field {
 public:
 
-	struct Bits {
-		FieldId  iField;
+		FieldId  iFieldId;
 		uint8_t  iHiBit;
 		uint8_t  iWidth;
-
 
 		int32_t getValue(uint32_t opCode)const{
 			static const uint32_t CFullMask = ~(uint32_t)0x0;
@@ -54,24 +47,7 @@ public:
 			return iResult;
 		}
 
-	};
 
-
-	virtual ~Field() throw();
-	Field();
-
-	const char* getName(FieldId iFieldId)const;
-	const FieldId getId(const std::string& strName)const;
-
-	static const Field TheInstance;
-
-protected:
-
-	typedef std::unordered_map< FieldId , const char*>   NameByIdMap;
-	static const NameByIdMap                             TheNameById;
-
-	typedef std::unordered_map< std::string, FieldId >   IdByNameMap;
-	IdByNameMap                                          hmIdByName;
 };
 
 /*************************************************************************/

@@ -45,7 +45,7 @@ public:
 		InstructionId       iAliasInstructionId;
 		uint32_t      		opCode;
 		uint32_t      		opCodeMask;
-		Field::Bits         fields[CMaxFields];
+		Field               fields[CMaxFields];
 		OperandId           operands[CMaxFields];
 		//InstructionFlags    flags; // ?
 	};

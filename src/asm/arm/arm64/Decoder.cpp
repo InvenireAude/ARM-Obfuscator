@@ -87,6 +87,13 @@ void Decoder::print(std::ostream& os){
 				os<<Field::TheInstance.getName(pFieldBits->iField);
 				os<<":";
 				os<<pFieldBits->getValue(opCode);
+				//TODO generate operands
+				if(pFieldBits->iField == F_imm19 ||
+				 pFieldBits->iField == F_imm26){
+					os<<" @";
+					_printHex(os,pGenericInstruction->getCurrentAddresses().iOpCode+4*(long)pFieldBits->getValueSigned(opCode));
+					os<<",offset:"<<pFieldBits->getValueSigned(opCode);
+				} 		
 				//_printHex(os, pFieldBits->getValue(opCode)); //TODO is signed/hex ?
 			}
 		}

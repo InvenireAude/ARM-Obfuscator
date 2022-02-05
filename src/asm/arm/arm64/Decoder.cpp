@@ -10,7 +10,7 @@
 #include <asm/GenericInstruction.h>
 #include <elf/utils/Helper.h>
 
-#include "spec/Instruction.h"
+#include "spec/EncodingBook.h"
 #include "spec/FieldBook.h"
 
 #include <iomanip>
@@ -73,13 +73,13 @@ void Decoder::print(std::ostream& os){
 		_printHex(os,opCode);
 		os<<"\t";
 
-		const Instruction::Encoding *pInstructionDef = Instruction::TheInstance.match(opCode);
+		const Encoding *pInstructionDef = EncodingBook::TheInstance.match(opCode);
 		
-		os<<std::left<<std::setw(24)<<Instruction::TheInstance.getName(pInstructionDef);
-		os<<std::left<<std::setw(8)<<Instruction::TheInstance.getMnemonic(pInstructionDef);
+		os<<std::left<<std::setw(24)<<EncodingBook::TheInstance.getName(pInstructionDef);
+		os<<std::left<<std::setw(8)<<EncodingBook::TheInstance.getMnemonic(pInstructionDef);
 
 		os<<std::right;
-		for(int i=0; i<Instruction::CMaxFields; i++){
+		for(int i=0; i<Encoding::CMaxFields; i++){
 			const Field *pFieldBits = pInstructionDef->fields + i;
 
 			if(pFieldBits->iFieldId != F_None){

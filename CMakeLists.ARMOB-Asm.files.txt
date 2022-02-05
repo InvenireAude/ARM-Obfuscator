@@ -2,11 +2,12 @@ add_library(ARMOB-Asm OBJECT
 src/asm/arm/arm64/Decoder.cpp
 src/asm/arm/arm64/DecodedInstruction.cpp
 src/asm/arm/arm64/spec/Operand.cpp
-src/asm/arm/arm64/spec/Instruction.cpp
+src/asm/arm/arm64/spec/impl/DefaultOperand.cpp
 src/asm/arm/arm64/spec/OperandBook.cpp
 src/asm/arm/arm64/spec/FieldBook.cpp
 src/asm/arm/arm64/spec/OperandFactory.cpp
+src/asm/arm/arm64/spec/EncodingBook.cpp
+src/asm/arm/arm64/spec/Encoding.cpp
 src/asm/arm/arm64/spec/Field.cpp
-src/asm/arm/arm64/catalog/InstructionCatalog.cpp
 src/asm/GenericInstruction.cpp
 )

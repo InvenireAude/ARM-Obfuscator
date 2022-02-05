@@ -5,7 +5,7 @@
  *
  */
 
-#include "Instruction.h"
+#include "EncodingBook.h"
 
 #include <initializer_list>
 #include <iomanip>
@@ -16,21 +16,21 @@ namespace ARM64 {
 namespace Spec {
 
 
-const Instruction::DefinitionTable Instruction::TheDefinitions = {
+const EncodingBook::DefinitionTable EncodingBook::TheDefinitions = {
  #include "auto_encodings.h.in" 
 };
 
- const Instruction::NameByIdMap Instruction::TheNameById = {
+ const EncodingBook::NameByIdMap EncodingBook::TheNameById = {
  #include "auto_encoding_names.h.in"
  };
 
-const Instruction::MnemonicByIdMap Instruction::TheMnemonicById = {
+const EncodingBook::MnemonicByIdMap EncodingBook::TheMnemonicById = {
 #include "auto_encoding_mnemomic.h.in"
  };
 
-const Instruction Instruction::TheInstance;
+const EncodingBook EncodingBook::TheInstance;
 /*************************************************************************/
-Instruction::Instruction(){
+EncodingBook::EncodingBook(){
 
     for(const auto& d:TheDefinitions){
         hmEncodingById[d.iEncodingId] = &d;
@@ -49,7 +49,7 @@ Instruction::Instruction(){
     }
 }
 /*************************************************************************/
-Instruction::~Instruction() throw(){
+EncodingBook::~EncodingBook() throw(){
 }
 /*************************************************************************/
 static inline EncodingId  _getMatchOpCode(uint32_t opCode){
@@ -57,7 +57,7 @@ static inline EncodingId  _getMatchOpCode(uint32_t opCode){
     throw Tools::Exception()<<"No encoding for "<<(void*)(long)opCode<<" found.";
 }
 /*************************************************************************/
-const Instruction::Encoding* Instruction::match(uint32_t opCode)const{
+const Encoding* EncodingBook::match(uint32_t opCode)const{
 
     EncodingId iEncodingId = _getMatchOpCode(opCode);
 
@@ -67,11 +67,11 @@ const Instruction::Encoding* Instruction::match(uint32_t opCode)const{
         throw Tools::Exception()<<"No encoding for "<<(void*)(long)opCode<<" found.";
     }
 
-    const Instruction::Encoding* pEncoding(it->second);
+    const Encoding* pEncoding(it->second);
 
     AliasByIdMap::const_iterator it2 = hmAliasById.find(pEncoding->iEncodingId);
 
-    const Instruction::Encoding* pResult = pEncoding;
+    const Encoding* pResult = pEncoding;
     int iCount = 0;
     if(it2 != hmAliasById.end()
        && pEncoding->iInstructionId != I_UBFM
@@ -92,7 +92,7 @@ const Instruction::Encoding* Instruction::match(uint32_t opCode)const{
     return pResult;
 }
 /*************************************************************************/
-const char* Instruction::getName(EncodingId iEncodingId)const{
+const char* EncodingBook::getName(EncodingId iEncodingId)const{
 
     NameByIdMap::const_iterator it = TheNameById.find(iEncodingId);
 
@@ -103,7 +103,7 @@ const char* Instruction::getName(EncodingId iEncodingId)const{
     return it->second;
 };
 /*************************************************************************/
-const char* Instruction::getMnemonic(EncodingId iEncodingId)const{
+const char* EncodingBook::getMnemonic(EncodingId iEncodingId)const{
 
     MnemonicByIdMap::const_iterator it = TheMnemonicById.find(iEncodingId);
 

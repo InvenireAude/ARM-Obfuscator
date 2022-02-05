@@ -18,6 +18,7 @@ namespace ARM64 {
 namespace Spec {
 
 class Operand;
+class Encoding;
 
 /*************************************************************************/
 /** The OperandFactory class.
@@ -27,7 +28,8 @@ class OperandFactory {
 public:
 
 
-	//static Operand* createOperand()
+	static Operand* createOperand(const Encoding* pEncoding, OperandId iOperandId);
+
 protected:
 
 };

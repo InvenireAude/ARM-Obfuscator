@@ -13,6 +13,8 @@
 #include <inttypes.h>
 
 #include "enums.h"
+#include "Encoding.h"
+
 #include "Field.h"
 
 #include <list>
@@ -30,40 +32,27 @@ namespace Spec {
 /** The Instruction class.
  *
  */
-class Instruction {
+class EncodingBook {
 public:
 
-	virtual ~Instruction() throw();
-	Instruction();
+	virtual ~EncodingBook() throw();
+	EncodingBook();
 
-	static const int CMaxFields = 10;
-
-	struct Encoding {
-		EncodingId 		    iEncodingId;
-		InstructionId       iInstructionId;
-		ClassId 	        iClass;
-		InstructionId       iAliasInstructionId;
-		uint32_t      		opCode;
-		uint32_t      		opCodeMask;
-		Field               fields[CMaxFields];
-		OperandId           operands[CMaxFields];
-		//InstructionFlags    flags; // ?
-	};
 
 	const Encoding* match(uint32_t opCode)const;
 
 	const char* getName(EncodingId iEncodingId)const;
 	const char* getMnemonic(EncodingId iEncodingId)const;
 
-	inline const char* getName(const Instruction::Encoding* pd)const{
+	inline const char* getName(const Encoding* pd)const{
 		return getName(pd->iEncodingId);
 	}
 
-	inline const char* getMnemonic(const Instruction::Encoding* pd)const{
+	inline const char* getMnemonic(const Encoding* pd)const{
 		return getMnemonic(pd->iEncodingId);
 	}
 
-	static const Instruction TheInstance;
+	static const EncodingBook TheInstance;
 
 protected:
 

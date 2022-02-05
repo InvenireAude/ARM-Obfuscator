@@ -23,11 +23,10 @@ class DecodedInstruction {
 public:
 
 	virtual ~DecodedInstruction() throw();
-
-
 	DecodedInstruction();
 protected:
 
+	
 };
 
 /*************************************************************************/

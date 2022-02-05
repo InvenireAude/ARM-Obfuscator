@@ -14,9 +14,8 @@ namespace ARM64 {
 namespace Spec {
 
 /*************************************************************************/
-Operand::Operand(){
+Operand::Operand():bIsMemoryReference(false){
 }
-
 /*************************************************************************/
 Operand::~Operand() throw(){
 }

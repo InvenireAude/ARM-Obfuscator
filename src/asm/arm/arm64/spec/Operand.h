@@ -16,7 +16,6 @@ namespace ASM {
 namespace ARM {
 namespace ARM64 {
 namespace Spec {
-
 /*************************************************************************/
 /** The Operand class.
  *
@@ -24,12 +23,19 @@ namespace Spec {
 class Operand {
 public:
 
-	virtual ~Operand() throw();
-	Operand();
-protected:
+    ~Operand() throw();
 
+    virtual void    setValue(uint32_t& iOpCode, int32_t iValue) const = 0;
+    virtual int32_t getValue(uint32_t iOpCode) const = 0;
+
+    inline bool isMemoryReference()const{
+        return bIsMemoryReference;
+    }
+
+    protected:
+        Operand();
+        bool bIsMemoryReference;
 };
-
 /*************************************************************************/
 }
 }

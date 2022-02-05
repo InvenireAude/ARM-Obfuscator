@@ -63,6 +63,28 @@ public:
 	inline uint8_t getOpCodeLength()const{
 		return iLength;
 	}
+
+	inline uint32_t getOpcodeS()const{
+		if(iLength != 2)
+			throw Tools::Exception()<<"Opcode is not 16bit size: "<<iLength;
+
+		return *reinterpret_cast<const uint32_t*>(tOpCode);
+	};
+
+	inline uint32_t getOpcodeW()const{
+		if(iLength != 4)
+			throw Tools::Exception()<<"Opcode is not 32bit size: "<<iLength;
+
+		return *reinterpret_cast<const uint32_t*>(tOpCode);
+	};
+
+	inline uint64_t getOpcodeX()const{
+		if(iLength != 8)
+			throw Tools::Exception()<<"Opcode is not 64bit size: "<<iLength;
+
+		return *reinterpret_cast<const uint32_t*>(tOpCode);
+	};
+
 protected:
 
 	uint8_t tOpCode[CMaxBytes];

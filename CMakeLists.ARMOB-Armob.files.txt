@@ -1,0 +1,4 @@
+add_library(ARMOB-Armob OBJECT
+src/armob/DiscoveredSymbols.cpp
+src/armob/Symbol.cpp
+)

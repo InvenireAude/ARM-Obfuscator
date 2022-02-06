@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 include(CMakeLists.ARMOB-Asm.files.txt)
+include(CMakeLists.ARMOB-Armob.files.txt)
 include(CMakeLists.ARMOB-Elf.files.txt)
 include(CMakeLists.ARMOB-Tools.files.txt)
 
@@ -16,6 +17,9 @@ add_executable(armob src/main.cpp)
 target_link_libraries(armob PRIVATE ARMOB-Asm ARMOB-Elf ARMOB-Tools)
 
 #target_link_libraries(armob)
+
+target_include_directories(ARMOB-Armob PRIVATE src)
+target_include_directories(ARMOB-Armob PUBLIC ${PROJECT_BINARY_DIR}/src)
 
 target_include_directories(ARMOB-Asm PRIVATE src)
 target_include_directories(ARMOB-Asm PUBLIC ${PROJECT_BINARY_DIR}/src)

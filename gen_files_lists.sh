@@ -12,3 +12,6 @@ gen(){
 gen ARMOB-Tools src/tools OBJECT
 gen ARMOB-Elf   src/elf   OBJECT
 gen ARMOB-Asm   src/asm   OBJECT
+gen ARMOB-Armob src/armob OBJECT
+
+touch CMakeLists.txt

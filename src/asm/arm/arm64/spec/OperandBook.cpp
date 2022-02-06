@@ -18,7 +18,7 @@ const OperandBook::SpecByIdMap OperandBook::TheSpecById = {
 #include "auto_operand_specs.h.in"
  };
 /*************************************************************************/
-static OperandBook TheInstance;
+OperandBook OperandBook::TheInstance;
 /*************************************************************************/
 OperandBook::OperandBook(){
 }

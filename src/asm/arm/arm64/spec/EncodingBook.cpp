@@ -10,6 +10,10 @@
 #include <initializer_list>
 #include <iomanip>
 
+#include "Field.h"
+#include "Operand.h"
+#include "OperandFactory.h"
+
 namespace ASM {
 namespace ARM {
 namespace ARM64 {
@@ -44,6 +48,19 @@ EncodingBook::EncodingBook(){
                     std::cout<<"Adding alias: "<<getName(&d)<<" to "<<getName(&da)<<std::endl;
                     hmAliasById[da.iEncodingId].push_back(&d);
                 }
+            }
+        }
+    }
+
+    for(const auto& d:TheDefinitions){
+        OperandList& lstOperands(hmOperandListByIdMap[d.iEncodingId]);
+
+        for(int i=0; i<Encoding::CMaxFields && d.operands[i] != O_None; i++){
+            try{
+                lstOperands.emplace_back(OperandFactory::CreateOperand(&d, d.operands[i]));
+            }catch(Tools::Exception& e){
+                std::cerr<<"Cannote create operand for :"<<getName(&d)<<", operand: "<<i;
+                std::cerr<<",\t exception: "<<e<<std::endl;
             }
         }
     }
@@ -113,6 +130,17 @@ const char* EncodingBook::getMnemonic(EncodingId iEncodingId)const{
 
     return it->second;
 };
+/*************************************************************************/
+const EncodingBook::OperandList& EncodingBook::getEncodingOperands(EncodingId iEncodingId)const{
+
+    OperandListByIdMap::const_iterator it = hmOperandListByIdMap.find(iEncodingId);
+
+    if(it == hmOperandListByIdMap.end()){
+        throw Tools::Exception()<<"No operand list for: "<<getName(iEncodingId);
+    }
+
+    return it->second;
+}
 /*************************************************************************/
 }
 }

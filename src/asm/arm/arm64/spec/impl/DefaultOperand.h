@@ -14,6 +14,12 @@
 
 #include "../Operand.h"
 
+#include "../Field.h"
+#include "../FieldBook.h"
+
+#include "../Encoding.h"
+#include "../EncodingBook.h"
+
 namespace ASM {
 namespace ARM {
 namespace ARM64 {
@@ -29,14 +35,19 @@ class DefaultOperand : public Spec::Operand {
 public:
 
 	virtual ~DefaultOperand() throw();
-	DefaultOperand();
+	DefaultOperand(const Field* tabFields, OperandId iOperand, uint8_t iShift, bool bIsMemoryReference = false);
 
 	virtual void    setValue(uint32_t& iOpCode, int32_t iValue) const;
     virtual int32_t getValue(uint32_t iOpCode) const;
 
+    virtual void disassemble(uint32_t iOpCode, std::ostream& os) const;
+
 protected:
 
 	const Field* pField;
+	uint8_t      iShift;
+	const char*  sName;
+
 };
 /*************************************************************************/
 }

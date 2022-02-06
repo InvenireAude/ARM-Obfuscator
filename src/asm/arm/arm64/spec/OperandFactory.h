@@ -10,6 +10,8 @@
 #ifndef _ASM_ARM_ARM64_Spec_OperandFactory_H_
 #define _ASM_ARM_ARM64_Spec_OperandFactory_H_
 
+#include <tools/common.h>
+
 #include "enums.h"
 
 namespace ASM {
@@ -27,13 +29,11 @@ class Encoding;
 class OperandFactory {
 public:
 
-
-	static Operand* createOperand(const Encoding* pEncoding, OperandId iOperandId);
+	static Operand* CreateOperand(const Encoding* pEncoding, OperandId iOperandId);
 
 protected:
 
 };
-
 /*************************************************************************/
 }
 }

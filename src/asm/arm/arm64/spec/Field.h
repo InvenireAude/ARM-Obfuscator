@@ -35,7 +35,7 @@ public:
 			return opCode & iMask;
 		}
 		
-		int32_t getValueSigned(uint32_t opCode)const{
+		int32_t getSignedValue(uint32_t opCode)const{
 			static const uint32_t CFullMask = ~(uint32_t)0x0;
 			uint32_t iMask = ~(CFullMask << iWidth);
 			opCode >>= iHiBit + 1 - iWidth;

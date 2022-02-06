@@ -3,6 +3,9 @@ src/asm/arm/arm64/Decoder.cpp
 src/asm/arm/arm64/DecodedInstruction.cpp
 src/asm/arm/arm64/spec/Operand.cpp
 src/asm/arm/arm64/spec/impl/DefaultOperand.cpp
+src/asm/arm/arm64/spec/impl/MemoryReferenceOperand.cpp
+src/asm/arm/arm64/spec/impl/RegisterOperand.cpp
+src/asm/arm/arm64/spec/impl/DefaultSignedOperand.cpp
 src/asm/arm/arm64/spec/OperandBook.cpp
 src/asm/arm/arm64/spec/FieldBook.cpp
 src/asm/arm/arm64/spec/OperandFactory.cpp

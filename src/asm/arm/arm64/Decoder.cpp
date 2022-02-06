@@ -10,8 +10,10 @@
 #include <asm/GenericInstruction.h>
 #include <elf/utils/Helper.h>
 
+#include "spec/Encoding.h"
 #include "spec/EncodingBook.h"
 #include "spec/FieldBook.h"
+#include "spec/Operand.h"
 
 #include <iomanip>
 #include <bitset>
@@ -52,7 +54,9 @@ static inline void _printHex(std::ostream& os, long v){
 /*************************************************************************/
 void Decoder::print(std::ostream& os){
 
-	_printHex(os, pGenericInstruction->getCurrentAddresses().iOpCode);
+	uint64_t iOpCodeAddress = pGenericInstruction->getCurrentAddresses().iOpCode;
+
+	_printHex(os, iOpCodeAddress);
 	const uint8_t* pOpCode = pGenericInstruction->getOpcode();
 	os<<" ";
 	
@@ -73,34 +77,28 @@ void Decoder::print(std::ostream& os){
 		_printHex(os,opCode);
 		os<<"\t";
 
-		const Encoding *pInstructionDef = EncodingBook::TheInstance.match(opCode);
+		const Encoding *pEncoding = EncodingBook::TheInstance.match(opCode);
 		
-		os<<std::left<<std::setw(24)<<EncodingBook::TheInstance.getName(pInstructionDef);
-		os<<std::left<<std::setw(8)<<EncodingBook::TheInstance.getMnemonic(pInstructionDef);
+		os<<std::left<<std::setw(24)<<EncodingBook::TheInstance.getName(pEncoding);
+		os<<std::left<<std::setw(8)<<EncodingBook::TheInstance.getMnemonic(pEncoding);
 
 		os<<std::right;
-		for(int i=0; i<Encoding::CMaxFields; i++){
-			const Field *pFieldBits = pInstructionDef->fields + i;
+		
+		const EncodingBook::OperandList& lstOperands(EncodingBook::TheInstance.getEncodingOperands(pEncoding));
 
-			if(pFieldBits->iFieldId != F_None){
-				os<<(i == 0 ? "\t" : ",\t");			
-				
-				os<<FieldBook::TheInstance.getName(pFieldBits->iFieldId);
-				os<<":";
-				os<<pFieldBits->getValue(opCode);
-				//TODO generate operands
-				if(pFieldBits->iFieldId == F_imm19 ||
-				 pFieldBits->iFieldId == F_imm26){
-					os<<" @";
-					_printHex(os,pGenericInstruction->getCurrentAddresses().iOpCode+4*(long)pFieldBits->getValueSigned(opCode));
-					os<<",offset:"<<pFieldBits->getValueSigned(opCode);
-				} 		
-				//_printHex(os, pFieldBits->getValue(opCode)); //TODO is signed/hex ?
+		bool bFirst = true;
+		for(const auto& o: lstOperands){
+	 		os<<( bFirst ? "\t" : ", ");
+			bFirst = false;
+
+			o->disassemble(opCode, os);
+			if(o->isMemoryReference()){
+				os<<" @";
+				_printHex(os, iOpCodeAddress + o->getValue(opCode));
 			}
 		}
 
-
-
+		
 	}catch(Tools::Exception& e){
 		std::cerr<<e<<std::endl;
 		os<< "??? ?? ??";
@@ -110,3 +108,24 @@ void Decoder::print(std::ostream& os){
 }
 }
 }
+
+
+// for(int i=0; i<Encoding::CMaxFields; i++){
+// 			const Field *pFieldBits = pInstructionDef->fields + i;
+
+// 			if(pFieldBits->iFieldId != F_None){
+// 				os<<(i == 0 ? "\t" : ",\t");			
+				
+// 				os<<FieldBook::TheInstance.getName(pFieldBits->iFieldId);
+// 				os<<":";
+// 				os<<pFieldBits->getValue(opCode);
+// 				//TODO generate operands
+// 				if(pFieldBits->iFieldId == F_imm19 ||
+// 				 pFieldBits->iFieldId == F_imm26){
+// 					os<<" @";
+// 					_printHex(os,pGenericInstruction->getCurrentAddresses().iOpCode+4*(long)pFieldBits->getSignedValue(opCode));
+// 					os<<",offset:"<<pFieldBits->getSignedValue(opCode);
+// 				} 		
+// 				//_printHex(os, pFieldBits->getValue(opCode)); //TODO is signed/hex ?
+// 			}
+// 		}

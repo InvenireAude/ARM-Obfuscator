@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <tools/common.h>
+
 #include <armob/config.h>
 
 #include <elf/elf.h>
@@ -47,7 +49,7 @@ int main(int argc, char *argv[]){
         size_t  iSize  = pSymbol->get_size();
 
         if(iSize == 0)
-          iSize = 44; //???
+          iSize = 128; //???
 
         const int iStep = 4;
 
@@ -64,7 +66,7 @@ int main(int argc, char *argv[]){
       argc--;
     }
 
-  }catch (Tools::Exception &e){
+  }catch (Tools::Exception&e){
     std::cerr << "Exception: " << e << std::endl;
     info(argv[0]);
   }

@@ -20,25 +20,29 @@ DiscoveredSymbols::~DiscoveredSymbols() throw(){
 	
 }
 /*************************************************************************/
-void DiscoveredSymbols::add(Symbol::Type iType, uint64_t iAddress, uint64_t iSize, const std::string& strName){
+Symbol* DiscoveredSymbols::add(Symbol::Type iType, uint64_t iAddress, uint64_t iSize, const std::string& strName){
 
     //TODO check for overlaps
-    
-    SymbolMap::iterator it = mapSymbols.find(iAddress);
+    Symbol* pResult = nullptr;
+
+    // SymbolMap::iterator it = mapSymbols.find(iAddress);
+    SymbolMap::iterator it = mapSymbols.find(strName);
 
     if(it == mapSymbols.end()){
-        mapSymbols[iAddress].reset(new Symbol(iType, iAddress, iSize, strName));
-        tabSymbolSets[iType].insert(iAddress);
+        mapSymbols[strName].reset(pResult = new Symbol(iType, iAddress, iSize, strName));
+        tabSymbolSets[iType][iAddress] = pResult;
     }else{
+        pResult = it->second.get();
         if(iSize){
-            it->second->setSize(iSize);
+            pResult->setSize(iSize);
         }
 
         if(strName.compare(Symbol::CNoName) != 0){
-            it->second->setName(strName);
+            pResult->setName(strName);
         }
     }
 
+    return pResult;
 }
 /*************************************************************************/
 }

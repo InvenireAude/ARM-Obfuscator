@@ -14,7 +14,7 @@ include(CMakeLists.ARMOB-Tools.files.txt)
 
 add_executable(armob src/main.cpp)
 
-target_link_libraries(armob PRIVATE ARMOB-Asm ARMOB-Elf ARMOB-Tools)
+target_link_libraries(armob PRIVATE ARMOB-Armob ARMOB-Asm ARMOB-Elf ARMOB-Tools)
 
 #target_link_libraries(armob)
 

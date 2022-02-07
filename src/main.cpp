@@ -13,6 +13,9 @@
 
 #include <asm/GenericInstruction.h>
 #include <asm/arm/arm64/Decoder.h>
+#include <armob/DiscoveredSymbols.h>
+#include <armob/helper/SymbolDiscoverer.h>
+#include <armob/helper/Disassembler.h>
 
 using namespace ELF;
 
@@ -27,7 +30,7 @@ int main(int argc, char *argv[]){
   try{
     std::unique_ptr<ELF::Artefact> ptrArtefact(Artefact::CreateFromFile(argv[1]));
     
-    ELF::Printer::Print(std::cout, ptrArtefact.get());
+   // ELF::Printer::Print(std::cout, ptrArtefact.get());
 
     argc -= 2;
 
@@ -35,32 +38,42 @@ int main(int argc, char *argv[]){
 	  
       if(ptrArtefact->getIdentification()->getClass() == ELFCLASS64){
 
-        const ELF::Elf64::Header* pHeader = ptrArtefact->getHeader64();
-        const ELF::Elf64::Symbol* pSymbol = pHeader->getSymbolTable()->lookup(argv[2]);
+        std::unique_ptr<ARMOB::DiscoveredSymbols> ptrSymbols(new ARMOB::DiscoveredSymbols());
+
+        ARMOB::Helper::SymbolDiscoverer d(ptrArtefact.get(), ptrSymbols.get());
+
+        d.discover();
+        d.build();
+
+        ARMOB::Helper::Disassembler dis(ptrSymbols.get());
+        dis.print(argv[2], std::cout);
+
+      //   const ELF::Elf64::Header* pHeader = ptrArtefact->getHeader64();
+      //   const ELF::Elf64::Symbol* pSymbol = pHeader->getSymbolTable()->lookup(argv[2]);
         
-        ELF::Elf64::Printer printer(std::cout, pHeader);
-        printer.printSymbol(0, pSymbol);
-	      std::cout<<Utils::Helper::BinarytoHex(pSymbol->getData<uint8_t>(), pSymbol->get_size());
-	      std::cout<<std::endl;
+      //   ELF::Elf64::Printer printer(std::cout, pHeader);
+      //   printer.printSymbol(0, pSymbol);
+	    //   std::cout<<Utils::Helper::BinarytoHex(pSymbol->getData<uint8_t>(), pSymbol->get_size());
+	    //   std::cout<<std::endl;
 
-        ELF::Elf64::S::Addr iAddress = pSymbol->get_value();
+      //   ELF::Elf64::S::Addr iAddress = pSymbol->get_value();
 
-        const uint8_t *pData = pSymbol->getData<uint8_t>();
-        size_t  iSize  = pSymbol->get_size();
+      //   const uint8_t *pData = pSymbol->getData<uint8_t>();
+      //   size_t  iSize  = pSymbol->get_size();
 
-        if(iSize == 0)
-          iSize = 128; //???
+      //   if(iSize == 0)
+      //     iSize = 128; //???
 
-        const int iStep = 4;
+      //   const int iStep = 4;
 
-        for(size_t  iOffset = 0; iOffset < iSize; iOffset += iStep){
+      //   for(size_t  iOffset = 0; iOffset < iSize; iOffset += iStep){
           
-          ASM::GenericInstruction ins(pData + iOffset, iStep, iAddress + iOffset);
+      //     ASM::GenericInstruction ins(pData + iOffset, iStep, iAddress + iOffset);
 
-          ASM::ARM::ARM64::Decoder d(&ins);
-          d.print(std::cout);
-          std::cout<<std::endl;
-        }
+      //     ASM::ARM::ARM64::Decoder d(&ins);
+      //     d.print(std::cout);
+      //     std::cout<<std::endl;
+      //   }
 
       }
       argc--;

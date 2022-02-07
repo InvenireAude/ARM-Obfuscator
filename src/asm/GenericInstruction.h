@@ -86,18 +86,13 @@ public:
 	};
 
 protected:
+	//TODO larger opcodes and data content as a malloc on demand;
 
 	uint8_t tOpCode[CMaxBytes];
 	uint8_t iLength;
 
 	Addresses  adrOriginal;
 	Addresses  adrCurrent;
-
-	struct List{
-		GenericInstruction* pPrev;
-		GenericInstruction* pNext;
-	};
-
 };
 
 /*************************************************************************/

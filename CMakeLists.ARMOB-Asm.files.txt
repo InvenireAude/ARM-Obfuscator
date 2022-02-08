@@ -1,4 +1,5 @@
 add_library(ARMOB-Asm OBJECT
+src/asm/InstructionFactory.cpp
 src/asm/arm/arm64/Decoder.cpp
 src/asm/arm/arm64/DecodedInstruction.cpp
 src/asm/arm/arm64/spec/Operand.cpp

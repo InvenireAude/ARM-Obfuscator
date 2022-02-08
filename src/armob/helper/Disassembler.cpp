@@ -49,23 +49,27 @@ class SymbolResolver : public ASM::ARM::ARM64::Decoder::SymbolResolver {
 void Disassembler::print(const std::string& strName, std::ostream& os){
  
     Symbol* pSymbol = pDiscoveredSymbols->getSymbol(strName);
-    ARMOB::InstructionList::iterator it = pSymbol->getStart();
 
     SymbolResolver sr(pDiscoveredSymbols);
 
-    if(it == pDiscoveredSymbols->getInstructions().end()){
+    if(!pSymbol->hasInstructions()){
         return;
     }
 
-    std::cerr<<"sz: "<<sizeof(it)<<std::endl;
+    ASM::GenericInstruction* pInstruction = pSymbol->getStart();
 
-   while(it   != pDiscoveredSymbols->getInstructions().end() &&
-         it++ != pSymbol->getEnd()){
+  while(true){
 
-        ASM::ARM::ARM64::Decoder d(&*it);
+        ASM::ARM::ARM64::Decoder d(pInstruction);
         d.print(std::cout, &sr);
         std::cout<<std::endl;   
-    }
+
+        if( pInstruction->isTail() ||
+            pInstruction == pSymbol->getEnd())
+                break; //strange ...
+
+        pInstruction = pInstruction->getNext();
+  }
 
 }
 /*************************************************************************/

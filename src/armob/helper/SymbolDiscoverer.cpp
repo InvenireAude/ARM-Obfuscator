@@ -10,6 +10,7 @@
 #include <armob/DiscoveredSymbols.h>
 
 #include <asm/GenericInstruction.h>
+#include <asm/InstructionFactory.h>
 
 
 #include <elf/elf.h>
@@ -63,7 +64,8 @@ void SymbolDiscoverer::build(){
     size_t  iSize                = pSection->get_size();
     const   int  iStep           = 4;
 
-    ARMOB::InstructionList& lstInstructions(pDiscoveredSymbols->getInstructions());
+    ASM::GenericInstructionList& lstInstructions(pDiscoveredSymbols->getInstructions());
+    ASM::InstructionFactory* pFactory = pDiscoveredSymbols->getInstructionFactory();
 
     ARMOB::DiscoveredSymbols::SymbolSet::iterator it = setCodeSymbols.begin();
 
@@ -74,12 +76,12 @@ void SymbolDiscoverer::build(){
                 it++;
         }
 
-        lstInstructions.emplace_back(pData + iOffset, iStep, iAddress + iOffset);
+        lstInstructions.append(new (pFactory->allocate())ASM::GenericInstruction(pData + iOffset, iStep, iAddress + iOffset));
    
         if( it->first  == iAddress + iOffset){
-            it->second->setStart(--lstInstructions.end());
+            it->second->setStart(lstInstructions.getTail());
         }else if( it->second->getAddress() + it->second->getSize() - iStep  == iAddress + iOffset){
-            it->second->setEnd(--lstInstructions.end());
+            it->second->setEnd(lstInstructions.getTail());
         }
     }
 }

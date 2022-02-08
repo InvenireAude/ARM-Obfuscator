@@ -15,7 +15,9 @@ Symbol::Symbol(Type iType, uint64_t iAddress, uint64_t iSize, const std::string&
  iType(iType),
  iAddress(iAddress),
  iSize(iSize),
- strName(strName){
+ strName(strName),
+ pStart(nullptr),
+ pEnd(nullptr){
      std::cerr<<"New symbol: "<<strName<<", at: "<<(void*)iAddress<<", sz: "<<(void*)iSize<<std::endl;
 }
 /*************************************************************************/

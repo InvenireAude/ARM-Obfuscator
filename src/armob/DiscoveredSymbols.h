@@ -15,6 +15,7 @@
 #include <set>
 
 #include "Symbol.h"
+#include <asm/InstructionFactory.h>
 
 namespace ARMOB {
 
@@ -58,7 +59,7 @@ public:
 	// 			(iAddress <= it->second->getAddress() + it->second->getSize());
 	// }
 
-	InstructionList& getInstructions(){
+	ASM::GenericInstructionList& getInstructions(){
 		return lstInstructions;
 	}
 
@@ -72,12 +73,18 @@ public:
 		return it->second.get();
 	}
 
+	inline ASM::InstructionFactory* getInstructionFactory()const{
+		return ptrInstructionFactory.get();
+	}
+	
 protected:
 
 	SymbolMap mapSymbols;
 	SymbolSet tabSymbolSets[Symbol::ST_NumTypes];
 
-	InstructionList lstInstructions;
+	ASM::GenericInstructionList lstInstructions;
+
+	std::unique_ptr<ASM::InstructionFactory> ptrInstructionFactory;
 };
 /*************************************************************************/
 }

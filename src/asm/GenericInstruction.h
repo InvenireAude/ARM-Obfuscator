@@ -35,7 +35,10 @@ public:
 				uint64_t iReferenceAddress = 0L):
 		iLength(iLength),
 		adrOriginal({ iOpCodeAddress, iReferenceAddress }),
-		adrCurrent({  iOpCodeAddress, iReferenceAddress }){
+		adrCurrent({  iOpCodeAddress, iReferenceAddress }),
+		pPrev(nullptr),
+		pNext(nullptr),
+		pReference(nullptr){
 
 			if(iLength > CMaxBytes){
 				throw Tools::Exception()<<"Opcode to long: "<<iLength;
@@ -85,6 +88,22 @@ public:
 		return *reinterpret_cast<const uint32_t*>(tOpCode);
 	};
 
+	inline GenericInstruction* getNext()const{
+		return pNext;
+	}
+
+	inline GenericInstruction* getPrev()const{
+		return pPrev;
+	}
+
+	inline bool isHead()const{
+		return !pPrev;
+	}
+
+	inline bool isTail()const{
+		return !pNext;
+	}
+	
 protected:
 	//TODO larger opcodes and data content as a malloc on demand;
 
@@ -93,8 +112,55 @@ protected:
 
 	Addresses  adrOriginal;
 	Addresses  adrCurrent;
+
+	GenericInstruction* pNext;
+	GenericInstruction* pPrev;
+
+	GenericInstruction* pReference;
+
+	friend class GenericInstructionList;
 };
 
+
+class GenericInstructionList {
+public:
+
+	inline void append(GenericInstruction* pNew){
+
+		if(!pHead){
+			pHead = pNew;
+			pTail = pNew;
+		}else{
+			pTail->pNext = pNew;
+			pNew->pPrev = pTail;
+			pNew->pNext = nullptr;
+			pTail = pNew;
+		}
+	}
+
+	GenericInstructionList():
+		pHead(nullptr){};
+
+	inline GenericInstruction* getHead(){
+		return pHead;
+	}
+
+	inline const GenericInstruction* getHead()const{
+		return pHead;
+	}
+
+	inline GenericInstruction* getTail(){
+		return pTail;
+	}
+
+	inline const GenericInstruction* getTail()const{
+		return pTail;
+	}
+
+protected:
+	GenericInstruction* pHead;
+	GenericInstruction* pTail;
+};
 /*************************************************************************/
 }
 

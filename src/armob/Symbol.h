@@ -62,38 +62,42 @@ public:
 	   this->strName = strName;
 	}
 
-	InstructionList::iterator getStart(){
-		return itStart;
+
+	ASM::GenericInstruction* getStart()const{
+		if(!pStart){
+			throw Tools::Exception()<<"Instruction start not set for symbol: "<<strName;
+		}
+		return pStart;
 	}
 
-	InstructionList::const_iterator getStart()const{
-		return itStart;
+	ASM::GenericInstruction* getEnd()const{
+		if(!pEnd){
+			throw Tools::Exception()<<"Instruction end not set for symbol: "<<strName;
+		}
+		return pEnd;
 	}
 
-	InstructionList::iterator getEnd(){
-		return itEnd;
+	void setStart(ASM::GenericInstruction* pStart){
+		this->pStart = pStart;
+		this->pEnd = pStart;
 	}
 
-	InstructionList::const_iterator getEnd()const{
-		return itEnd;
+	void setEnd(ASM::GenericInstruction* pEnd){
+		this->pEnd = pEnd;
 	}
 
-	void setStart(const InstructionList::iterator& it){
-		itStart = it;
+	inline bool hasInstructions()const{
+		return pStart != nullptr;
 	}
-
-	void setEnd(const InstructionList::iterator& it){
-		itEnd = it;
-	}
-
+	
 protected:
 	uint64_t     iAddress;
 	uint64_t     iSize;
 	std::string  strName;
 	Type         iType;
 
-	InstructionList::iterator itStart;
-	InstructionList::iterator itEnd;
+	ASM::GenericInstruction* pStart;
+	ASM::GenericInstruction* pEnd;
 };
 
 /*************************************************************************/

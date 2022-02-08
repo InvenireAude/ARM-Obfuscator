@@ -11,10 +11,9 @@
 namespace ARMOB {
 
 /*************************************************************************/
-DiscoveredSymbols::DiscoveredSymbols(){
-	
+DiscoveredSymbols::DiscoveredSymbols():
+  ptrInstructionFactory(new ASM::InstructionFactory()){
 }
-
 /*************************************************************************/
 DiscoveredSymbols::~DiscoveredSymbols() throw(){
 	

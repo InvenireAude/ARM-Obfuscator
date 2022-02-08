@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
         d.build();
 
         ARMOB::Helper::Disassembler dis(ptrSymbols.get());
-        dis.print(argv[2], std::cout);
+       dis.print(argv[2], std::cout);
 
       //   const ELF::Elf64::Header* pHeader = ptrArtefact->getHeader64();
       //   const ELF::Elf64::Symbol* pSymbol = pHeader->getSymbolTable()->lookup(argv[2]);

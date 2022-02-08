@@ -52,7 +52,7 @@ static inline void _printHex(std::ostream& os, long v){
 	os<<std::dec;
 }
 /*************************************************************************/
-void Decoder::print(std::ostream& os){
+void Decoder::print(std::ostream& os, const SymbolResolver* pSymbolResover){
 
 	uint64_t iOpCodeAddress = pGenericInstruction->getCurrentAddresses().iOpCode;
 
@@ -95,6 +95,9 @@ void Decoder::print(std::ostream& os){
 			if(o->isMemoryReference()){
 				os<<" @";
 				_printHex(os, iOpCodeAddress + o->getValue(opCode));
+				if(pSymbolResover){
+					pSymbolResover->print(os, iOpCodeAddress + o->getValue(opCode));
+				}
 			}
 		}
 

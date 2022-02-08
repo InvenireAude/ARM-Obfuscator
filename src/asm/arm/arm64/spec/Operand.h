@@ -25,7 +25,7 @@ namespace Spec {
 class Operand {
 public:
 
-    ~Operand() throw();
+    virtual ~Operand() throw();
 
     virtual void    setValue(uint32_t& iOpCode, int32_t iValue) const = 0;
     virtual int32_t getValue(uint32_t iOpCode) const = 0;

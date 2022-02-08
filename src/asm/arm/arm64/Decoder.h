@@ -24,10 +24,15 @@ namespace ARM64 {
 class Decoder {
 public:
 
+	class SymbolResolver {
+		public:
+		virtual void print(std::ostream& os, uint64_t iAddress)const = 0;
+	};
+
 	virtual ~Decoder() throw();
 	Decoder(const GenericInstruction* pGenericInstruction);
 
-	virtual void print(std::ostream& os);
+	virtual void print(std::ostream& os, const SymbolResolver* pSymbolResover = nullptr);
 	
 protected:
 	const GenericInstruction* pGenericInstruction;

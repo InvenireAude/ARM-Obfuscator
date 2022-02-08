@@ -108,15 +108,15 @@ void SymbolDiscoverer::resolve(){
            const ARMOB::DiscoveredSymbols::SymbolSet& setSymbols(pDiscoveredSymbols->getSymbols(Symbol::ST_Code));
            ARMOB::DiscoveredSymbols::SymbolSet::const_iterator it = Tools::LowerBound(setSymbols, refAddresses.iReference);
            
-           std::cout<<"Reference from:"<<(void*)(refAddresses.iOpCode)<<" to "<<(void*)(refAddresses.iReference)<<std::endl;
+         //  std::cout<<"Reference from:"<<(void*)(refAddresses.iOpCode)<<" to "<<(void*)(refAddresses.iReference)<<std::endl;
            
 
            if(it != setSymbols.end()  &&
               refAddresses.iReference >= it->second->getAddress() &&
               refAddresses.iReference < it->second->getAddress() + it->second->getSize()) {
 
-             std::cout<<"Reference from:"<<(void*)(refAddresses.iOpCode)<<" to "<<(void*)(refAddresses.iReference)
-                <<" found in: "<<it->second->getName()<<"["<<(void*)it->second->getAddress()<<"]"<<"+"<<(void*)(refAddresses.iReference - it->second->getAddress())<<std::endl;
+          //   std::cout<<"Reference from:"<<(void*)(refAddresses.iOpCode)<<" to "<<(void*)(refAddresses.iReference)
+            //    <<" found in: "<<it->second->getName()<<"["<<(void*)it->second->getAddress()<<"]"<<"+"<<(void*)(refAddresses.iReference - it->second->getAddress())<<std::endl;
 
 
             if(it->second->hasInstructions()){
@@ -135,7 +135,7 @@ void SymbolDiscoverer::resolve(){
                     pCursor = pCursor->getNext();
                 }
             }
-            
+
            }
 
       };

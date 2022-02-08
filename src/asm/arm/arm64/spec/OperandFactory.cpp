@@ -11,6 +11,7 @@
 #include "impl/DefaultSignedOperand.h"
 #include "impl/RegisterOperand.h"
 #include "impl/MemoryReferenceOperand.h"
+#include "impl/PatternOperand.h"
 
 #include "EncodingBook.h"
 #include "FieldBook.h"
@@ -39,8 +40,21 @@ Operand* OperandFactory::CreateOperand(const Encoding* pEncoding, OperandId iOpe
         return new Impl::MemoryReferenceOperand(pEncoding->fields, iOperandId, 2);
     }
 
+    if(pEncoding->iClass == C_compbranch && strSpec.compare("imm19") == 0){
+        return new Impl::MemoryReferenceOperand(pEncoding->fields, iOperandId, 2);
+    }
+
     if(_TheRegisterOperands.count(strSpec)){
         return new Impl::RegisterOperand(pEncoding->fields, iOperandId, 64);
+    }
+    //TODO this is not correct PC is 2 words ahead and the value shoud be rounded to 4096
+    // upon the difference application.
+    if(pEncoding->iClass == C_pcreladdr && strSpec.find(':') != std::string::npos){
+        return new Impl::PatternOperand(pEncoding->fields, iOperandId, 12, strSpec, true);
+    }
+
+    if(strSpec.find(':') != std::string::npos){
+        return new Impl::PatternOperand(pEncoding->fields, iOperandId, 0, strSpec);
     }
 
     return new Impl::DefaultOperand(pEncoding->fields, iOperandId, 0);

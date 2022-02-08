@@ -7,6 +7,8 @@
 
 #include "SymbolDiscoverer.h"
 
+#include <asm/arm/arm64/Decoder.h>
+
 #include <armob/DiscoveredSymbols.h>
 
 #include <asm/GenericInstruction.h>
@@ -84,6 +86,65 @@ void SymbolDiscoverer::build(){
             it->second->setEnd(lstInstructions.getTail());
         }
     }
+}
+/*************************************************************************/
+
+
+/*************************************************************************/
+
+void SymbolDiscoverer::resolve(){
+
+ ASM::GenericInstruction* pInstruction = pDiscoveredSymbols->getInstructions().getHead();
+ ASM::GenericInstruction* pTail = pDiscoveredSymbols->getInstructions().getTail();
+
+  while(true){
+
+      ASM::ARM::ARM64::Decoder d(pInstruction);
+ 
+      if(d.checkMemoryReference()){
+
+           const ASM::GenericInstruction::Addresses& refAddresses(pInstruction->getCurrentAddresses());
+          
+           const ARMOB::DiscoveredSymbols::SymbolSet& setSymbols(pDiscoveredSymbols->getSymbols(Symbol::ST_Code));
+           ARMOB::DiscoveredSymbols::SymbolSet::const_iterator it = Tools::LowerBound(setSymbols, refAddresses.iReference);
+           
+           std::cout<<"Reference from:"<<(void*)(refAddresses.iOpCode)<<" to "<<(void*)(refAddresses.iReference)<<std::endl;
+           
+
+           if(it != setSymbols.end()  &&
+              refAddresses.iReference >= it->second->getAddress() &&
+              refAddresses.iReference < it->second->getAddress() + it->second->getSize()) {
+
+             std::cout<<"Reference from:"<<(void*)(refAddresses.iOpCode)<<" to "<<(void*)(refAddresses.iReference)
+                <<" found in: "<<it->second->getName()<<"["<<(void*)it->second->getAddress()<<"]"<<"+"<<(void*)(refAddresses.iReference - it->second->getAddress())<<std::endl;
+
+
+            if(it->second->hasInstructions()){
+                ASM::GenericInstruction* pCursor = it->second->getStart();
+
+                while(true){
+
+                    if(pCursor->getCurrentAddresses().iOpCode == refAddresses.iReference){
+                        pInstruction->setReference(pCursor);
+                    }
+
+                    if( pCursor->isTail() ||
+                        pCursor == it->second->getEnd())
+                            break; //strange ...
+
+                    pCursor = pCursor->getNext();
+                }
+            }
+            
+           }
+
+      };
+
+        if(pInstruction == pTail)
+            break; //strange ...
+
+        pInstruction = pInstruction->getNext();
+  }
 }
 /*************************************************************************/
 }

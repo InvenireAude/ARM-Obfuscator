@@ -17,6 +17,9 @@ class GenericInstruction;
 namespace ARM {
 namespace ARM64 {
 
+namespace Spec{
+	class Encoding;
+}
 /*************************************************************************/
 /** The Decoder class.
  *
@@ -33,9 +36,11 @@ public:
 	Decoder(const GenericInstruction* pGenericInstruction);
 
 	virtual void print(std::ostream& os, const SymbolResolver* pSymbolResover = nullptr);
-	
+	bool checkMemoryReference()const;
+
 protected:
-	const GenericInstruction* pGenericInstruction;
+	const GenericInstruction *pGenericInstruction;
+	const Spec::Encoding     *pEncoding;
 };
 
 /*************************************************************************/

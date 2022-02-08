@@ -45,7 +45,8 @@ public:
 
 	void discover();
 	void build();
-
+	void resolve();
+	
 protected:
 	const ELF::Artefact* pArtefact;
 	DiscoveredSymbols*   pDiscoveredSymbols;

@@ -27,6 +27,10 @@ using namespace Spec;
 /*************************************************************************/
 Decoder::Decoder(const GenericInstruction* pGenericInstruction):
  pGenericInstruction(pGenericInstruction){
+
+ uint32_t opCode = pGenericInstruction->getOpcodeW();
+ pEncoding = EncodingBook::TheInstance.match(opCode);
+		
 }
 /*************************************************************************/
 Decoder::~Decoder() throw(){
@@ -71,14 +75,11 @@ void Decoder::print(std::ostream& os, const SymbolResolver* pSymbolResover){
 
 	os<<" ";
 	try{
-		const uint8_t* tOpCode = pGenericInstruction->getOpcode();
-		uint32_t opCode = *(uint32_t*)tOpCode;
 
-		_printHex(os,opCode);
+ 		uint32_t opCode = pGenericInstruction->getOpcodeW();
+		_printHex(os, opCode);
 		os<<"\t";
 
-		const Encoding *pEncoding = EncodingBook::TheInstance.match(opCode);
-		
 		os<<std::left<<std::setw(24)<<EncodingBook::TheInstance.getName(pEncoding);
 		os<<std::left<<std::setw(8)<<EncodingBook::TheInstance.getMnemonic(pEncoding);
 
@@ -107,6 +108,28 @@ void Decoder::print(std::ostream& os, const SymbolResolver* pSymbolResover){
 		os<< "??? ?? ??";
 	}
 }
+/*************************************************************************/
+bool Decoder::checkMemoryReference()const{
+
+ 	uint32_t opCode = pGenericInstruction->getOpcodeW();
+
+	//TODO move to another class ??
+	ASM::GenericInstruction::Addresses& refAddresses(
+		const_cast<ASM::GenericInstruction*>(pGenericInstruction)->getCurrentAddresses());
+
+	const EncodingBook::OperandList& lstOperands(EncodingBook::TheInstance.getEncodingOperands(pEncoding));
+
+	for(const auto& o: lstOperands){
+		if(o->isMemoryReference()){
+			refAddresses.iReference = refAddresses.iOpCode + o->getValue(opCode);
+			return true;
+		}else{
+			refAddresses.iReference = 0L;
+		}
+	}
+
+	return false;
+}	
 /*************************************************************************/
 }
 }

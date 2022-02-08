@@ -19,4 +19,19 @@
 #include "Exception.h"
 #include "ValueMap.h"
 
+namespace Tools {
+
+template<class C, typename T>
+inline typename C::const_iterator LowerBound(const C& c, T v){
+    typename C::const_iterator it = c.upper_bound(v);
+
+    if(v != it->first){
+        --it;
+    }
+
+    return it;
+}
+
+}
+
 #endif /* _tools_common_H_ */

@@ -104,6 +104,14 @@ public:
 		return !pNext;
 	}
 	
+	inline GenericInstruction* getReference()const{
+	   return pReference;
+	}
+	
+	inline void setReference(GenericInstruction* pReference){
+	 this->pReference = pReference;
+	}
+	
 protected:
 	//TODO larger opcodes and data content as a malloc on demand;
 
@@ -142,6 +150,9 @@ public:
 		pHead(nullptr){};
 
 	inline GenericInstruction* getHead(){
+		if(!pHead){
+			Tools::Exception()<<"GenericInstructionList is empty !!!";
+		}
 		return pHead;
 	}
 

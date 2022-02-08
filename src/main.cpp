@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
 
         d.discover();
         d.build();
-
+        d.resolve();
         ARMOB::Helper::Disassembler dis(ptrSymbols.get());
        dis.print(argv[2], std::cout);
 

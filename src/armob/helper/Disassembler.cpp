@@ -34,10 +34,18 @@ class SymbolResolver : public ASM::ARM::ARM64::Decoder::SymbolResolver {
             setSymbols(pDiscoveredSymbols->getSymbols(Symbol::ST_Code)){};
 
 	virtual void print(std::ostream& os, uint64_t iAddress)const{
-        DiscoveredSymbols::SymbolSet::const_iterator it = setSymbols.find(iAddress);
+      
+        ARMOB::DiscoveredSymbols::SymbolSet::const_iterator it = Tools::LowerBound(setSymbols, iAddress);   
 
-        if(it != setSymbols.end()){
-            os<<" : "<<it->second->getName();
+        if(it != setSymbols.end()  &&
+              iAddress >= it->second->getAddress() &&
+              iAddress < it->second->getAddress() + it->second->getSize()) {
+
+                os<<" <"<<it->second->getName();
+                if(iAddress != it->second->getAddress()){
+                    os<<"+"<<(void*)(iAddress - it->second->getAddress());
+                }
+                os<<">";
         }
     };
 

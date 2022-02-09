@@ -30,10 +30,11 @@ static inline const Field* _fieldForOperand(const Field* tabFields, const std::s
 	throw Tools::Exception()<<"Cannot determine field for pattern operand, field: "<<strField;
 }
 /*************************************************************************/
-PatternOperand::PatternOperand(const Field* tabFields, OperandId iOperand, uint8_t iShift,const std::string& strSpec, bool bIsMemoryReference):
+PatternOperand::PatternOperand(const Field* tabFields, OperandId iOperand, uint8_t iShift,const std::string& strSpec, bool bIsMemoryReference, uint32_t iMask):
  Spec::Operand(iOperandId, bIsMemoryReference),
  iShift(iShift),
- strName(strSpec){
+ strName(strSpec),
+ iMask(iMask){
  
  size_t iStart = 0;
  size_t iNext  = 0; 
@@ -78,6 +79,16 @@ int32_t PatternOperand::getValue(uint32_t iOpCode) const{
 void PatternOperand::disassemble(uint32_t iOpCode, std::ostream& os)const{
 	os<<strName<<":";
 	printHex(getValue(iOpCode), os);
+}
+/*************************************************************************/
+int32_t PatternOperand::applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const{
+	if(bIsMemoryReference){
+		return (iAddress + getValue(iOpCode)) & iMask;
+	}else{
+		
+		throw Tools::Exception()<<"Operand ["<<OperandBook::TheInstance.getSpec(iOperandId)
+				<<"]apply memory reference called on non-memory operand.";
+	}
 }
 /*************************************************************************/
 }

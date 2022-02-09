@@ -47,10 +47,10 @@ Operand* OperandFactory::CreateOperand(const Encoding* pEncoding, OperandId iOpe
     if(_TheRegisterOperands.count(strSpec)){
         return new Impl::RegisterOperand(pEncoding->fields, iOperandId, 64);
     }
-    //TODO this is not correct PC is 2 words ahead and the value shoud be rounded to 4096
-    // upon the difference application.
+    //TODO this is not correct PC is 2 words ahead hower dissasemblers use the current opcode address,
+     // and the value shoud be rounded to 4096 upon the difference application ??? 
     if(pEncoding->iClass == C_pcreladdr && strSpec.find(':') != std::string::npos){
-        return new Impl::PatternOperand(pEncoding->fields, iOperandId, 12, strSpec, true);
+        return new Impl::PatternOperand(pEncoding->fields, iOperandId, 12, strSpec, true, 0xfffff000);
     }
 
     if(strSpec.find(':') != std::string::npos){

@@ -7,6 +7,7 @@
 
 #include "Operand.h"
 
+#include "OperandBook.h"
 
 namespace ASM {
 namespace ARM {
@@ -28,6 +29,16 @@ void Operand::printHex(int32_t iValue, std::ostream& os)const{
 	}
 	
 	os<<"0x"<<std::hex<<iValue<<std::dec;
+}
+/*************************************************************************/
+int32_t Operand::applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const{
+	if(bIsMemoryReference){
+		return iAddress + getValue(iOpCode);
+	}else{
+		
+		throw Tools::Exception()<<"Operand ["<<OperandBook::TheInstance.getSpec(iOperandId)
+				<<"]apply memory reference called on non-memory operand.";
+	}
 }
 /*************************************************************************/
 }

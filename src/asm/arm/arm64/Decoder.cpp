@@ -95,9 +95,10 @@ void Decoder::print(std::ostream& os, const SymbolResolver* pSymbolResover){
 			o->disassemble(opCode, os);
 			if(o->isMemoryReference()){
 				os<<" @";
-				_printHex(os, iOpCodeAddress + o->getValue(opCode));
+				uint64_t iAddress = o->applyMemoryReference(iOpCodeAddress, opCode);
+				_printHex(os, iAddress);
 				if(pSymbolResover){
-					pSymbolResover->print(os, iOpCodeAddress + o->getValue(opCode));
+					pSymbolResover->print(os, iAddress );
 				}
 			}
 		}
@@ -121,7 +122,7 @@ bool Decoder::checkMemoryReference()const{
 
 	for(const auto& o: lstOperands){
 		if(o->isMemoryReference()){
-			refAddresses.iReference = refAddresses.iOpCode + o->getValue(opCode);
+			refAddresses.iReference = o->applyMemoryReference(refAddresses.iOpCode, opCode);
 			return true;
 		}else{
 			refAddresses.iReference = 0L;

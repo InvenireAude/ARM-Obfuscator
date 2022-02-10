@@ -40,10 +40,9 @@ public:
 
 
 /*************************************************************************/
-Symbol(const SymbolTable<S>* pSymbolTable, const typename S::Symbol_* pSymbolData):
-	pSymbolTable(pSymbolTable){
-
-	memcpy(&symbol, pSymbolData, CElfSize);
+Symbol(SymbolTable<S>* pSymbolTable, typename S::Symbol_* pSymbolData):
+	pSymbolTable(pSymbolTable),
+	symbol(*pSymbolData){
 }
 /*************************************************************************/
 ~Symbol() throw(){	
@@ -86,9 +85,9 @@ typename S::Half get_shndx()const{
 
 
 protected:
-	const SymbolTable<S>* pSymbolTable;
+	SymbolTable<S>* pSymbolTable;
 
-	typename S::Symbol_ symbol;
+	typename S::Symbol_& symbol;
 };
 
 /*************************************************************************/

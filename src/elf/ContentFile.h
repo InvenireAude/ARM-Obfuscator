@@ -34,14 +34,14 @@ public:
 	ContentFile(const std::string& strName);
 
 
-	virtual const uint8_t* getData(size_t iOffset)const;
+	virtual uint8_t* getData(size_t iOffset);
 
-    virtual const uint8_t* getData(size_t iOffset, size_t iDataLen)const;
+    virtual uint8_t* getData(size_t iOffset, size_t iDataLen);
 
 protected:
 
 	int fd;
-	const uint8_t *pMemory;
+	uint8_t *pMemory;
 	size_t iSize;
 	
 };

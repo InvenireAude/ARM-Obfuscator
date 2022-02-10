@@ -39,9 +39,17 @@ public:
 		return ptrConverter.get();
 	}
 
-	virtual const uint8_t* getData(size_t iOffset)const = 0;
+	inline const uint8_t* getData(size_t iOffset)const{
+		return const_cast<Content*>(this)->getData(iOffset);
+	}
 
-	virtual const uint8_t* getData(size_t iOffset, size_t iDataLen)const = 0;
+	inline const uint8_t* getData(size_t iOffset, size_t iDataLen)const{
+		return const_cast<Content*>(this)->getData(iOffset, iDataLen);
+	}
+
+	virtual uint8_t* getData(size_t iOffset) = 0;
+
+	virtual uint8_t* getData(size_t iOffset, size_t iDataLen) = 0;
 
 protected:
 	

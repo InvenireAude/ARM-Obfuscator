@@ -34,19 +34,23 @@ public:
 	}
 
 	template<class T>
+	 T* getData(){
+		std::cerr<<"Get data for offset: "<<get_offset();
+		return reinterpret_cast<T*>(pContent->getData(get_offset()));
+	}
+
+	template<class T>
 	const T* getData()const{
 		std::cerr<<"Get data for offset: "<<get_offset();
 		return reinterpret_cast<const T*>(pContent->getData(get_offset()));
 	}
 
 /*************************************************************************/
-Section( const Header<S> *pHeader, size_t iOffset):
+Section(Header<S> *pHeader, size_t iOffset):
 	Impl::Component(pHeader->getContent()),
-	pHeader(pHeader){
+	pHeader(pHeader),
+	section(*reinterpret_cast<typename S::Section_*>(pContent->getData(iOffset, sizeof(typename S::Section_)))){
 	std::cerr<<"Offset :"<<iOffset<<", sizeof: "<<sizeof(section)<<std::endl;
-	 memcpy(&section, 
-	 	pContent->getData(iOffset, sizeof(section)), 
-	 	sizeof(section));
 }
 /*************************************************************************/
 ~Section() throw(){
@@ -99,7 +103,7 @@ protected:
 	
 	const Header<S> *pHeader;
 
-	typename S::Section_ section;
+	typename S::Section_& section;
 	
 };
 

@@ -30,19 +30,23 @@ class Component {
 public:
 
 	virtual ~Component() throw();
-	Component(const ELF::Content       *pContent);
+	Component(ELF::Content       *pContent);
 
-	const ELF::Content* getContent()const{
+	inline const ELF::Content* getContent()const{
 		return pContent;
 	}
 
-	const Utils::Converter* getConverter()const{
+	inline ELF::Content* getContent(){
+		return pContent;
+	}
+
+	inline const Utils::Converter* getConverter()const{
 		return pConverter;
 	}
 
 protected:
 
-	const ELF::Content       *pContent;
+	ELF::Content           *pContent;
 	const Utils::Converter *pConverter;
 
 };

@@ -45,7 +45,7 @@ ContentFile::ContentFile(const std::string& strName){
    
    iSize = sb.st_size;
 
-   pMemory = reinterpret_cast<const uint8_t*>(mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0));
+   pMemory = reinterpret_cast<uint8_t*>(mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0));
    
    if (pMemory == MAP_FAILED){
 		throw Tools::Exception()<<"MMap failed: ["<<strName<<"]";
@@ -59,7 +59,7 @@ ContentFile::ContentFile(const std::string& strName){
 ContentFile::~ContentFile() throw(){
 }
 /*************************************************************************/
-const uint8_t* ContentFile::getData(size_t iOffset)const{
+ uint8_t* ContentFile::getData(size_t iOffset){
    
    if(iOffset >= iSize){
       throw Tools::Exception()<<"Bad offset: "<<iOffset<<", size is: "<<iSize;
@@ -68,7 +68,7 @@ const uint8_t* ContentFile::getData(size_t iOffset)const{
    return pMemory + iOffset;
 }
 /*************************************************************************/
-const uint8_t* ContentFile::getData(size_t iOffset, size_t iDataLen)const{
+ uint8_t* ContentFile::getData(size_t iOffset, size_t iDataLen){
    
    if(iOffset >= iSize || iOffset + iDataLen > iSize){
       throw Tools::Exception()<<"Bad offset: "<<iOffset

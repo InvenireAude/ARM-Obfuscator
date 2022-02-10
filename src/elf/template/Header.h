@@ -59,11 +59,11 @@ public:
 		return lstSegments;
 	}
 
-	const Section<S>* getStringsSection()const{
+	Section<S>* getStringsSection()const{
 		return lstSections[get_shstrndx()].get();
 	}
 
-	const Section<S>* lookup(const std::string& strName)const{
+	Section<S>* lookup(const std::string& strName)const{
 
 		typename SectionByNameMap::const_iterator it = hmSectionByName.find(strName);
 
@@ -98,12 +98,9 @@ public:
 	};
 
 /*************************************************************************/
-Header(const ELF::Content* pContent):
-	Impl::Component(pContent){
-
-	memcpy(&header, 
-		   pContent->getData(0, sizeof(header)), 
-		   sizeof(header));
+Header(ELF::Content* pContent):
+	Impl::Component(pContent),
+	header(*reinterpret_cast<typename S::Header_*>(pContent->getData(0, sizeof(typename S::Header_)))){
 	
 	if(get_shnum() != 0 && get_shoff() != 0){
 		size_t iOffset = get_shoff();
@@ -184,7 +181,7 @@ typename S::Half get_shstrndx()const{
 }
 
 protected:
-	typename S::Header_ header;
+	typename S::Header_& header;
 
 	SectionList lstSections;
 	SegmentList lstSegments;

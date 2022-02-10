@@ -14,7 +14,7 @@ namespace ELF {
 namespace Impl {
 
 /*************************************************************************/
-Component::Component(const ELF::Content *pContent):
+Component::Component(ELF::Content *pContent):
 	pContent(pContent),
 	pConverter(pContent->getConverter()){
 }

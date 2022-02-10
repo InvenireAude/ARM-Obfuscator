@@ -68,7 +68,7 @@ public:
 	}
 
 
-SymbolTable(const Header<S> *pHeader, const char* sSymTab, const char* sStrTab):
+SymbolTable(Header<S> *pHeader, const char* sSymTab, const char* sStrTab):
  	ELF::Impl::Component(pHeader->getContent()),
  	pHeader(pHeader){
 
@@ -83,7 +83,7 @@ SymbolTable(const Header<S> *pHeader, const char* sSymTab, const char* sStrTab):
  
  	size_t iNumEntries = iSize / sizeof(typename S::Symbol_);
  
- 	const typename S::Symbol_ *pSymbolData = pSymbolSection->template getData< typename S::Symbol_ >();
+ 	typename S::Symbol_ *pSymbolData = pSymbolSection->template getData< typename S::Symbol_ >();
 
  	while(iNumEntries > 0){
 
@@ -103,10 +103,10 @@ SymbolTable(const Header<S> *pHeader, const char* sSymTab, const char* sStrTab):
 
 protected:
 
-	const Header<S> *pHeader;
+	Header<S> *pHeader;
 
-	const Section<S> *pSymbolSection;
-	const Section<S> *pSymStrSection;
+	Section<S> *pSymbolSection;
+	Section<S> *pSymStrSection;
 
 	SymbolList      lstSymbols;
 	SymbolByNameMap hmSymbolByName;

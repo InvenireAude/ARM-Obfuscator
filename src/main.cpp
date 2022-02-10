@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
   try{
     std::unique_ptr<ELF::Artefact> ptrArtefact(Artefact::CreateFromFile(argv[1]));
     
-   // ELF::Printer::Print(std::cout, ptrArtefact.get());
+   ELF::Printer::Print(std::cout, ptrArtefact.get());
 
     argc -= 2;
 

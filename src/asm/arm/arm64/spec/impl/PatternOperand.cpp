@@ -43,7 +43,7 @@ PatternOperand::PatternOperand(const Field* tabFields, OperandId iOperand, uint8
  while(iStart != std::string::npos){
 	 iNext = strSpec.find(':',iStart);
 	 std::string strValue(iNext != std::string::npos ? strSpec.substr(iStart, iNext - iStart) :  strSpec.substr(iStart));
-	 std::cout<<"Pattern operand: "<<strSpec<<", n:"<<iFieldId<<" "<<strValue<<std::endl;
+	// std::cout<<"Pattern operand: "<<strSpec<<", n:"<<iFieldId<<" "<<strValue<<std::endl;
 	
 	 tabUsedFields[iFieldId++] = _fieldForOperand(tabFields, strValue);
 	 iStart = iNext;

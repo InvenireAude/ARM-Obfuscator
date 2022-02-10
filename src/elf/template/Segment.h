@@ -36,7 +36,7 @@ public:
 
 Segment(const ELF::Content *pContent, size_t iOffset):
 	Impl::Component(pContent){
-	std::cerr<<"Offset :"<<iOffset<<", sizeof: "<<sizeof(segment)<<std::endl;
+	//std::cerr<<"Offset :"<<iOffset<<", sizeof: "<<sizeof(segment)<<std::endl;
 	 memcpy(&segment, 
 	 	pContent->getData(iOffset, sizeof(segment)), 
 	 	sizeof(segment));

@@ -69,6 +69,21 @@ void SymbolDiscoverer::build(){
     ASM::GenericInstructionList& lstInstructions(pDiscoveredSymbols->getInstructions());
     ASM::InstructionFactory* pFactory = pDiscoveredSymbols->getInstructionFactory();
 
+    for(  ARMOB::DiscoveredSymbols::SymbolSet::iterator it = setCodeSymbols.begin();
+            it != setCodeSymbols.end(); it++){
+
+        ARMOB::DiscoveredSymbols::SymbolSet::iterator itNext = it;
+        itNext++;
+
+        if(itNext != setCodeSymbols.end()){
+            if(it->second->getSize() == 0){
+                it->second->setSize(itNext->first - it->first);
+                std::cout<<"New size: "<<it->second->getName()<<" to: "<<(itNext->first - it->first)<<std::endl;
+            }
+        }
+            
+    }
+
     ARMOB::DiscoveredSymbols::SymbolSet::iterator it = setCodeSymbols.begin();
 
     for(size_t  iOffset = 0; iOffset < iSize; iOffset += iStep){

@@ -68,32 +68,32 @@ public:
 	}
 
 
-SymbolTable(const Header<S> *pHeader):
+SymbolTable(const Header<S> *pHeader, const char* sSymTab, const char* sStrTab):
  	ELF::Impl::Component(pHeader->getContent()),
  	pHeader(pHeader){
 
- pSymbolSection = pHeader->lookup(".symtab");
- pSymStrSection = pHeader->lookup(".strtab");
+ 	pSymbolSection = pHeader->lookup(sSymTab);
+ 	pSymStrSection = pHeader->lookup(sStrTab);
 
- size_t iOffset = pSymbolSection->get_offset();
- size_t iSize   = pSymbolSection->get_size();
+ 	size_t iOffset = pSymbolSection->get_offset();
+ 	size_t iSize   = pSymbolSection->get_size();
 
- std::cerr<<"Symbol table offset: "<<(void*)(long)iOffset<<", size: "<<iSize<<", sizeof()"
- 	<<sizeof(typename S::Symbol_)<<std::endl;
+ 	std::cerr<<"Symbol table offset: "<<(void*)(long)iOffset<<", size: "<<iSize<<", sizeof()"
+ 		<<sizeof(typename S::Symbol_)<<std::endl;
  
- size_t iNumEntries = iSize / sizeof(typename S::Symbol_);
+ 	size_t iNumEntries = iSize / sizeof(typename S::Symbol_);
  
- const typename S::Symbol_ *pSymbolData = pSymbolSection->template getData< typename S::Symbol_ >();
+ 	const typename S::Symbol_ *pSymbolData = pSymbolSection->template getData< typename S::Symbol_ >();
 
- while(iNumEntries > 0){
+ 	while(iNumEntries > 0){
 
-	std::unique_ptr< Symbol<S> > ptrSymbol(new Symbol<S>(this, pSymbolData));
-	hmSymbolByName[pSymStrSection->getString(ptrSymbol->get_name())] = ptrSymbol.get();
-	lstSymbols.push_back(std::move(ptrSymbol));
+		std::unique_ptr< Symbol<S> > ptrSymbol(new Symbol<S>(this, pSymbolData));
+		hmSymbolByName[pSymStrSection->getString(ptrSymbol->get_name())] = ptrSymbol.get();
+		lstSymbols.push_back(std::move(ptrSymbol));
 
-	pSymbolData++;
-	iNumEntries--;
- }
+		pSymbolData++;
+		iNumEntries--;
+	}
 
 }
 

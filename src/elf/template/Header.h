@@ -76,6 +76,10 @@ public:
 	bool hasSymbolTable()const{
 		return !ptrSymbolTable == false;
 	}
+
+	bool hasDynSymbolTable()const{
+		return !ptrDynSymbolTable == false;
+	}
 	
 	SymbolTable<S>* getSymbolTable()const{
 	
@@ -85,6 +89,13 @@ public:
 		return ptrSymbolTable.get();
 	};
 
+	SymbolTable<S>* getDynSymbolTable()const{
+	
+		if(!ptrDynSymbolTable)
+			throw Tools::Exception()<<"Dynamic symbol table not found";
+
+		return ptrDynSymbolTable.get();
+	};
 
 /*************************************************************************/
 Header(const ELF::Content* pContent):
@@ -120,7 +131,11 @@ Header(const ELF::Content* pContent):
 	}
 
 	if(hmSectionByName.find(".symtab") != hmSectionByName.end()){
-		ptrSymbolTable.reset( new SymbolTable(this) );
+		ptrSymbolTable.reset( new SymbolTable(this,".symtab",".strtab") );
+	}
+
+	if(hmSectionByName.find(".dynsym") != hmSectionByName.end()){
+		ptrDynSymbolTable.reset( new SymbolTable(this,".dynsym",".dynstr"));
 	}
 }
 /*************************************************************************/
@@ -178,6 +193,7 @@ protected:
 	SectionByNameMap hmSectionByName;
 
 	std::unique_ptr< SymbolTable<S> > ptrSymbolTable;
+	std::unique_ptr< SymbolTable<S> > ptrDynSymbolTable;
 };
 
 /*************************************************************************/

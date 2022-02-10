@@ -78,6 +78,8 @@ void printHeader(){
 
 	const typename Header<S>::SectionList& lstSections(pHeader->getSections());
 
+	os<<"Sections:"<<std::endl;
+
 	int iIdx = 0;
 	for(const auto& s: lstSections){
 		os<<std::setw(3)<<iIdx++;
@@ -86,15 +88,29 @@ void printHeader(){
 
 	const typename Header<S>::SegmentList& lstSegments(pHeader->getSegments());
 
+	os<<"Segments:"<<std::endl;
+
 	for(const auto& s: lstSegments){
 		printSegment(s.get());
 	}
+
+	os<<"Symbols:"<<std::endl;
 
 	if(!pHeader->hasSymbolTable()){
 		os<<"No symbol table found";
 	}else{
 		printSymbolTable(pHeader->getSymbolTable());
 	}
+
+	os<<"Dynamic symbols:"<<std::endl;
+
+
+	if(!pHeader->hasDynSymbolTable()){
+		os<<"No symbol table found";
+	}else{
+		printSymbolTable(pHeader->getDynSymbolTable());
+	}
+
 }
 /************************************************************************/
 void printSection(const Section<S>* pSection){
@@ -163,9 +179,14 @@ void printSymbolTable(const SymbolTable<S>* pSymbolTable){
 	}
 
 }
+
+/*************************************************************************/
 	const  Header<S>* pHeader;
 	const  Section<S>* pStringsSection;
 };
+
+
+
 
 /*************************************************************************/
 }

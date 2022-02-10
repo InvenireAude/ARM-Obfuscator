@@ -5,7 +5,9 @@ src/elf/Specification.cpp
 src/elf/ContentFile.cpp
 src/elf/Content.cpp
 src/elf/Identification.cpp
+src/elf/ContentMemory.cpp
 src/elf/Artefact.cpp
+src/elf/ArtefactCopy.cpp
 src/elf/ArtefactFromFile.cpp
 src/elf/utils/Helper.cpp
 src/elf/utils/Converter.cpp

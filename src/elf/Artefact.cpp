@@ -17,10 +17,6 @@ Artefact::Artefact(){
 }
 /*************************************************************************/
 Artefact::~Artefact() throw(){
-}
-/*************************************************************************/
-Artefact* Artefact::CreateFromFile(const std::string& strName){
-   return new ArtefactFromFile(strName);
 }	
 /*************************************************************************/
 Identification* Artefact::getIdentification()const{

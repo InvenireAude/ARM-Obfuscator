@@ -28,7 +28,7 @@ void info(char *s){
 int main(int argc, char *argv[]){
 
   try{
-    std::unique_ptr<ELF::Artefact> ptrArtefact(Artefact::CreateFromFile(argv[1]));
+    std::unique_ptr<ELF::Artefact> ptrArtefact(new ArtefactFromFile(argv[1]));
     
    ELF::Printer::Print(std::cout, ptrArtefact.get());
 

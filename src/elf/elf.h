@@ -11,6 +11,7 @@
 
 #include "Artefact.h"
 #include "ArtefactFromFile.h"
+#include "ArtefactCopy.h"
 
 
 #endif

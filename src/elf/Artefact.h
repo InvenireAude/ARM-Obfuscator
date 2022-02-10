@@ -47,7 +47,6 @@ public:
 
 	Identification* getIdentification()const;
 
-	static Artefact* CreateFromFile(const std::string& strName);
 
 protected:
 
@@ -55,7 +54,7 @@ protected:
 	std::unique_ptr<Elf64::Header>   ptrHeader64;
 
 	virtual Content*                 getContent()const = 0;
-
+	friend class ArtefactCopy;
 };
 
 /*************************************************************************/

@@ -48,9 +48,9 @@ public:
 	}
 
 	virtual uint8_t* getData(size_t iOffset) = 0;
-
 	virtual uint8_t* getData(size_t iOffset, size_t iDataLen) = 0;
-
+	virtual size_t   getSize()const = 0;
+	
 protected:
 	
 	std::unique_ptr<Identification>   ptrIdentification;
@@ -58,6 +58,7 @@ protected:
 
 
 	void setup(std::unique_ptr<Identification>&&   ptrIdentification);
+
 };
 
 /*************************************************************************/

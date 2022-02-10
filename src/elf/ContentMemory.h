@@ -1,5 +1,5 @@
 /*
- * File: ContentFile.h
+ * File: ContentMemory.h
  *
  * Copyright (C) 2021, Albert Krzymowski
  *
@@ -7,8 +7,8 @@
  */
 
 
-#ifndef _ELF_ContentFile_H_
-#define _ELF_ContentFile_H_
+#ifndef _ELF_ContentMemory_H_
+#define _ELF_ContentMemory_H_
 
 #include <tools/common.h>
 
@@ -17,7 +17,7 @@
 namespace ELF {
 
 /*************************************************************************/
-/** The ContentFile class.
+/** The ContentMemory class.
  *
  */
 class Identification;
@@ -26,28 +26,28 @@ namespace Utils {
 	class Converter;
 };
 
-class ContentFile : public Content {
+class ContentMemory : public Content {
 public:
 
-	virtual ~ContentFile() throw();
+	virtual ~ContentMemory() throw();
 	
-	ContentFile(const std::string& strName);
+	ContentMemory(const uint8_t* pSource, size_t iSize);
 
 
 	virtual uint8_t* getData(size_t iOffset);
 
     virtual uint8_t* getData(size_t iOffset, size_t iDataLen);
-	virtual size_t   getSize()const;
 
+	virtual size_t   getSize()const;
+	
 protected:
 
-	int fd;
 	uint8_t *pMemory;
 	size_t iSize;
-	
+	size_t iAvailableMemory;
 };
 
 /*************************************************************************/
 }
 
-#endif /* _ELF_ContentFile_H_ */
+#endif /* _ELF_ContentMemory_H_ */

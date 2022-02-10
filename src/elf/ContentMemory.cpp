@@ -1,11 +1,11 @@
 /*
- * File: ContentFile.cpp
+ * File: ContentMemory.cpp
  *
  * Copyright (C) 2021, Albert Krzymowski
  *
  */
 
-#include "ContentFile.h"
+#include "ContentMemory.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,38 +28,28 @@
 namespace ELF {
 
 /*************************************************************************/
-ContentFile::ContentFile(const std::string& strName){
+ContentMemory::ContentMemory(const uint8_t* pSource, size_t iSize):
+   pMemory((uint8_t*)std::aligned_alloc(16, 2*iSize)),
+   iSize(iSize),
+   iAvailableMemory(2*iSize){
 	
-	struct stat sb;
-
-   std::cerr<<"Opening file: ["<<strName<<"]"<<std::endl;
-
-   fd = open(strName.c_str(), O_RDONLY);
-   
-   if(fd < 0){
-	   throw Tools::Exception()<<"open :"<<strName;
+   if(!pMemory){
+      throw Tools::Exception()<<"Cannot allocate memory, size: "<<iSize;
    }
 
-   fstat(fd, &sb);
-   std::cerr<<"Size: "<<(uint64_t)sb.st_size<<" bytes."<<std::endl;
-   
-   iSize = sb.st_size;
+   std::cout<<"Making a memory copy, size: "<<iSize<<" bytes."<<std::endl;
 
-   pMemory = reinterpret_cast<uint8_t*>(mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0));
-   
-   if (pMemory == MAP_FAILED){
-		throw Tools::Exception()<<"MMap failed: ["<<strName<<"]";
-   }
+   memcpy(pMemory, pSource, iSize);
 
    std::unique_ptr<Identification>   ptrIdentification(new Identification(this));
 
    setup(std::move(ptrIdentification));   
 }
 /*************************************************************************/
-ContentFile::~ContentFile() throw(){
+ContentMemory::~ContentMemory() throw(){
 }
 /*************************************************************************/
- uint8_t* ContentFile::getData(size_t iOffset){
+ uint8_t* ContentMemory::getData(size_t iOffset){
    
    if(iOffset >= iSize){
       throw Tools::Exception()<<"Bad offset: "<<iOffset<<", size is: "<<iSize;
@@ -68,7 +58,7 @@ ContentFile::~ContentFile() throw(){
    return pMemory + iOffset;
 }
 /*************************************************************************/
- uint8_t* ContentFile::getData(size_t iOffset, size_t iDataLen){
+ uint8_t* ContentMemory::getData(size_t iOffset, size_t iDataLen){
    
    if(iOffset >= iSize || iOffset + iDataLen > iSize){
       throw Tools::Exception()<<"Bad offset: "<<iOffset
@@ -78,7 +68,7 @@ ContentFile::~ContentFile() throw(){
    return pMemory + iOffset;
 }
 /*************************************************************************/
-size_t ContentFile::getSize()const{
+size_t ContentMemory::getSize()const{
    return iSize;
 }
 /*************************************************************************/

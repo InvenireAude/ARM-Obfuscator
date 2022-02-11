@@ -41,8 +41,8 @@ int main(int argc, char *argv[]){
     
     ELF::Elf64::Header* pHeader = ptrArtefactCopy->getHeader64();
 
-    pHeader->insertSpaceAfter(pHeader->lookup(".text")->get_offset()+pHeader->lookup(".text")->get_size()-1, 32);
-
+    pHeader->insertSpaceAfter(pHeader->lookup(".text")->get_offset()+pHeader->lookup(".text")->get_size()-1, 64);
+    pHeader->write();
     ptrArtefactCopy->save(argv[2]);    
 
   }catch (Tools::Exception&e){

@@ -35,11 +35,15 @@ public:
 	}
 
 Segment(ELF::Content *pContent, size_t iOffset):
-	Impl::Component(pContent),
-	segment(*reinterpret_cast<typename S::Segment_*>(pContent->getData(iOffset, sizeof(typename S::Segment_)))){
+	Impl::Component(pContent){
 	std::cerr<<"Offset :"<<(void*)iOffset<<", sizeof: "<<sizeof(segment)<<std::endl;
+	
+	memcpy(&segment, pContent->getData(iOffset, sizeof(segment)), sizeof(segment));
 }
-
+/*************************************************************************/
+void write(size_t iOffset){
+	memcpy(pContent->getData(iOffset, sizeof(segment)), &segment, sizeof(segment));
+}
 /*************************************************************************/
 typename S::Word get_type()const{
 	return pConverter->convert(segment.p_type);
@@ -92,7 +96,7 @@ void set_align(typename S::Word p_align){
 }
 
 protected:
-	typename S::Segment_& segment;
+	typename S::Segment_ segment;
 };
 
 /*************************************************************************/

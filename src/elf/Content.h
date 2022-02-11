@@ -51,6 +51,17 @@ public:
 	virtual uint8_t* getData(size_t iOffset, size_t iDataLen) = 0;
 	virtual size_t   getSize()const = 0;
 
+	template<class C>
+		inline const C* getData(size_t iOffset= 0L)const{
+			return reinterpret_cast<C*>( 
+				const_cast<Content*>(this)->getData(iOffset, sizeof(C)));
+		}
+
+	template<class C>
+		inline C* getData(size_t iOffset = 0L){
+			return reinterpret_cast<C*>(getData(iOffset, sizeof(C)));
+		}
+
 	virtual void makeSpace(size_t iOffset, size_t iSize);
 
 protected:

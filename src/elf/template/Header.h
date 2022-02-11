@@ -100,17 +100,7 @@ public:
 /*************************************************************************/
 Header(ELF::Content* pContent):
 	Impl::Component(pContent),
-	header(*reinterpret_cast<typename S::Header_*>(pContent->getData(0, sizeof(typename S::Header_)))){
-		refresh();
-	}
-
-void refresh(){
-
-	lstSections.clear();
-	lstSegments.clear();
-	hmSectionByName.clear();
-	ptrSymbolTable.reset();
-	ptrDynSymbolTable.reset();
+	header(*pContent->getData<typename S::Header_>()){
 
 	if(get_shnum() != 0 && get_shoff() != 0){
 		size_t iOffset = get_shoff();
@@ -148,6 +138,23 @@ void refresh(){
 }
 /*************************************************************************/
 ~Header() throw(){
+}
+/*************************************************************************/
+void write(){
+
+	(*pContent->getData<typename S::Header_>()) = header;
+
+	size_t iOffset = get_shoff();
+	for(auto& s: lstSections){
+		s->write(iOffset);
+		iOffset+=get_shentsize();
+	}
+
+	iOffset = get_phoff();
+	for(auto& s: lstSegments){
+		s->write(iOffset);
+		iOffset+=get_phentsize();
+	}
 }
 /*************************************************************************/
 
@@ -233,6 +240,9 @@ void set_shstrndx(typename S::Half e_shstrndx){
 
 	void insertSpaceAfter(typename S::Off iOffset, size_t iSize){
 
+		pContent->makeSpace(reinterpret_cast<size_t>(iOffset), iSize);
+		set_shoff(get_shoff()+iSize);
+
 	    std::cout<<"offset :"<<(void*)iOffset<<std::endl;
 
 		for(auto& s: lstSections)
@@ -251,10 +261,6 @@ void set_shstrndx(typename S::Half e_shstrndx){
 			}
 		}
 
-		pContent->makeSpace(reinterpret_cast<size_t>(iOffset), iSize);
-		set_shoff(get_shoff()+iSize);
-
-		refresh();
 
 		for(auto& s: lstSegments){
 
@@ -274,7 +280,7 @@ void set_shstrndx(typename S::Half e_shstrndx){
 	}
 
 protected:
-	typename S::Header_& header;
+	typename S::Header_ header;
 
 	SectionList lstSections;
 	SegmentList lstSegments;

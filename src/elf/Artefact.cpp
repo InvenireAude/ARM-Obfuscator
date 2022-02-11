@@ -34,6 +34,7 @@ Identification* Artefact::getIdentification()const{
 /*************************************************************************/
 void Artefact::save(const std::string& strFileName)const{
 
+   
    const Content* pContent = getContent();
 
    const uint8_t* pData = pContent->getData();

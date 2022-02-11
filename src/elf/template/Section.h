@@ -48,12 +48,16 @@ public:
 /*************************************************************************/
 Section(Header<S> *pHeader, size_t iOffset):
 	Impl::Component(pHeader->getContent()),
-	pHeader(pHeader),
-	section(*reinterpret_cast<typename S::Section_*>(pContent->getData(iOffset, sizeof(typename S::Section_)))){
+	pHeader(pHeader){
 	std::cerr<<(void*)this<<"Offset :"<<(void*)iOffset<<", sizeof: "<<sizeof(section)<<std::endl;
+	memcpy(&section, pContent->getData(iOffset, sizeof(section)), sizeof(section));
 }
 /*************************************************************************/
 ~Section() throw(){
+}
+/*************************************************************************/
+void write(size_t iOffset){
+	memcpy(pContent->getData(iOffset, sizeof(section)), &section, sizeof(section));
 }
 /*************************************************************************/
 const char* getName()const{
@@ -62,7 +66,7 @@ const char* getName()const{
 /*************************************************************************/
 const char* getString(size_t iOffset)const{
 	
-	std::cerr<<(void*)this<<" Offset :"<<(void*)iOffset<<", in section: "<<(void*)get_offset()<<std::endl;
+	std::cerr<<(void*)this<<" Offset :"<<(void*)iOffset<<", in section: "<<(void*)(long)get_offset()<<std::endl;
 
 
 	if(iOffset > get_size())
@@ -137,7 +141,7 @@ protected:
 	
 	const Header<S> *pHeader;
 
-	typename S::Section_& section;
+	typename S::Section_ section;
 	
 };
 

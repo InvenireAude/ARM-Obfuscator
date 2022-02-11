@@ -14,9 +14,11 @@ include(CMakeLists.ARMOB-Tools.files.txt)
 
 add_executable(armob src/main.cpp)
 add_executable(armob_mutate src/main_mutate.cpp)
+add_executable(armob_elf_inspector src/main_elf_inspector.cpp)
 
 target_link_libraries(armob PRIVATE ARMOB-Armob ARMOB-Asm ARMOB-Elf ARMOB-Tools)
 target_link_libraries(armob_mutate PRIVATE ARMOB-Armob ARMOB-Asm ARMOB-Elf ARMOB-Tools)
+target_link_libraries(armob_elf_inspector PRIVATE ARMOB-Elf ARMOB-Tools)
 
 #target_link_libraries(armob)
 
@@ -38,7 +40,11 @@ target_include_directories(armob PUBLIC ${PROJECT_BINARY_DIR}/src)
 target_include_directories(armob_mutate PRIVATE src)
 target_include_directories(armob_mutate PUBLIC ${PROJECT_BINARY_DIR}/src)
 
+target_include_directories(armob_elf_inspector PRIVATE src)
+target_include_directories(armob_elf_inspector PUBLIC ${PROJECT_BINARY_DIR}/src)
+
 install(TARGETS armob DESTINATION bin)
 install(TARGETS armob_mutate DESTINATION bin)
+install(TARGETS armob_elf_inspector DESTINATION bin)
 
 #add_subdirectory(../ARM-Helpers ../ARM-Helpers/Debug)

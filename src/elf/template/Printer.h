@@ -81,24 +81,30 @@ void printHeader(){
 	os<<"\t shnum:    \t"<<pHeader->get_shnum()<<std::endl;
 	os<<"\t shstrndx: \t"<<pHeader->get_shstrndx()<<std::endl;
 
-	os<<Utils::Helper::BinarytoHex(pHeader->getRaw(), sizeof(typename S::Header_))<<std::endl;
+	printHeaderHex();
 
 	const typename Header<S>::SectionList& lstSections(pHeader->getSections());
 
-	os<<"Sections:"<<std::endl;
-
+	printSectionsHeader();
 	int iIdx = 0;
 	for(const auto& s: lstSections){
-		os<<std::setw(3)<<iIdx++;
+		os<<std::setfill('0')<<std::setw(3)<<iIdx++;
 		printSection(s.get());
 	}
 
 	const typename Header<S>::SegmentList& lstSegments(pHeader->getSegments());
 
-	os<<"Segments:"<<std::endl;
-
+	printSegmentsHeader();
+	iIdx = 0;
 	for(const auto& s: lstSegments){
+		os<<std::setfill('0')<<std::setw(3)<<iIdx++;
 		printSegment(s.get());
+	}
+
+	iIdx = 0;
+	for(const auto& s: lstSegments){
+		os<<std::setfill('0')<<std::setw(3)<<iIdx++;
+		printSegmentSections(s.get());
 	}
 
 	os<<"Symbols:"<<std::endl;
@@ -149,40 +155,118 @@ void printHeader(){
 	}
 
 }
+/*************************************************************************/
+void printHeaderHex(){
+	
+	std::string strHex(Utils::Helper::BinarytoHex(pHeader->getRaw(), sizeof(typename S::Header_)));
+
+	for(int i=0; i<strHex.length(); i += 2){
+		if(i % 32 == 0){
+			os<<std::endl<<"\t Hex: ["<<std::hex<<std::setw(2)<<i<<std::dec<<"]\t";
+		}
+		os<<strHex.substr(i, 2)<<" ";
+	}
+
+	os<<std::endl;
+}
+/*************************************************************************/
+void printSectionsHeader(){
+	
+	os<<std::endl<<"Sections:"<<std::endl;
+
+	os<<"Idx";
+	os<<std::setfill(' ')<<std::setw(16)<<" Name :";
+
+	os<<" "<<std::setfill(' ')<<std::setw(18)<<"Type:";
+	os<<" "<<std::setfill(' ')<<std::setw(8)<<"Flags:";
+	os<<" "<<std::setfill(' ')<<std::setw(16)<<"Address:";
+	os<<" "<<std::setfill(' ')<<std::setw(8)<<"Offset:";
+	os<<" "<<std::setfill(' ')<<std::setw(8)<<"Size:";
+
+	os<<" "<<std::setw(8)<<"Link:";
+	os<<" "<<std::setw(8)<<"Info:";
+	os<<" "<<std::setw(4)<<"Algn:";
+	os<<" "<<std::setw(8)<<"EntSize:";
+	os<<std::endl;;
+}
 /************************************************************************/
 void printSection(const Section<S>* pSection){
 
 	//os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_name()<<std::dec;
 
-	os<<std::setfill(' ')<<std::setw(32)<<pSection->getName();
+	os<<std::setfill(' ')<<std::setw(16)<<pSection->getName();
 
-	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_type()<<std::dec;
+	try{
+		os<<std::setfill(' ')<<std::setw(16)<<Map::SectionType.getString(pSection->get_type());
+	}catch(Tools::Exception& e){
+		os<<"      0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<std::setw(8)<<pSection->get_type()<<std::dec;
+	}
+
 	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_flags()<<std::dec;
-	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_addr()<<std::dec;
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(16)<<pSection->get_addr()<<std::dec;
 	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_offset()<<std::dec;
 	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_size()<<std::dec;
 
 	os<<" "<<std::setw(8)<<pSection->get_link();
 	os<<" "<<std::setw(8)<<pSection->get_info();
-	os<<" "<<std::setw(8)<<pSection->get_addralign();
+	os<<" "<<std::setw(4)<<pSection->get_addralign();
 	os<<" "<<std::setw(8)<<pSection->get_entsize();
+
+	os<<std::endl;
+}
+/************************************************************************/
+void printSegmentsHeader(){
+
+	os<<std::endl<<"Segments:"<<std::endl;
+
+	os<<std::setw(3)<<"Idx";
+
+	os<<std::setfill(' ');
+
+	os<<std::setw(18)<<"type";
+
+	os<<" "<<std::setw(16)<<"offset";
+	os<<" "<<std::setw(16)<<"vaddr";
+	os<<" "<<std::setw(16)<<"paddr";
+	os<<" "<<std::setw(16)<<"filesz";
+	os<<" "<<std::setw(16)<<"memsz";
+	os<<" "<<std::setw(8)<<"flags";
+	os<<" "<<std::setw(4)<<"align";
 
 	os<<std::endl;
 }
 /************************************************************************/
 void printSegment(const Segment<S>* pSegment){
 
-	os<<" "<<std::setw(8)<<pSegment->get_type();
+	try{
+		os<<std::setfill(' ')<<std::setw(18)<<Map::SegmentType.getString(pSegment->get_type());
+	}catch(Tools::Exception& e){
+		os<<"        0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<std::setw(8)<<pSegment->get_type()<<std::dec;
+	}
 
-	os<<" "<<std::setw(8)<<pSegment->get_type();
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(16)<<pSegment->get_offset()<<std::dec;
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(16)<<pSegment->get_vaddr()<<std::dec;
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(16)<<pSegment->get_paddr()<<std::dec;
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(16)<<pSegment->get_filesz()<<std::dec;
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(16)<<pSegment->get_memsz()<<std::dec;
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSegment->get_flags()<<std::dec;
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(4)<<pSegment->get_align()<<std::dec;
 
-	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<std::setw(8)<<pSegment->get_offset()<<std::dec;
-	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<std::setw(8)<<pSegment->get_vaddr()<<std::dec;
-	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<std::setw(8)<<pSegment->get_paddr()<<std::dec;
-	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<std::setw(8)<<pSegment->get_filesz()<<std::dec;
-	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<std::setw(8)<<pSegment->get_memsz()<<std::dec;
-	os<<" "<<std::setw(8)<<pSegment->get_flags();
-	os<<" "<<std::setw(8)<<pSegment->get_align();
+	os<<std::endl;
+}
+/************************************************************************/
+void printSegmentSections(const Segment<S>* pSegment){
+
+	const typename Header<S>::SectionList& lstSections(pHeader->getSections());
+
+
+	for(const auto& s: lstSections){
+
+		if( !(s->get_offset() + s->get_size() < pSegment->get_offset() ||
+		      s->get_offset() >= pSegment->get_offset() + pSegment->get_filesz())){
+				  os<<" "<<s->getName();
+			  }
+	}
 
 	os<<std::endl;
 }

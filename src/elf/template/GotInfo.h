@@ -54,9 +54,9 @@ public:
  
  		 iNumEntries = iSize / sizeof(EntryType);
  
-		if(iNumEntries < 2){
-			throw Tools::Exception()<<".got tables should have at least 2 enteries, name: "<<sName;
-		}
+		// if(iNumEntries < 2){
+		// 	throw Tools::Exception()<<".got tables should have at least 2 enteries, name: "<<sName;
+		// }
 
  		tabGotInfo = pSection->template getData< EntryType >();
 
@@ -79,6 +79,8 @@ public:
 	}
 
 	size_t getSize()const{
+		if(iNumEntries <= 2)
+			return 0L;
 		return iNumEntries - 2;
 	}
 

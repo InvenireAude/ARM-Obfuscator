@@ -104,7 +104,7 @@ void printHeader(){
 	os<<"Symbols:"<<std::endl;
 
 	if(!pHeader->hasSymbolTable()){
-		os<<"No symbol table found";
+		os<<"No symbol table found."<<std::endl;
 	}else{
 		printSymbolTable(pHeader->getSymbolTable());
 	}
@@ -113,37 +113,37 @@ void printHeader(){
 
 
 	if(!pHeader->hasDynSymbolTable()){
-		os<<"No symbol table found";
+		os<<"No symbol table found."<<std::endl;
 	}else{
 		printSymbolTable(pHeader->getDynSymbolTable());
 	}
 
 	if(!pHeader->hasDynamicInfo()){
-		os<<"No dynamic section found";
+		os<<"No dynamic section found."<<std::endl;
 	}else{
 		printDynamicInfo(pHeader->getDynamicInfo());
 	}
 
 	if(!pHeader->hasGotInfo()){
-		os<<"No got section found";
+		os<<"No got section found."<<std::endl;
 	}else{
 		printGot(pHeader->getGotInfo());
 	}
 
 	if(!pHeader->hasGotPltInfo()){
-		os<<"No gotplt section found";
+		os<<"No gotplt section found."<<std::endl;
 	}else{
 		printGot(pHeader->getGotPltInfo());
 	}
 
 	if(!pHeader->hasRelocationInfo()){
-		os<<"No Relocation section found";
+		os<<"No Relocation section found."<<std::endl;
 	}else{
 		printRelocationInfo(pHeader->getRelocationInfo());
 	}
 
 	if(!pHeader->hasRelocationPltInfo()){
-		os<<"No Relocationplt section found";
+		os<<"No Relocationplt section found."<<std::endl;
 	}else{
 		printRelocationInfo(pHeader->getRelocationPltInfo());
 	}

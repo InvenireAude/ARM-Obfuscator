@@ -13,6 +13,8 @@
 #include <elf/template/Dynamic.h>
 #include <elf/template/DynamicInfo.h>
 #include <elf/template/GotInfo.h>
+#include <elf/template/Relocation.h>
+#include <elf/template/RelocationInfo.h>
 
 namespace ELF {
 namespace Elf64 {
@@ -26,7 +28,8 @@ namespace Elf64 {
     typedef Template::DynamicInfo<Elf64::S> DynamicInfo;
     typedef Template::GotInfo<Elf64::S>     GotInfo;
     typedef Template::GotPltInfo<Elf64::S>  GotPltInfo;
-    
+    typedef Template::Relocation<Elf32::S>      Relocation;
+    typedef Template::RelocationInfo<Elf32::S>  RelocationInfo;
 }
 }
 

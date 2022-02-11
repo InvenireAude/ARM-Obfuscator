@@ -13,20 +13,23 @@
 #include <elf/template/Dynamic.h>
 #include <elf/template/DynamicInfo.h>
 #include <elf/template/GotInfo.h>
+#include <elf/template/Relocation.h>
+#include <elf/template/RelocationInfo.h>
 
 namespace ELF {
 namespace Elf32 {
 
-    typedef Template::Header<Elf32::S>      Header;
-    typedef Template::Segment<Elf32::S>     Segment;
-    typedef Template::Section<Elf32::S>     Section;
-    typedef Template::Symbol<Elf32::S>      Symbol;
-    typedef Template::SymbolTable<Elf32::S> SymbolTable;
-    typedef Template::Dynamic<Elf32::S>     Dynamic;
-    typedef Template::DynamicInfo<Elf32::S> DynamicInfo;
-    typedef Template::GotInfo<Elf32::S>     GotInfo;
-    typedef Template::GotPltInfo<Elf32::S>  GotPltInfo;
-    
+    typedef Template::Header<Elf32::S>          Header;
+    typedef Template::Segment<Elf32::S>         Segment;
+    typedef Template::Section<Elf32::S>         Section;
+    typedef Template::Symbol<Elf32::S>          Symbol;
+    typedef Template::SymbolTable<Elf32::S>     SymbolTable;
+    typedef Template::Dynamic<Elf32::S>         Dynamic;
+    typedef Template::DynamicInfo<Elf32::S>     DynamicInfo;
+    typedef Template::GotInfo<Elf32::S>         GotInfo;
+    typedef Template::GotPltInfo<Elf32::S>      GotPltInfo;
+    typedef Template::Relocation<Elf32::S>      Relocation;
+    typedef Template::RelocationInfo<Elf32::S>  RelocationInfo;
 }
 }
 

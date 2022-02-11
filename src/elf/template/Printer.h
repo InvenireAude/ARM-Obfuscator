@@ -136,6 +136,18 @@ void printHeader(){
 		printGot(pHeader->getGotPltInfo());
 	}
 
+	if(!pHeader->hasRelocationInfo()){
+		os<<"No Relocation section found";
+	}else{
+		printRelocationInfo(pHeader->getRelocationInfo());
+	}
+
+	if(!pHeader->hasRelocationPltInfo()){
+		os<<"No Relocationplt section found";
+	}else{
+		printRelocationInfo(pHeader->getRelocationPltInfo());
+	}
+
 }
 /************************************************************************/
 void printSection(const Section<S>* pSection){
@@ -242,6 +254,25 @@ void printGot(const GotInfoBase<S>* pGotBase){
 		os<<"\t";
 		os<<" 0x"<<std::setfill('0')<<std::hex<<std::setw(sizeof(typename S::Dynamic_::TagType)*2);
 		os<<pGotBase->getValue(i)<<std::dec;
+		os<<std::endl;
+	}
+}
+/************************************************************************/
+void printRelocationInfo(const RelocationInfo<S>* pRelocationInfo){
+
+	os<<"Section: "<<pRelocationInfo->getSection()->getName()<<std::endl;
+
+	const typename RelocationInfo<S>::RelocationTable& tabRelocation(pRelocationInfo->getRelocationTable());
+
+	for(const auto& d : tabRelocation){
+		os<<" 0x"<<std::setfill('0')<<std::hex<<std::setw(sizeof(typename S::Addr)*2);
+		os<<d->get_offset()<<std::dec;
+		os<<"\t";
+		os<<" 0x"<<std::setfill('0')<<std::hex<<std::setw(8);
+		os<<d->getType()<<std::dec;
+		os<<"\t";
+		os<<"["<<d->getSymbolOffset()<<"]";
+		os<<"\t"<<pHeader->getDynSymbolTable()->get(d->getSymbolOffset())->getName();
 		os<<std::endl;
 	}
 }

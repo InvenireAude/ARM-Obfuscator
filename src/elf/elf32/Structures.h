@@ -88,6 +88,24 @@ struct Dynamic_ {
 	} d_un;
 };
 
+struct Relocation_{
+  typedef Word  InfoType;
+  typedef Sword AddEndType;
+  Addr         r_offset;
+  InfoType     r_info;
+  AddEndType   r_addend;
+
+  static inline uint32_t ToType(InfoType r_info){
+     return (r_info & 0xff);
+  }
+
+  static inline Off ToSymbolOffset(InfoType r_info){
+     return (r_info >> 8);
+  }
+  
+};
+
+
 };
 /*************************************************************************/
 }

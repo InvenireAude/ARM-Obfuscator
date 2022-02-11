@@ -50,6 +50,9 @@ template<class S>
 class GotPltInfo;
 
 template<class S>
+class RelocationInfo;
+
+template<class S>
 class Header : public Impl::Component{
 public:
 
@@ -102,6 +105,14 @@ public:
 		return !ptrGotPltInfo == false;
 	}
 
+	bool hasRelocationInfo()const{
+		return !ptrRelocationInfo == false;
+	}
+
+	bool hasRelocationPltInfo()const{
+		return !ptrRelocationPltInfo == false;
+	}
+
 	SymbolTable<S>* getSymbolTable()const{
 	
 		if(!ptrSymbolTable)
@@ -140,6 +151,22 @@ public:
 			throw Tools::Exception()<<"GotPlt information not found";
 
 		return ptrGotPltInfo.get();
+	};
+
+	RelocationInfo<S>* getRelocationInfo()const{
+	
+		if(!ptrRelocationInfo)
+			throw Tools::Exception()<<"Relocation information not found";
+
+		return ptrRelocationInfo.get();
+	};
+
+	RelocationInfo<S>* getRelocationPltInfo()const{
+	
+		if(!ptrRelocationPltInfo)
+			throw Tools::Exception()<<"RelocationPlt information not found";
+
+		return ptrRelocationPltInfo.get();
 	};
 
 /*************************************************************************/
@@ -188,6 +215,14 @@ Header(ELF::Content* pContent):
 
 	if(hmSectionByName.find(".got.plt") != hmSectionByName.end()){
 		ptrGotPltInfo.reset( new GotPltInfo(this));
+	}
+
+	if(hmSectionByName.find(".rela.dyn") != hmSectionByName.end()){
+		ptrRelocationInfo.reset( new RelocationInfo(this, ".rela.dyn"));
+	}
+
+	if(hmSectionByName.find(".rela.plt") != hmSectionByName.end()){
+		ptrRelocationPltInfo.reset( new RelocationInfo(this, ".rela.plt"));
 	}
 
 }
@@ -343,11 +378,13 @@ protected:
 	typedef std::unordered_map< std::string, Section<S>* > SectionByNameMap;
 	SectionByNameMap hmSectionByName;
 
-	std::unique_ptr< SymbolTable<S> > ptrSymbolTable;
-	std::unique_ptr< SymbolTable<S> > ptrDynSymbolTable;
-	std::unique_ptr< DynamicInfo<S> > ptrDynamicInfo;
-	std::unique_ptr< GotInfo<S> >     ptrGotInfo;
-	std::unique_ptr< GotPltInfo<S> >  ptrGotPltInfo;
+	std::unique_ptr< SymbolTable<S> > 	  ptrSymbolTable;
+	std::unique_ptr< SymbolTable<S> > 	  ptrDynSymbolTable;
+	std::unique_ptr< DynamicInfo<S> > 	  ptrDynamicInfo;
+	std::unique_ptr< GotInfo<S> >     	  ptrGotInfo;
+	std::unique_ptr< GotPltInfo<S> >  	  ptrGotPltInfo;
+	std::unique_ptr< RelocationInfo<S> >  ptrRelocationInfo;
+	std::unique_ptr< RelocationInfo<S> >  ptrRelocationPltInfo;
 };
 
 /*************************************************************************/

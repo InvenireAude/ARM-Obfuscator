@@ -40,6 +40,7 @@ public:
 
 	typedef std::list< std::unique_ptr< Symbol<S> > > SymbolList;
 	typedef std::unordered_map< std::string, Symbol<S>* > SymbolByNameMap;
+	typedef std::unordered_map< size_t, Symbol<S>* > SymbolByIdMap;
 	
 	inline const SymbolList& getSymbols()const{
 		return lstSymbols;
@@ -51,6 +52,17 @@ public:
 
 		if(it == hmSymbolByName.end())
 			throw Tools::Exception()<<"Symbol not found : ["<<strName<<"]";
+
+		return it->second;
+	}
+
+
+	const Symbol<S>* get(size_t iIndex)const{
+		
+		typename SymbolByIdMap::const_iterator it = hmSymbolById.find(iIndex);
+
+		if(it == hmSymbolById.end())
+			throw Tools::Exception()<<"Symbol index not found : ["<<iIndex<<"]";
 
 		return it->second;
 	}
@@ -85,10 +97,13 @@ SymbolTable(Header<S> *pHeader, const char* sSymTab, const char* sStrTab):
  
  	typename S::Symbol_ *pSymbolData = pSymbolSection->template getData< typename S::Symbol_ >();
 
+	size_t iIndex = 0;
+
  	while(iNumEntries > 0){
 
 		std::unique_ptr< Symbol<S> > ptrSymbol(new Symbol<S>(this, pSymbolData));
 		hmSymbolByName[pSymStrSection->getString(ptrSymbol->get_name())] = ptrSymbol.get();
+		hmSymbolById[iIndex++] = ptrSymbol.get();
 		lstSymbols.push_back(std::move(ptrSymbol));
 
 		pSymbolData++;
@@ -110,7 +125,7 @@ protected:
 
 	SymbolList      lstSymbols;
 	SymbolByNameMap hmSymbolByName;
-
+	SymbolByIdMap   hmSymbolById;
 };
 
 /*************************************************************************/

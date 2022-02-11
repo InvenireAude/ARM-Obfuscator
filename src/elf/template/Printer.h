@@ -124,6 +124,18 @@ void printHeader(){
 		printDynamicInfo(pHeader->getDynamicInfo());
 	}
 
+	if(!pHeader->hasGotInfo()){
+		os<<"No got section found";
+	}else{
+		printGot(pHeader->getGotInfo());
+	}
+
+	if(!pHeader->hasGotPltInfo()){
+		os<<"No gotplt section found";
+	}else{
+		printGot(pHeader->getGotPltInfo());
+	}
+
 }
 /************************************************************************/
 void printSection(const Section<S>* pSection){
@@ -218,6 +230,20 @@ void printDynamicInfo(const DynamicInfo<S>* pDynamicInfo){
 		printDynamic(d.get());
 	}
 
+}
+/************************************************************************/
+void printGot(const GotInfoBase<S>* pGotBase){
+
+	os<<"Section: "<<pGotBase->getSection()->getName()<<std::endl;
+
+	for(size_t i=0; i<pGotBase->getSize(); i++){
+		os<<" 0x"<<std::setfill('0')<<std::hex<<std::setw(sizeof(typename S::Dynamic_::TagType)*2);
+		os<<pGotBase->getAddress(i)<<std::dec;
+		os<<"\t";
+		os<<" 0x"<<std::setfill('0')<<std::hex<<std::setw(sizeof(typename S::Dynamic_::TagType)*2);
+		os<<pGotBase->getValue(i)<<std::dec;
+		os<<std::endl;
+	}
 }
 /*************************************************************************/
 	const  Header<S>* pHeader;

@@ -44,6 +44,12 @@ template<class S>
 class DynamicInfo;
 
 template<class S>
+class GotInfo;
+
+template<class S>
+class GotPltInfo;
+
+template<class S>
 class Header : public Impl::Component{
 public:
 
@@ -88,6 +94,13 @@ public:
 		return !ptrDynamicInfo == false;
 	}
 	
+	bool hasGotInfo()const{
+		return !ptrGotInfo == false;
+	}
+
+	bool hasGotPltInfo()const{
+		return !ptrGotPltInfo == false;
+	}
 
 	SymbolTable<S>* getSymbolTable()const{
 	
@@ -113,6 +126,22 @@ public:
 		return ptrDynamicInfo.get();
 	};
 
+	GotInfo<S>* getGotInfo()const{
+	
+		if(!ptrGotInfo)
+			throw Tools::Exception()<<"Got information not found";
+
+		return ptrGotInfo.get();
+	};
+
+	GotPltInfo<S>* getGotPltInfo()const{
+	
+		if(!ptrGotPltInfo)
+			throw Tools::Exception()<<"GotPlt information not found";
+
+		return ptrGotPltInfo.get();
+	};
+
 /*************************************************************************/
 Header(ELF::Content* pContent):
 	Impl::Component(pContent),
@@ -125,9 +154,7 @@ Header(ELF::Content* pContent):
 			std::cerr<<"Offset :"<<iOffset<<std::endl;
 		lstSections.emplace_back(new Section<S>(this, iOffset));
 		}
-
 	}
-
 
 	if(get_phnum() != 0 && get_phoff() != 0){
 		size_t iOffset = get_phoff();
@@ -136,7 +163,6 @@ Header(ELF::Content* pContent):
 			std::cerr<<"Offset :"<<iOffset<<std::endl;
 			lstSegments.emplace_back(new Segment<S>(pContent, iOffset));
 		}
-
 	}
 
 	for(const auto& s : lstSections){
@@ -155,6 +181,15 @@ Header(ELF::Content* pContent):
 	if(hmSectionByName.find(".dynamic") != hmSectionByName.end()){
 		ptrDynamicInfo.reset( new DynamicInfo(this,".dynamic"));
 	}
+
+	if(hmSectionByName.find(".got") != hmSectionByName.end()){
+		ptrGotInfo.reset( new GotInfo(this));
+	}
+
+	if(hmSectionByName.find(".got.plt") != hmSectionByName.end()){
+		ptrGotPltInfo.reset( new GotPltInfo(this));
+	}
+
 }
 /*************************************************************************/
 ~Header() throw(){
@@ -311,6 +346,8 @@ protected:
 	std::unique_ptr< SymbolTable<S> > ptrSymbolTable;
 	std::unique_ptr< SymbolTable<S> > ptrDynSymbolTable;
 	std::unique_ptr< DynamicInfo<S> > ptrDynamicInfo;
+	std::unique_ptr< GotInfo<S> >     ptrGotInfo;
+	std::unique_ptr< GotPltInfo<S> >  ptrGotPltInfo;
 };
 
 /*************************************************************************/

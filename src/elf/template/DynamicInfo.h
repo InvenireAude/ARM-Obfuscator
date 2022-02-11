@@ -63,7 +63,8 @@ DynamicInfo(Header<S> *pHeader, const char* sName):
  
  	typename S::Dynamic_ *pDynamicData = pSection->template getData< typename S::Dynamic_ >();
 
- 	while(iNumEntries > 0 && pDynamicData->d_tag != DT_NULL){
+ 	while(iNumEntries > 0 && pDynamicData->d_tag != DT_NULL
+	 ){
 		tabDynamicInfo.emplace_back(new Dynamic<S>(this, pDynamicData));
 		pDynamicData++;
 		iNumEntries--;

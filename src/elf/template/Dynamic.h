@@ -19,6 +19,7 @@
 
 namespace ELF {
 namespace Template {
+	
 
 /*************************************************************************/
 /** The Dynamic class.

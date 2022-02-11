@@ -12,6 +12,7 @@
 #include <elf/template/SymbolTable.h>
 #include <elf/template/Dynamic.h>
 #include <elf/template/DynamicInfo.h>
+#include <elf/template/GotInfo.h>
 
 namespace ELF {
 namespace Elf64 {
@@ -23,6 +24,8 @@ namespace Elf64 {
     typedef Template::SymbolTable<Elf64::S> SymbolTable;
     typedef Template::Dynamic<Elf64::S>     Dynamic;
     typedef Template::DynamicInfo<Elf64::S> DynamicInfo;
+    typedef Template::GotInfo<Elf64::S>     GotInfo;
+    typedef Template::GotPltInfo<Elf64::S>  GotPltInfo;
     
 }
 }

@@ -39,7 +39,7 @@ public:
 		return ptrConverter.get();
 	}
 
-	inline const uint8_t* getData(size_t iOffset)const{
+	inline const uint8_t* getData(size_t iOffset = 0L)const{
 		return const_cast<Content*>(this)->getData(iOffset);
 	}
 
@@ -47,10 +47,12 @@ public:
 		return const_cast<Content*>(this)->getData(iOffset, iDataLen);
 	}
 
-	virtual uint8_t* getData(size_t iOffset) = 0;
+	virtual uint8_t* getData(size_t iOffset = 0L) = 0;
 	virtual uint8_t* getData(size_t iOffset, size_t iDataLen) = 0;
 	virtual size_t   getSize()const = 0;
-	
+
+	virtual void makeSpace(size_t iOffset, size_t iSize);
+
 protected:
 	
 	std::unique_ptr<Identification>   ptrIdentification;

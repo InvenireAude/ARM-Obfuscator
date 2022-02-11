@@ -72,4 +72,40 @@ size_t ContentMemory::getSize()const{
    return iSize;
 }
 /*************************************************************************/
+void ContentMemory::makeSpace(size_t iOffset, size_t iSpaceSize){
+  
+
+  std::cout<<"Make new space at: "<<(void*)iOffset<<", sz: "<<iSpaceSize<<std::endl;
+
+  if(iOffset > iSize){
+     throw Tools::Exception()<<"Offset to large, given: "<<iOffset<<", sz: "<<iSpaceSize;
+  }
+
+  if(iSize + iSpaceSize > iAvailableMemory){
+
+     size_t iNewAvailableMemory = iAvailableMemory * 1.5;
+     
+     uint8_t* pNew = reinterpret_cast<uint8_t*>(std::aligned_alloc(16, iNewAvailableMemory));
+     
+     if(!pNew){
+         throw Tools::Exception()<<"Cannot allocate memory, size: "<<iSpaceSize;
+     }
+     
+     memcpy(pNew, pMemory, iSize);
+     
+     std::free(pMemory);
+     
+     pMemory = pNew;
+     iAvailableMemory = iNewAvailableMemory;
+  }
+
+   std::cout<<"Copy :"<<(void*)(pMemory + iOffset + iSpaceSize)<<", from: "<<(void*)(pMemory + iOffset)<<
+      ", sz: "<<(iSize - iOffset)<<std::endl;
+
+  memcpy(pMemory + iOffset + iSpaceSize, pMemory + iOffset, iSize - iOffset);
+  
+  iSize += iSpaceSize;
+
+}
+/*************************************************************************/
 }

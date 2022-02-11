@@ -101,7 +101,17 @@ public:
 Header(ELF::Content* pContent):
 	Impl::Component(pContent),
 	header(*reinterpret_cast<typename S::Header_*>(pContent->getData(0, sizeof(typename S::Header_)))){
-	
+		refresh();
+	}
+
+void refresh(){
+
+	lstSections.clear();
+	lstSegments.clear();
+	hmSectionByName.clear();
+	ptrSymbolTable.reset();
+	ptrDynSymbolTable.reset();
+
 	if(get_shnum() != 0 && get_shoff() != 0){
 		size_t iOffset = get_shoff();
 		
@@ -124,6 +134,7 @@ Header(ELF::Content* pContent):
 	}
 
 	for(const auto& s : lstSections){
+		std::cerr<<"by name :"<<getStringsSection()->getString(s->get_name())<<std::endl;
 		hmSectionByName[getStringsSection()->getString(s->get_name())] = s.get();
 	}
 
@@ -179,6 +190,88 @@ typename S::Half get_shnum()const{
 typename S::Half get_shstrndx()const{
 	return pConverter->convert(header.e_shstrndx);
 }
+
+void set_type(typename S::Half e_type){
+	header.e_type = pConverter->convert(e_type);
+}
+void set_machine(typename S::Half e_machine){
+	header.e_machine = pConverter->convert(e_machine);
+}
+void set_version(typename S::Word e_version){
+	header.e_version = pConverter->convert(e_version);
+}
+void set_entry(typename S::Addr e_entry){
+	header.e_entry = pConverter->convert(e_entry);
+}
+void set_phoff(typename S::Off e_phoff){
+	header.e_phoff = pConverter->convert(e_phoff);
+}
+void set_shoff(typename S::Off e_shoff){
+	header.e_shoff = pConverter->convert(e_shoff);
+}
+void set_flags(typename S::Word e_flags){
+	header.e_flags = pConverter->convert(e_flags);
+}
+void set_ehsize(typename S::Half e_ehsize){
+	header.e_ehsize = pConverter->convert(e_ehsize);
+}
+void set_phentsize(typename S::Half e_phentsize){
+	header.e_phentsize = pConverter->convert(e_phentsize);
+}
+void set_phnum(typename S::Half e_phnum){
+	header.e_phnum = pConverter->convert(e_phnum);
+}
+void set_shentsize(typename S::Half e_shentsize){
+	header.e_shentsize = pConverter->convert(e_shentsize);
+}
+void set_shnum(typename S::Half e_shnum){
+	header.e_shnum = pConverter->convert(e_shnum);
+}
+void set_shstrndx(typename S::Half e_shstrndx){
+	header.e_shstrndx = pConverter->convert(e_shstrndx);
+}
+
+	void insertSpaceAfter(typename S::Off iOffset, size_t iSize){
+
+	    std::cout<<"offset :"<<(void*)iOffset<<std::endl;
+
+		for(auto& s: lstSections)
+		if(s->get_type()){
+
+			std::cout<<"Checking section :"<<(void*)s->get_offset()<<std::endl;
+
+			if( s->get_offset() <= iOffset && 
+			 s->get_offset() + s->get_size() > iOffset){
+					std::cout<<"Update section :"<<(void*)s->get_offset()<<std::endl;
+					s->set_size(s->get_size() + iSize);
+			}else if( s->get_offset() > iOffset ){
+					std::cout<<"Moving section :"<<(void*)s->get_offset()<<std::endl;
+				s->set_offset(s->get_offset() + iSize);
+				s->set_addr(s->get_addr() + iSize);
+			}
+		}
+
+		pContent->makeSpace(reinterpret_cast<size_t>(iOffset), iSize);
+		set_shoff(get_shoff()+iSize);
+
+		refresh();
+
+		for(auto& s: lstSegments){
+
+			if( s->get_offset() <= iOffset && 
+			 s->get_offset() + s->get_filesz() > iOffset){
+					std::cout<<"Update segment :"<<(void*)s->get_offset()<<std::endl;
+					s->set_filesz(s->get_filesz() + iSize);
+					s->set_memsz(s->get_memsz() + iSize);
+			}else if( s->get_offset() > iOffset ){
+				std::cout<<"Moving segment :"<<(void*)s->get_offset()<<std::endl;
+				s->set_offset(s->get_offset() + iSize);
+				s->set_paddr(s->get_paddr() + iSize);
+				s->set_vaddr(s->get_vaddr() + iSize);
+			}
+		}
+
+	}
 
 protected:
 	typename S::Header_& header;

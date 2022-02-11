@@ -26,4 +26,8 @@ void Content::setup(std::unique_ptr<Identification>&&   ptrIdentification){
    
 }
 /*************************************************************************/
+void Content::makeSpace(size_t iOffset, size_t iSize){
+   throw Tools::Exception()<<"Make space not allowed for this type of content.";
+}
+/*************************************************************************/
 }

@@ -35,7 +35,6 @@ public:
 
 
 	virtual uint8_t* getData(size_t iOffset);
-
     virtual uint8_t* getData(size_t iOffset, size_t iDataLen);
 	virtual size_t   getSize()const;
 

@@ -50,7 +50,7 @@ Section(Header<S> *pHeader, size_t iOffset):
 	Impl::Component(pHeader->getContent()),
 	pHeader(pHeader),
 	section(*reinterpret_cast<typename S::Section_*>(pContent->getData(iOffset, sizeof(typename S::Section_)))){
-	std::cerr<<"Offset :"<<iOffset<<", sizeof: "<<sizeof(section)<<std::endl;
+	std::cerr<<(void*)this<<"Offset :"<<(void*)iOffset<<", sizeof: "<<sizeof(section)<<std::endl;
 }
 /*************************************************************************/
 ~Section() throw(){
@@ -62,6 +62,9 @@ const char* getName()const{
 /*************************************************************************/
 const char* getString(size_t iOffset)const{
 	
+	std::cerr<<(void*)this<<" Offset :"<<(void*)iOffset<<", in section: "<<(void*)get_offset()<<std::endl;
+
+
 	if(iOffset > get_size())
 		throw Tools::Exception()<<"String offset is out of bounds, section size: "<<get_size();
 
@@ -97,6 +100,37 @@ typename S::Word get_addralign()const{
 }
 typename S::Word get_entsize()const{
 	return pConverter->convert(section.sh_entsize);
+}
+
+void set_name(typename S::Word sh_name){
+	section.sh_name = pConverter->convert(sh_name);
+}
+void set_type(typename S::Word sh_type){
+	section.sh_type = pConverter->convert(sh_type);
+}
+void set_flags(typename S::Word sh_flags){
+	section.sh_flags = pConverter->convert(sh_flags);
+}
+void set_addr(typename S::Addr sh_addr){
+	section.sh_addr = pConverter->convert(sh_addr);
+}
+void set_offset(typename S::Off sh_offset){
+	section.sh_offset = pConverter->convert(sh_offset);
+}
+void set_size(typename S::Word sh_size){
+	section.sh_size = pConverter->convert(sh_size);
+}
+void set_link(typename S::Word sh_link){
+	section.sh_link = pConverter->convert(sh_link);
+}
+void set_info(typename S::Word sh_info){
+	section.sh_info = pConverter->convert(sh_info);
+}
+void set_addralign(typename S::Word sh_addralign){
+	section.sh_addralign = pConverter->convert(sh_addralign);
+}
+void set_entsize(typename S::Word sh_entsize){
+	section.sh_entsize = pConverter->convert(sh_entsize);
 }
 
 protected:

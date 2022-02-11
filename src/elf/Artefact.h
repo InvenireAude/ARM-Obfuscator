@@ -48,6 +48,8 @@ public:
 	Identification* getIdentification()const;
 
 
+	void save(const std::string& strFileName)const;
+	
 protected:
 
 	std::unique_ptr<Elf32::Header>   ptrHeader32;

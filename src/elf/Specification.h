@@ -541,6 +541,8 @@ namespace Map {
 	extern ::Tools::ValueMap Version;
     extern ::Tools::ValueMap SegmentType;
     extern ::Tools::ValueMap SectionType;
+    extern ::Tools::ValueMap SymbolBind;
+    extern ::Tools::ValueMap SymbolType;
     extern ::Tools::ValueMap DynamicTag;
 }
 

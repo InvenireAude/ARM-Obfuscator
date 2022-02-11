@@ -83,6 +83,22 @@ typename S::Half get_shndx()const{
 	return pSymbolTable->getConverter()->convert(symbol.st_shndx);
 }
 
+   uint8_t getBinding() const { return symbol.st_info >> 4; }
+   uint8_t getType() const { return symbol.st_info & 0x0f; }
+
+   void setBinding(unsigned char b) { 
+	   symbol.st_info &= 0x0f;
+	   symbol.st_info |= b << 4;
+    }
+	
+   void setType(unsigned char t) {
+	   symbol.st_info &= 0xf0; 
+	   symbol.st_info  |= 0x0f & t;
+   }
+   
+   void set_info(unsigned char b, unsigned char t) {
+     symbol.st_info = (b << 4) + (t & 0x0f);
+   }
 
 protected:
 	SymbolTable<S>* pSymbolTable;

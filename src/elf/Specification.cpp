@@ -115,6 +115,23 @@ namespace Map {
   { SHT_HIUSER, "HIUSER"}
 });
 
+::Tools::ValueMap SymbolBind("SymbolBind", {
+   { STB_LOCAL,  "L" },
+   { STB_GLOBAL, "G" },
+   { STB_WEAK,   "W" },
+   { STB_GNU_UNIQUE, "gU" },
+});
+
+::Tools::ValueMap SymbolType("SymbolType", {
+    { STT_NOTYPE, "NOTYPE" },
+    { STT_OBJECT, "OBJECT" },
+    { STT_FUNC, "FUNC" },
+    { STT_SECTION, "SECTION" },
+    { STT_FILE, "FILE" },
+    { STT_COMMON, "COMMON" },
+    { STT_TLS, "TLS" },
+    { STT_GNU_IFUNC, "GNU_IFUNC" },
+});
 
 ::Tools::ValueMap DynamicTag("DynamicTag", {
  { DT_NULL, "NULL" },

@@ -197,9 +197,10 @@ void printSection(const Section<S>* pSection){
 	os<<std::setfill(' ')<<std::setw(16)<<pSection->getName();
 
 	try{
-		os<<std::setfill(' ')<<std::setw(16)<<Map::SectionType.getString(pSection->get_type());
+		std::string strName(Map::SectionType.getString(pSection->get_type()));
+		os<<std::setfill(' ')<<std::setw(16)<<strName;
 	}catch(Tools::Exception& e){
-		os<<"      0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<std::setw(8)<<pSection->get_type()<<std::dec;
+		os<<"      0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_type()<<std::dec;
 	}
 
 	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_flags()<<std::dec;
@@ -282,9 +283,25 @@ void printSymbol(size_t iIdx, const Symbol<S>* pSymbol){
 	os<<std::setw(6)<<iIdx;
 	os<<" 0x"<<std::hex<<std::setfill('0')<<std::setw(2*sizeof(typename S::Addr))<<pSymbol->get_value()<<std::dec;
 	os<<" 0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<pSymbol->get_size()<<std::dec;
-	os<<" "<<(int)pSymbol->get_info();
-	os<<" "<<(int)pSymbol->get_other();
-	os<<" "<<std::setw(3)<<pSymbol->get_shndx();
+
+	try{
+		os<<std::setfill(' ')<<std::setw(8)<<Map::SymbolBind.getString(pSymbol->getBinding());
+	}catch(Tools::Exception& e){
+		os<<"  0x"<<std::hex<<std::setfill('0')<<std::setw(4)<<pSymbol->getBinding()<<std::dec;
+	}
+
+	try{
+		os<<std::setfill(' ')<<std::setw(8)<<Map::SymbolType.getString(pSymbol->getType());
+	}catch(Tools::Exception& e){
+		os<<"  0x"<<std::hex<<std::setfill('0')<<std::setw(4)<<pSymbol->getType()<<std::dec;
+	}
+
+	if(pSymbol->get_shndx() < pHeader->getSections().size()){
+		os<<" "<<std::setw(3)<<pSymbol->get_shndx();
+	}else{
+		os<<" ...";
+	}
+
 	os<<" "<<strName;
 
 	os<<std::endl;

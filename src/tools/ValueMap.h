@@ -32,7 +32,7 @@ public:
 		ValuesHashMap::const_iterator it = hmValues.find(iValue);
 
 		if(it == hmValues.end()){
-			throw Tools::Exception()<<"Value not found ["<<strName<<"]: "<<iValue;
+			throw Tools::Exception()<<"Value not found ["<<strName<<"]: "<<iValue<<"["<<(void*)(long)iValue<<"]";
 		}
 
 		return it->second;

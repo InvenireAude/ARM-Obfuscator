@@ -7,8 +7,8 @@
  */
 
 
-#ifndef _ELF_Elf32_Structures_H_
-#define _ELF_Elf32_Structures_H_
+#ifndef _ELF_Structures_H_
+#define _ELF_Structures_H_
 
 #include <inttypes.h>
 
@@ -77,6 +77,17 @@ struct Symbol_ {
 	uint8_t st_other;
 	Half st_shndx;
 };
+
+struct Dynamic_ {
+	typedef Word TagType;
+	TagType d_tag;
+	union {
+		Word      d_val;
+		Addr      d_ptr;
+	//	Off       d_off;
+	} d_un;
+};
+
 };
 /*************************************************************************/
 }

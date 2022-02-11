@@ -10,6 +10,8 @@
 #include <elf/template/Section.h>
 #include <elf/template/Symbol.h>
 #include <elf/template/SymbolTable.h>
+#include <elf/template/Dynamic.h>
+#include <elf/template/DynamicInfo.h>
 
 namespace ELF {
 namespace Elf32 {
@@ -19,6 +21,9 @@ namespace Elf32 {
     typedef Template::Section<Elf32::S>     Section;
     typedef Template::Symbol<Elf32::S>      Symbol;
     typedef Template::SymbolTable<Elf32::S> SymbolTable;
+    typedef Template::Dynamic<Elf32::S>     Dynamic;
+    typedef Template::DynamicInfo<Elf32::S> DynamicInfo;
+    
 }
 }
 

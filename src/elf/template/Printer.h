@@ -34,6 +34,13 @@ class Symbol;
 template<class S>
 class SymbolTable;
 
+template<class S>
+class Dynamic;
+
+template<class S>
+class DynamicInfo;
+
+
 /*************************************************************************/
 /** The Printer class.
  *
@@ -111,6 +118,12 @@ void printHeader(){
 		printSymbolTable(pHeader->getDynSymbolTable());
 	}
 
+	if(!pHeader->hasDynamicInfo()){
+		os<<"No dynamic section found";
+	}else{
+		printDynamicInfo(pHeader->getDynamicInfo());
+	}
+
 }
 /************************************************************************/
 void printSection(const Section<S>* pSection){
@@ -179,7 +192,33 @@ void printSymbolTable(const SymbolTable<S>* pSymbolTable){
 	}
 
 }
+/************************************************************************/
+void printDynamic(const Dynamic<S>* pDynamic){
 
+	std::string strTag;
+	try{
+		strTag = "("+Map::DynamicTag.getString(pDynamic->get_tag())+")";
+	}catch(Tools::Exception& e){
+		std::stringstream ss;
+		ss<<(void*)(long)(pDynamic->get_tag());
+		strTag = ss.str();
+	}
+
+	os<<" 0x"<<std::setfill('0')<<std::hex<<std::setw(sizeof(typename S::Dynamic_::TagType)*2)<<pDynamic->get_tag()<<std::dec;
+	os<<"\t"<<std::setfill(' ')<<std::setw(20)<<strTag;
+	os<<"\t"<<(void*)pDynamic->getUIntValue()<<std::endl;
+
+}
+/************************************************************************/
+void printDynamicInfo(const DynamicInfo<S>* pDynamicInfo){
+
+	const typename DynamicInfo<S>::DynamicTable& tabDynamic(pDynamicInfo->getDynamicTable());
+
+	for(const auto& d : tabDynamic){
+		printDynamic(d.get());
+	}
+
+}
 /*************************************************************************/
 	const  Header<S>* pHeader;
 	const  Section<S>* pStringsSection;

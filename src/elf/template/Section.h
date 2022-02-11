@@ -66,9 +66,6 @@ const char* getName()const{
 /*************************************************************************/
 const char* getString(size_t iOffset)const{
 	
-	std::cerr<<(void*)this<<" Offset :"<<(void*)iOffset<<", in section: "<<(void*)(long)get_offset()<<std::endl;
-
-
 	if(iOffset > get_size())
 		throw Tools::Exception()<<"String offset is out of bounds, section size: "<<get_size();
 

@@ -79,6 +79,16 @@ struct Symbol_ {
    Addr st_value;    
    Xword st_size;    
 };
+
+struct Dynamic_ {
+   typedef Xword TagType;
+	TagType d_tag;
+	union {
+		Xword      d_val;
+		Addr       d_ptr;
+	} d_un;
+};
+
 };
 /*************************************************************************/
 }

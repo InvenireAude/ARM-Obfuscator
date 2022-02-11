@@ -41,6 +41,9 @@ template<class S>
 class SymbolTable;
 
 template<class S>
+class DynamicInfo;
+
+template<class S>
 class Header : public Impl::Component{
 public:
 
@@ -81,6 +84,11 @@ public:
 		return !ptrDynSymbolTable == false;
 	}
 	
+	bool hasDynamicInfo()const{
+		return !ptrDynamicInfo == false;
+	}
+	
+
 	SymbolTable<S>* getSymbolTable()const{
 	
 		if(!ptrSymbolTable)
@@ -95,6 +103,14 @@ public:
 			throw Tools::Exception()<<"Dynamic symbol table not found";
 
 		return ptrDynSymbolTable.get();
+	};
+
+	DynamicInfo<S>* getDynamicInfo()const{
+	
+		if(!ptrDynamicInfo)
+			throw Tools::Exception()<<"Dynamic information not found";
+
+		return ptrDynamicInfo.get();
 	};
 
 /*************************************************************************/
@@ -134,6 +150,10 @@ Header(ELF::Content* pContent):
 
 	if(hmSectionByName.find(".dynsym") != hmSectionByName.end()){
 		ptrDynSymbolTable.reset( new SymbolTable(this,".dynsym",".dynstr"));
+	}
+
+	if(hmSectionByName.find(".dynamic") != hmSectionByName.end()){
+		ptrDynamicInfo.reset( new DynamicInfo(this,".dynamic"));
 	}
 }
 /*************************************************************************/
@@ -290,6 +310,7 @@ protected:
 
 	std::unique_ptr< SymbolTable<S> > ptrSymbolTable;
 	std::unique_ptr< SymbolTable<S> > ptrDynSymbolTable;
+	std::unique_ptr< DynamicInfo<S> > ptrDynamicInfo;
 };
 
 /*************************************************************************/

@@ -28,8 +28,8 @@ namespace Elf64 {
     typedef Template::DynamicInfo<Elf64::S> DynamicInfo;
     typedef Template::GotInfo<Elf64::S>     GotInfo;
     typedef Template::GotPltInfo<Elf64::S>  GotPltInfo;
-    typedef Template::Relocation<Elf32::S>      Relocation;
-    typedef Template::RelocationInfo<Elf32::S>  RelocationInfo;
+    typedef Template::Relocation<Elf64::S>      Relocation;
+    typedef Template::RelocationInfo<Elf64::S>  RelocationInfo;
 }
 }
 

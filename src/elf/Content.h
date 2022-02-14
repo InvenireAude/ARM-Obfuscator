@@ -63,6 +63,7 @@ public:
 		}
 
 	virtual void makeSpace(size_t iOffset, size_t iSize);
+	virtual void copyData(size_t iDstOffset, size_t iSrcOffset, size_t iSize);
 
 protected:
 	

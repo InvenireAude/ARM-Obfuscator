@@ -66,6 +66,24 @@ RelocationInfo(Header<S> *pHeader, const char* sName):
 
 }
 
+	void write(){
+
+		size_t iOffset = pSection->get_offset();
+		size_t iSize   = pSection->get_size();
+
+		std::cerr<<"Relocation table offset: "<<(void*)(long)iOffset<<", size: "<<iSize<<", sizeof()"
+			<<sizeof(typename S::Symbol_)<<std::endl;
+	
+		size_t iNumEntries = iSize / sizeof(typename S::Relocation_);
+	
+		typename S::Relocation_ *pRelocationData = pSection->template getData< typename S::Relocation_ >();
+
+		for(auto& r : tabRelocationInfo){
+			r->write(pRelocationData++);
+		}
+
+	}
+
 /*************************************************************************/
 
 	inline Section<S> *getSection(){

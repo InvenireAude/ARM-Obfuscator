@@ -4,6 +4,7 @@ src/elf/Printer.cpp
 src/elf/Specification.cpp
 src/elf/ContentFile.cpp
 src/elf/Content.cpp
+src/elf/Expander.cpp
 src/elf/Identification.cpp
 src/elf/ContentMemory.cpp
 src/elf/Artefact.cpp

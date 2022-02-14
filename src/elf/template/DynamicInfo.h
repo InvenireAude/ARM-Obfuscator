@@ -72,6 +72,24 @@ DynamicInfo(Header<S> *pHeader, const char* sName):
 
 }
 
+ void write(){
+	
+	size_t iOffset = pSection->get_offset();
+ 	size_t iSize   = pSection->get_size();
+
+ 	std::cerr<<"Dynamic table offset: "<<(void*)(long)iOffset<<", size: "<<iSize<<", sizeof()"
+ 		<<sizeof(typename S::Symbol_)<<std::endl;
+ 
+ 	size_t iNumEntries = iSize / sizeof(typename S::Dynamic_);
+ 
+ 	typename S::Dynamic_ *pDynamicData = pSection->template getData< typename S::Dynamic_ >();
+
+	for(auto& d : tabDynamicInfo){
+		d->write(pDynamicData++);
+	}
+	
+ }
+
 /*************************************************************************/
 ~DynamicInfo() throw(){
 }

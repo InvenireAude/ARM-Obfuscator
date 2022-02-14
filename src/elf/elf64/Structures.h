@@ -82,10 +82,13 @@ struct Symbol_ {
 
 struct Dynamic_ {
    typedef Xword TagType;
+   typedef Xword ValType;
+   typedef Addr  AddrType;
+
 	TagType d_tag;
 	union {
-		Xword      d_val;
-		Addr       d_ptr;
+		ValType      d_val;
+		AddrType       d_ptr;
 	} d_un;
 };
 

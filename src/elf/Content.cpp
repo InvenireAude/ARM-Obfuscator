@@ -30,4 +30,8 @@ void Content::makeSpace(size_t iOffset, size_t iSize){
    throw Tools::Exception()<<"Make space not allowed for this type of content.";
 }
 /*************************************************************************/
+void Content::copyData(size_t iDstOffset, size_t iSrcOffset, size_t iSize){
+   throw Tools::Exception()<<"copyData not allowed for this type of content.";
+}
+/*************************************************************************/
 }

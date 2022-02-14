@@ -42,6 +42,10 @@ public:
 	typedef std::unordered_map< std::string, Symbol<S>* > SymbolByNameMap;
 	typedef std::unordered_map< size_t, Symbol<S>* > SymbolByIdMap;
 	
+	inline SymbolList& getSymbols(){
+		return lstSymbols;
+	}
+
 	inline const SymbolList& getSymbols()const{
 		return lstSymbols;
 	}
@@ -111,6 +115,23 @@ SymbolTable(Header<S> *pHeader, const char* sSymTab, const char* sStrTab):
 	}
 
 }
+
+	void write(){
+
+		size_t iOffset = pSymbolSection->get_offset();
+		size_t iSize   = pSymbolSection->get_size();
+
+		std::cerr<<"Symbol table offset: "<<(void*)(long)iOffset<<", size: "<<iSize<<", sizeof()"
+			<<sizeof(typename S::Symbol_)<<std::endl;
+	
+		size_t iNumEntries = iSize / sizeof(typename S::Symbol_);
+	
+		typename S::Symbol_ *pSymbolData = pSymbolSection->template getData< typename S::Symbol_ >();
+
+		for(auto& s : lstSymbols){
+			s->write(pSymbolData++);
+		}
+	}
 
 /*************************************************************************/
 ~SymbolTable() throw(){

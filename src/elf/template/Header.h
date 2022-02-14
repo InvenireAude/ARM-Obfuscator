@@ -71,6 +71,16 @@ public:
 		return lstSegments;
 	}
 
+	Segment<S>* getSegmentForSection(const Section<S> *pSection)const{
+		for(auto& s: lstSegments){
+			if( s->get_offset() <= pSection->get_offset &&
+			    s->get_offset() + s->get_filesz() >= pSection->get_offset() + pSection->get_size()){
+					return s.get();
+				}
+		}
+		throw Tools::Exception()<<"Cannot determine segment for : ["<<pSection->getName<<"]";
+	}	
+
 	Section<S>* getStringsSection()const{
 		return lstSections[get_shstrndx()].get();
 	}
@@ -245,6 +255,26 @@ void write(){
 		s->write(iOffset);
 		iOffset+=get_phentsize();
 	}
+
+	if(hasDynamicInfo()){
+		ptrDynamicInfo->write();
+	}
+
+	if(hasRelocationInfo()){
+		ptrRelocationInfo->write();
+	}
+
+	if(hasRelocationPltInfo()){
+		ptrRelocationPltInfo->write();
+	}
+
+	if(hasSymbolTable()){
+		ptrSymbolTable->write();
+	}
+
+	if(hasDynSymbolTable()){
+		ptrDynSymbolTable->write();
+	}
 }
 /*************************************************************************/
 
@@ -327,47 +357,6 @@ void set_shnum(typename S::Half e_shnum){
 void set_shstrndx(typename S::Half e_shstrndx){
 	header.e_shstrndx = pConverter->convert(e_shstrndx);
 }
-
-	void insertSpaceAfter(typename S::Off iOffset, size_t iSize){
-
-		pContent->makeSpace(reinterpret_cast<size_t>(iOffset), iSize);
-		set_shoff(get_shoff()+iSize);
-
-	    std::cout<<"offset :"<<(void*)iOffset<<std::endl;
-
-		for(auto& s: lstSections)
-		if(s->get_type()){
-
-			std::cout<<"Checking section :"<<(void*)s->get_offset()<<std::endl;
-
-			if( s->get_offset() <= iOffset && 
-			 s->get_offset() + s->get_size() > iOffset){
-					std::cout<<"Update section :"<<(void*)s->get_offset()<<std::endl;
-					s->set_size(s->get_size() + iSize);
-			}else if( s->get_offset() > iOffset ){
-					std::cout<<"Moving section :"<<(void*)s->get_offset()<<std::endl;
-				s->set_offset(s->get_offset() + iSize);
-				s->set_addr(s->get_addr() + iSize);
-			}
-		}
-
-
-		for(auto& s: lstSegments){
-
-			if( s->get_offset() <= iOffset && 
-			 s->get_offset() + s->get_filesz() > iOffset){
-					std::cout<<"Update segment :"<<(void*)s->get_offset()<<std::endl;
-					s->set_filesz(s->get_filesz() + iSize);
-					s->set_memsz(s->get_memsz() + iSize);
-			}else if( s->get_offset() > iOffset ){
-				std::cout<<"Moving segment :"<<(void*)s->get_offset()<<std::endl;
-				s->set_offset(s->get_offset() + iSize);
-				s->set_paddr(s->get_paddr() + iSize);
-				s->set_vaddr(s->get_vaddr() + iSize);
-			}
-		}
-
-	}
 
 protected:
 	typename S::Header_ header;

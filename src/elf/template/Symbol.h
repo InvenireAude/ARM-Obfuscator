@@ -89,21 +89,34 @@ typename S::Half get_shndx()const{
    void setBinding(unsigned char b) { 
 	   symbol.st_info &= 0x0f;
 	   symbol.st_info |= b << 4;
+	   symbol.st_info =  pSymbolTable->getConverter()->convert(symbol.st_info);
     }
-	
+
    void setType(unsigned char t) {
 	   symbol.st_info &= 0xf0; 
 	   symbol.st_info  |= 0x0f & t;
+	   symbol.st_info =  pSymbolTable->getConverter()->convert(symbol.st_info);
    }
    
    void set_info(unsigned char b, unsigned char t) {
      symbol.st_info = (b << 4) + (t & 0x0f);
+	 symbol.st_info =  pSymbolTable->getConverter()->convert(symbol.st_info);
    }
+
+   void set_value(typename S::Addr iValue) {
+	    symbol.st_value =  pSymbolTable->getConverter()->convert(iValue);
+   }
+
+
+/*************************************************************************/
+ void write(typename S::Symbol_* pSymbolData){
+	*pSymbolData = symbol;
+}
 
 protected:
 	SymbolTable<S>* pSymbolTable;
 
-	typename S::Symbol_& symbol;
+	typename S::Symbol_ symbol;
 };
 
 /*************************************************************************/

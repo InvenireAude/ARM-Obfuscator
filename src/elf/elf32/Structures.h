@@ -80,10 +80,13 @@ struct Symbol_ {
 
 struct Dynamic_ {
 	typedef Word TagType;
+	typedef Word ValType;
+   	typedef Addr AddrType;
+	
 	TagType d_tag;
 	union {
-		Word      d_val;
-		Addr      d_ptr;
+		ValType      d_val;
+		AddrType      d_ptr;
 	//	Off       d_off;
 	} d_un;
 };
@@ -102,7 +105,7 @@ struct Relocation_{
   static inline Off ToSymbolOffset(InfoType r_info){
      return (r_info >> 8);
   }
-  
+
 };
 
 

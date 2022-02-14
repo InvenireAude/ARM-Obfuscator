@@ -17,6 +17,8 @@
 #include <armob/helper/SymbolDiscoverer.h>
 #include <armob/helper/Disassembler.h>
 
+#include <elf/Expander.h>
+
 using namespace ELF;
 
 void info(char *s){
@@ -24,6 +26,8 @@ void info(char *s){
             << armob_VERSION_MINOR << std::endl;
   std::cout << "Usage: " << s << " <input_file> <output_file>" << std::endl;
 }
+
+
 
 int main(int argc, char *argv[]){
 
@@ -37,13 +41,41 @@ int main(int argc, char *argv[]){
     
     //ELF::Printer::Print(std::cout, ptrArtefact.get());
 
-    std::unique_ptr<ELF::Artefact> ptrArtefactCopy(new ArtefactCopy(ptrArtefact.get()));
-    
-    ELF::Elf64::Header* pHeader = ptrArtefactCopy->getHeader64();
+   if(ptrArtefact->getIdentification()->getClass() == ELFCLASS64){
 
-    pHeader->insertSpaceAfter(pHeader->lookup(".text")->get_offset()+pHeader->lookup(".text")->get_size()-1, 64);
+
+
+        std::unique_ptr<ELF::Artefact> ptrArtefactCopy(new ArtefactCopy(ptrArtefact.get()));
+        
+        ELF::Elf64::Header* pHeader = ptrArtefactCopy->getHeader64();
+
+        std::unique_ptr<ARMOB::DiscoveredSymbols> ptrSymbols(new ARMOB::DiscoveredSymbols());
+        ARMOB::Helper::SymbolDiscoverer d(ptrArtefactCopy.get(), ptrSymbols.get());
+
+        d.discover();
+        d.build();
+        d.resolve();
+        
+
+        for(auto& s : ptrSymbols->getSymbols(ARMOB::Symbol::ST_Code)){
+          ASM::GenericInstruction* pInstruction = s.second->getStart();
+         // pInstruction->
+        }
+
+        Expander e(pHeader);
+
+        e.expand(0x11111);
+        e.updateDataSegmentSymbols();
+        
+        ARMOB::Helper::Disassembler dis(ptrSymbols.get());
+        if(argc == 4){
+          dis.print(argv[3], std::cout);
+        }
+
+
     pHeader->write();
     ptrArtefactCopy->save(argv[2]);    
+   }
 
   }catch (Tools::Exception&e){
     std::cerr << "Exception: " << e << std::endl;
@@ -52,3 +84,4 @@ int main(int argc, char *argv[]){
 
 
 }
+

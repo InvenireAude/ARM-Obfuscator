@@ -49,6 +49,11 @@ Relocation(RelocationInfo<S>* pRelocationInfo, typename S::Relocation_* pRelocat
   typename S::Addr   get_offset()const{
 	  return pRelocationInfo->getConverter()->convert(relocation.r_offset);
   }
+  
+  void set_offset(typename S::Addr iOffset){
+	  relocation.r_offset = pRelocationInfo->getConverter()->convert(iOffset);
+  }
+  
   typename S::Relocation_::InfoType  get_info()const{
 	  return pRelocationInfo->getConverter()->convert(relocation.r_info);
   }
@@ -64,10 +69,17 @@ Relocation(RelocationInfo<S>* pRelocationInfo, typename S::Relocation_* pRelocat
 	  return S::Relocation_::ToType(get_info());
   }
 
+
+/*************************************************************************/
+	
+	void write(typename S::Relocation_* pRelocationData){
+		*pRelocationData = relocation;
+	}
+
 protected:
 	RelocationInfo<S>* pRelocationInfo;
 
-	typename S::Relocation_& relocation;
+	typename S::Relocation_ relocation;
 };
 
 /*************************************************************************/

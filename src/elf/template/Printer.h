@@ -175,13 +175,14 @@ void printSectionsHeader(){
 	os<<std::endl<<"Sections:"<<std::endl;
 
 	os<<"Idx";
-	os<<std::setfill(' ')<<std::setw(16)<<" Name :";
+	os<<std::setfill(' ')<<std::setw(16)<<" Name:";
 
-	os<<" "<<std::setfill(' ')<<std::setw(18)<<"Type:";
-	os<<" "<<std::setfill(' ')<<std::setw(8)<<"Flags:";
-	os<<" "<<std::setfill(' ')<<std::setw(16)<<"Address:";
+	os<<" "<<std::setfill(' ')<<std::setw(16)<<"Type:";
 	os<<" "<<std::setfill(' ')<<std::setw(8)<<"Offset:";
+	os<<" "<<std::setfill(' ')<<std::setw(16)<<"Address:";
+	os<<" "<<std::setfill(' ')<<std::setw(16)<<"Ends at:";
 	os<<" "<<std::setfill(' ')<<std::setw(8)<<"Size:";
+	os<<" "<<std::setfill(' ')<<std::setw(8)<<"Flags:";
 
 	os<<" "<<std::setw(8)<<"Link:";
 	os<<" "<<std::setw(8)<<"Info:";
@@ -195,7 +196,7 @@ void printSection(const Section<S>* pSection){
 	//os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_name()<<std::dec;
 
 	os<<std::setfill(' ')<<std::setw(16)<<pSection->getName();
-
+	os<<" ";
 	try{
 		std::string strName(Map::SectionType.getString(pSection->get_type()));
 		os<<std::setfill(' ')<<std::setw(16)<<strName;
@@ -203,10 +204,11 @@ void printSection(const Section<S>* pSection){
 		os<<"      0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_type()<<std::dec;
 	}
 
-	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_flags()<<std::dec;
-	os<<" "<<std::hex<<std::setfill('0')<<std::setw(16)<<pSection->get_addr()<<std::dec;
 	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_offset()<<std::dec;
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(16)<<pSection->get_addr()<<std::dec;
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(16)<<(uint64_t)pSection->get_addr()+(uint64_t)pSection->get_size()-1L<<std::dec;
 	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_size()<<std::dec;
+	os<<" "<<std::hex<<std::setfill('0')<<std::setw(8)<<pSection->get_flags()<<std::dec;
 
 	os<<" "<<std::setw(8)<<pSection->get_link();
 	os<<" "<<std::setw(8)<<pSection->get_info();

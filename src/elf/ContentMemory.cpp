@@ -105,7 +105,10 @@ void ContentMemory::makeSpace(size_t iOffset, size_t iSpaceSize){
   memcpy(pMemory + iOffset + iSpaceSize, pMemory + iOffset, iSize - iOffset);
   
   iSize += iSpaceSize;
-
+}
+/*************************************************************************/
+void ContentMemory::copyData(size_t iDstOffset, size_t iSrcOffset, size_t iSize){
+   memcpy(pMemory + iDstOffset, pMemory + iSrcOffset, iSize);
 }
 /*************************************************************************/
 }

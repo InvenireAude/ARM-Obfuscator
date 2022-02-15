@@ -184,7 +184,7 @@ void Decoder::updateOpcodeReference(size_t iDataSegmentShift)const{
 				
 				if(refAddresses.iReference){
 
-					std::cout<<"setValue:"<<(void*)(long)refAddresses.iOpCode<<"\t"<<(void*)(long)refAddresses.iReference<<std::endl;
+					std::cout<<"iReference:"<<(void*)(long)refAddresses.iOpCode<<"\t"<<(void*)(long)refAddresses.iReference<<std::endl;
 					o->setMemoryReference(opCode, refAddresses.iOpCode, refAddresses.iReference + iDataSegmentShift); 
 
 				}

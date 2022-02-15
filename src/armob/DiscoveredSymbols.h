@@ -14,8 +14,12 @@
 #include <map>
 #include <set>
 
+#include <asm/GenericDetail.h>
+#include <asm/Item.h>
+#include <asm/ItemList.h>
+
 #include "Symbol.h"
-#include <asm/InstructionFactory.h>
+#include <asm/GenericDetailFactory.h>
 
 namespace ARMOB {
 
@@ -59,7 +63,7 @@ public:
 	// 			(iAddress <= it->second->getAddress() + it->second->getSize());
 	// }
 
-	ASM::GenericInstructionList& getInstructions(){
+	ASM::ItemList& getInstructions(){
 		return lstInstructions;
 	}
 
@@ -73,18 +77,23 @@ public:
 		return it->second.get();
 	}
 
-	inline ASM::InstructionFactory* getInstructionFactory()const{
-		return ptrInstructionFactory.get();
+	inline ASM::GenericDetailFactory* getGenericDetailFactory()const{
+		return ptrGenericDetailFactory.get();
 	}
 	
+
+  	ASM::ItemList::iterator appendNewInstruction(const uint8_t *pOpCode, uint8_t  iLength, uint64_t iOpCodeAddress){
+  		return lstInstructions.append(ptrGenericDetailFactory->create(pOpCode, iLength, iOpCodeAddress));
+	}
+
 protected:
 
 	SymbolMap mapSymbols;
 	SymbolSet tabSymbolSets[Symbol::ST_NumTypes];
 
-	ASM::GenericInstructionList lstInstructions;
+	ASM::ItemList lstInstructions;
 
-	std::unique_ptr<ASM::InstructionFactory> ptrInstructionFactory;
+	std::unique_ptr<ASM::GenericDetailFactory> ptrGenericDetailFactory;
 };
 /*************************************************************************/
 }

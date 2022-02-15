@@ -15,28 +15,17 @@ Symbol::Symbol(Type iType, uint64_t iAddress, uint64_t iSize, const std::string&
  iType(iType),
  iAddress(iAddress),
  iSize(iSize),
- strName(strName),
- pStart(nullptr),
- pEnd(nullptr){
+ strName(strName){
      std::cerr<<"New symbol: "<<strName<<", at: "<<(void*)iAddress<<", sz: "<<(void*)iSize<<std::endl;
 }
 /*************************************************************************/
 void Symbol::updateSize(){
+
     size_t iSize = 0;
 
-    ASM::GenericInstruction* pCursor = pStart;
-
-
-     while(true){
-
-        iSize += pCursor->getOpCodeLength();
-        if( pCursor->isTail() ||
-            pCursor == pEnd)
-                break; //strange ...
-
-        pCursor = pCursor->getNext();
-    }
-
+    forAll([&iSize](auto& it){
+        iSize += it->getGenericDetail()->getOpCodeLength();
+    });
     
     this->iSize = iSize;
 

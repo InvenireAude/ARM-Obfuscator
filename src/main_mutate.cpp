@@ -12,11 +12,12 @@
 #include <elf/utils/Helper.h>
 
 #include <asm/GenericInstruction.h>
-#include <asm/arm/arm64/Decoder.h>
+#include <asm/arm/arm64/DecodedInstruction.h>
 #include <asm/arm/arm64/spec/Encoding.h>
 #include <asm/arm/arm64/spec/EncodingBook.h>
 #include <armob/DiscoveredSymbols.h>
 #include <armob/helper/SymbolDiscoverer.h>
+#include <armob/helper/SymbolBuilder.h>
 #include <armob/helper/Disassembler.h>
 
 #include <elf/Expander.h>
@@ -31,18 +32,6 @@ void info(char *s){
   std::cout << "Usage: " << s << " <input_file> <output_file>" << std::endl;
 }
 
-
-//TODO make it DiscoveredSymbols method ??
-// Return decoded instruction class
-// Who owns who Decoder/GenericInstruciton ??
-// decoder.setOperands<O1,O2,O3>(v1,v2,v3) ??
-
-ASM::GenericInstruction* createBlankInstruction(const ARMOB::DiscoveredSymbols* pSymbols, ASM::ARM::ARM64::Spec::EncodingId iEncodingId){
-
-  const ASM::ARM::ARM64::Spec::Encoding*  pEncoding =  ASM::ARM::ARM64::Spec::EncodingBook::TheInstance.get(iEncodingId);
-  std::cout<<"create blank: "<<ASM::ARM::ARM64::Spec::EncodingBook::TheInstance.getName(pEncoding)<<std::endl;
-  return new (pSymbols->getInstructionFactory()->allocate()) ASM::GenericInstruction((const uint8_t*)&(pEncoding->opCode), 4, 0);
-}
 
 
 int main(int argc, char *argv[]){
@@ -78,48 +67,48 @@ int main(int argc, char *argv[]){
         d.build();
         d.resolve();
         
-        for(auto& s : ptrSymbols->getSymbols(ARMOB::Symbol::ST_Code)){
-          if(s.second->getName().compare("fun") == 0){
-            ASM::GenericInstruction* pInstruction = s.second->getStart();
-     
-            for(int i=0; i<0x50; i++)
-              ptrSymbols->getInstructions().insertAfter(pInstruction, 
-                new (ptrSymbols->getInstructionFactory()->allocate()) ASM::GenericInstruction(CNopOpCode, 4, 0));
+        ARMOB::Helper::SymbolBuilder b(ptrArtefactCopy.get(), ptrSymbols.get());
 
-              ptrSymbols->getInstructions().insertAfter(pInstruction, 
-                new (ptrSymbols->getInstructionFactory()->allocate()) ASM::GenericInstruction(CAddOpCode, 4, 0));
 
-            while(pInstruction && pInstruction->getOpcodeW() != 0x11000400){
-                pInstruction=pInstruction->getNext();              
+        ARMOB::Symbol* pFunSymbol = ptrSymbols->getSymbol("fun");
+
+        pFunSymbol->withFirst([&b](auto& itInstruction){
+
+            for(int i=0; i<5; i++){
+              b.createBlankInstruction(itInstruction, ASM::ARM::ARM64::Spec::E_NOP_HI_hints);
             }
+        
+        });
 
-            for(int i=0; i<0x50; i++){
-                ASM::GenericInstruction* pNew =  createBlankInstruction(ptrSymbols.get(), ASM::ARM::ARM64::Spec::E_ADD_32_addsub_imm);
+       pFunSymbol->forAll([&b](auto& itInstruction){
 
-                ASM::ARM::ARM64::Decoder d(pNew, ASM::ARM::ARM64::Spec::E_ADD_32_addsub_imm);
-                
-                d.setOperand(ASM::ARM::ARM64::Spec::O_imm12, i);
-                d.setOperand(ASM::ARM::ARM64::Spec::O_Rd,  i%5);
-                d.setOperand(ASM::ARM::ARM64::Spec::O_Rn,  i%5);
+            if( itInstruction->template getEncoded<ASM::Item::ET_ARMv8, ASM::ARM::ARM64::Spec::Encoding*>()->iEncodingId == 
+                      ASM::ARM::ARM64::Spec::E_LDR_32_ldst_pos){
+                        for(int i=0; i<20; i++){
 
-                std::cout<<"create: "<<(void*)pInstruction<<"?"<<(void*)pNew<<std::endl;
-                
-                ptrSymbols->getInstructions().insertAfter(pInstruction, pNew);  
-                pInstruction = pNew;              
-            }
+                        itInstruction = b.createBlankInstruction(itInstruction, ASM::ARM::ARM64::Spec::E_ADD_32_addsub_imm);
 
-            s.second->updateSize();
-          }
+                        ASM::ARM::ARM64::DecodedInstruction d(*itInstruction);
+                        
+                        d.setOperand(ASM::ARM::ARM64::Spec::O_imm12, i);
+                        d.setOperand(ASM::ARM::ARM64::Spec::O_Rd,  i%5);
+                        d.setOperand(ASM::ARM::ARM64::Spec::O_Rn,  (i+1)%5);
+          
+                    }
+                }
+        
+        });
 
-        }
+        pFunSymbol->forAllSkipNew([&b](auto& itInstruction){
+          b.createBlankInstruction(itInstruction, ASM::ARM::ARM64::Spec::E_NOP_HI_hints);
+        });
+
+        pFunSymbol->updateSize();
 
         size_t iTextCodeSize = 0;
-        ASM::GenericInstructionList& lstInstructions(ptrSymbols->getInstructions());
 
-        for(ASM::GenericInstruction* pInstruction = lstInstructions.getHead();
-            pInstruction != nullptr;
-            pInstruction = pInstruction->getNext()){
-              iTextCodeSize += pInstruction->getOpCodeLength();
+        for(auto& item: ptrSymbols->getInstructions()){
+              iTextCodeSize += item.getGenericDetail()->getOpCodeLength();
         }
 
         size_t iOldTextSize = pHeader->lookup(".text")->get_size();
@@ -133,23 +122,19 @@ int main(int argc, char *argv[]){
 
         size_t iCurrentAddress = pHeader->lookup(".text")->get_addr();
 
-        std::cout<<"**************************************"<<(void*)lstInstructions.getHead()<<std::endl;
+        std::cout<<"**************************************"<<std::endl;
 
-        for(ASM::GenericInstruction* pInstruction = lstInstructions.getHead();
-            pInstruction != nullptr;
-            pInstruction = pInstruction->getNext()){
-            std::cout<<"Update address: "<<(void*)pInstruction->getCurrentAddresses().iOpCode<<" to "<<(void*)iCurrentAddress<<std::endl;
-            pInstruction->getCurrentAddresses().iOpCode = iCurrentAddress;
-            iCurrentAddress += pInstruction->getOpCodeLength();
+      for(auto& item: ptrSymbols->getInstructions()){
+            std::cout<<"Update address: "<<(void*)item.getGenericDetail()->getCurrentAddresses().iOpCode<<" to "<<(void*)iCurrentAddress<<std::endl;
+            item.getGenericDetail()->getCurrentAddresses().iOpCode = iCurrentAddress;
+            iCurrentAddress += item.getGenericDetail()->getOpCodeLength();
         }
 
 
-        for(ASM::GenericInstruction* pInstruction = lstInstructions.getHead();
-            pInstruction != nullptr;
-            pInstruction = pInstruction->getNext()){
+      for(auto& item: ptrSymbols->getInstructions()){
              
-            if(pInstruction->getCurrentAddresses().iReference){
-                ASM::ARM::ARM64::Decoder d(pInstruction);
+            if(item.getGenericDetail()->getCurrentAddresses().iReference){
+                ASM::ARM::ARM64::DecodedInstruction d(item);
                 d.updateOpcodeReference(e.getDataSegmentShift());
             }
             
@@ -158,19 +143,16 @@ int main(int argc, char *argv[]){
         uint8_t* pTextStart = pHeader->lookup(".text")->getData<uint8_t>();
         uint8_t* pCursor = pTextStart;
         
-        for(ASM::GenericInstruction* pInstruction = lstInstructions.getHead();
-            pInstruction != nullptr;
-            pInstruction = pInstruction->getNext()){
+        for(auto& item: ptrSymbols->getInstructions()){
             
-            memcpy(pCursor, pInstruction->getOpcode(), pInstruction->getOpCodeLength());
-            std::cout<<"Update opcode: "<<(void*)pInstruction->getCurrentAddresses().iOpCode<<std::endl;
+            memcpy(pCursor, item.getGenericDetail()->getOpcode(), item.getGenericDetail()->getOpCodeLength());
+            std::cout<<"Update opcode: "<<(void*)item.getGenericDetail()->getCurrentAddresses().iOpCode<<std::endl;
 
-            pCursor += pInstruction->getOpCodeLength();
+            pCursor += item.getGenericDetail()->getOpCodeLength();
 
         }
 
         pHeader->lookup(".text")->set_size(pCursor - pTextStart);
-        // pHeader->lookup(".text")->set_size(pOrignalHeader->lookup(".text")->get_size());
 
         pHeader->getSymbolTable()->lookup("fun")->set_size(ptrSymbols->getSymbol("fun")->getSize());
 

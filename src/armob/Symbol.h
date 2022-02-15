@@ -13,7 +13,9 @@
 #include <tools/common.h>
 #include <list>
 
-#include <asm/GenericInstruction.h>
+#include <asm/GenericDetail.h>
+#include <asm/Item.h>
+#include <asm/ItemList.h>
 
 namespace ARMOB {
 
@@ -21,7 +23,6 @@ namespace ARMOB {
 /** The Symbol class.
  *
  */
-typedef std::list<ASM::GenericInstruction> InstructionList;
 
 class Symbol {
 public:
@@ -63,43 +64,95 @@ public:
 	}
 
 
-	ASM::GenericInstruction* getStart()const{
-		if(!pStart){
+	ASM::ItemList::iterator getStart()const{
+		if(!itStart){
 			throw Tools::Exception()<<"Instruction start not set for symbol: "<<strName;
 		}
-		return pStart;
+		return itStart;
 	}
 
-	ASM::GenericInstruction* getEnd()const{
-		if(!pEnd){
+	ASM::ItemList::iterator getEnd()const{
+		if(!itEnd){
 			throw Tools::Exception()<<"Instruction end not set for symbol: "<<strName;
 		}
-		return pEnd;
+		return itEnd;
 	}
 
-	void setStart(ASM::GenericInstruction* pStart){
-		this->pStart = pStart;
-		this->pEnd = pStart;
+	void setStart(ASM::ItemList::iterator itStart){
+		this->itStart = itStart;
+		this->itStart = itStart;
 	}
 
-	void setEnd(ASM::GenericInstruction* pEnd){
-		this->pEnd = pEnd;
+	void setEnd(ASM::ItemList::iterator itEnd){
+		this->itEnd = itEnd;
 	}
 
 	inline bool hasInstructions()const{
-		return pStart != nullptr;
+		return ! !itStart;
 	}
 
 	void updateSize();
 	
+	template<typename F>
+	void forAll(F &&f) { 
+		
+		 if(!hasInstructions()){
+			 return;
+		 }
+
+		ASM::ItemList::iterator itCursor = getStart();
+
+		while(true){
+
+			f(itCursor);
+
+			if( itCursor->isTail() ||
+				itCursor == getEnd())
+					break; //strange ...
+
+			++itCursor;
+			}
+		}
+
+	template<typename F>
+	void forAllSkipNew(F &&f) { 
+		
+		 if(!hasInstructions()){
+			 return;
+		 }
+
+		ASM::ItemList::iterator itCursor = getStart();
+		while(true){
+			ASM::ItemList::iterator itNext = itCursor.next();
+			f(itCursor);
+			if( itCursor->isTail() ||
+				itCursor == getEnd())
+					break; //strange ...
+
+			itCursor = itNext;
+			}
+		}
+
+	
+	template<typename F>
+	void withFirst(F &&f) { 
+		
+		 if(!hasInstructions()){
+			 return;
+		 }
+
+		ASM::ItemList::iterator itCursor = getStart();
+		f(itCursor);
+	}
+
 protected:
 	uint64_t     iAddress;
 	uint64_t     iSize;
 	std::string  strName;
 	Type         iType;
 
-	ASM::GenericInstruction* pStart;
-	ASM::GenericInstruction* pEnd;
+	ASM::ItemList::iterator itStart;
+	ASM::ItemList::iterator itEnd;
 };
 
 /*************************************************************************/

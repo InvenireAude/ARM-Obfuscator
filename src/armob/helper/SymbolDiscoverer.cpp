@@ -7,12 +7,12 @@
 
 #include "SymbolDiscoverer.h"
 
-#include <asm/arm/arm64/Decoder.h>
+#include <asm/arm/arm64/DecodedInstruction.h>
 
 #include <armob/DiscoveredSymbols.h>
 
-#include <asm/GenericInstruction.h>
-#include <asm/InstructionFactory.h>
+#include <asm/GenericDetail.h>
+#include <asm/GenericDetailFactory.h>
 
 
 #include <elf/elf.h>
@@ -66,8 +66,7 @@ void SymbolDiscoverer::build(){
     size_t  iSize                = pSection->get_size();
     const   int  iStep           = 4;
 
-    ASM::GenericInstructionList& lstInstructions(pDiscoveredSymbols->getInstructions());
-    ASM::InstructionFactory* pFactory = pDiscoveredSymbols->getInstructionFactory();
+    ASM::ItemList& lstInstructions(pDiscoveredSymbols->getInstructions());
 
     for(  ARMOB::DiscoveredSymbols::SymbolSet::iterator it = setCodeSymbols.begin();
             it != setCodeSymbols.end(); it++){
@@ -96,14 +95,16 @@ void SymbolDiscoverer::build(){
                 iCounter = 0;
         }
 
-        lstInstructions.append(new (pFactory->allocate())ASM::GenericInstruction(pData + iOffset, iStep, iAddress + iOffset));
+        ASM::ItemList::iterator itNew = pDiscoveredSymbols->appendNewInstruction(pData + iOffset, iStep, iAddress + iOffset);
+        ASM::ARM::ARM64::DecodedInstruction d(*itNew);
+
         iCounter ++;
 
         if( it->first  == iAddress + iOffset){
-            it->second->setStart(lstInstructions.getTail());
+            it->second->setStart(itNew);
         }else if( it->second->getAddress() + it->second->getSize() - iStep  == iAddress + iOffset){
             std::cout<<"End of instructions for: "<<it->second->getName()<<std::endl;
-            it->second->setEnd(lstInstructions.getTail());
+            it->second->setEnd(itNew);
         }
     }
 }
@@ -114,16 +115,13 @@ void SymbolDiscoverer::build(){
 
 void SymbolDiscoverer::resolve(){
 
- ASM::GenericInstruction* pInstruction = pDiscoveredSymbols->getInstructions().getHead();
- ASM::GenericInstruction* pTail = pDiscoveredSymbols->getInstructions().getTail();
+for(auto& item : pDiscoveredSymbols->getInstructions()){
 
-  while(true){
-
-      ASM::ARM::ARM64::Decoder d(pInstruction);
+      ASM::ARM::ARM64::DecodedInstruction d(item); 
  
       if(d.checkMemoryReference()){
 
-           const ASM::GenericInstruction::Addresses& refAddresses(pInstruction->getCurrentAddresses());
+           const ASM::GenericDetail::Addresses& refAddresses(item.getGenericDetail()->getCurrentAddresses());
           
            const ARMOB::DiscoveredSymbols::SymbolSet& setSymbols(pDiscoveredSymbols->getSymbols(Symbol::ST_Code));
            ARMOB::DiscoveredSymbols::SymbolSet::const_iterator it = Tools::LowerBound(setSymbols, refAddresses.iReference);
@@ -139,31 +137,14 @@ void SymbolDiscoverer::resolve(){
             //    <<" found in: "<<it->second->getName()<<"["<<(void*)it->second->getAddress()<<"]"<<"+"<<(void*)(refAddresses.iReference - it->second->getAddress())<<std::endl;
 
 
-            if(it->second->hasInstructions()){
-                ASM::GenericInstruction* pCursor = it->second->getStart();
 
-                while(true){
-
-                    if(pCursor->getCurrentAddresses().iOpCode == refAddresses.iReference){
-                        pInstruction->setReference(pCursor);
+            it->second->forAll([&item, refAddresses](auto& it){
+                 if(it->getGenericDetail()->getCurrentAddresses().iOpCode == refAddresses.iReference){
+                        item.getGenericDetail()->setReference(it->getGenericDetail());
                     }
-
-                    if( pCursor->isTail() ||
-                        pCursor == it->second->getEnd())
-                            break; //strange ...
-
-                    pCursor = pCursor->getNext();
-                }
-            }
-
-           }
-
-      };
-
-        if(pInstruction == pTail)
-            break; //strange ...
-
-        pInstruction = pInstruction->getNext();
+            });
+        }
+      }
   }
 }
 /*************************************************************************/

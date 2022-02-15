@@ -8,6 +8,8 @@
 #include "DecodedInstruction.h"
 
 #include <asm/GenericDetail.h>
+#include <asm/Item.h>
+
 #include <elf/utils/Helper.h>
 
 #include "spec/Encoding.h"
@@ -15,6 +17,7 @@
 #include "spec/FieldBook.h"
 #include "spec/Operand.h"
 #include "spec/OperandBook.h"
+
 
 #include <iomanip>
 #include <bitset>
@@ -39,6 +42,25 @@ DecodedInstruction::DecodedInstruction(GenericDetail* pGenericDetail, Spec::Enco
  pGenericDetail(pGenericDetail){
 
  pEncoding = EncodingBook::TheInstance.get(iEncodingId);		
+}
+/*************************************************************************/
+ DecodedInstruction::DecodedInstruction(Item& item):
+ pGenericDetail(item.getGenericDetail()){
+	if(item.hasEncoded()){
+		pEncoding = item.getEncoded<Item::ET_ARMv8, Spec::Encoding*>();
+	}else{
+		uint32_t opCode = pGenericDetail->getOpcodeW();
+ 		pEncoding = EncodingBook::TheInstance.match(opCode);
+		item.setEncoded<Item::ET_ARMv8>(pEncoding);
+		std::cout<<"decoded: "<<EncodingBook::TheInstance.getName(pEncoding)<<(void*)&item<<std::endl;
+	}
+}
+/*************************************************************************/
+ DecodedInstruction::DecodedInstruction(Item& item, Spec::EncodingId iEncodingId):
+ pGenericDetail(item.getGenericDetail()){
+	
+ 	pEncoding = EncodingBook::TheInstance.get(iEncodingId);
+	item.setEncoded<Item::ET_ARMv8>(pEncoding);
 }
 /*************************************************************************/
 DecodedInstruction::~DecodedInstruction() throw(){

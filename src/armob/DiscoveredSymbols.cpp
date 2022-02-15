@@ -12,7 +12,7 @@ namespace ARMOB {
 
 /*************************************************************************/
 DiscoveredSymbols::DiscoveredSymbols():
-  ptrInstructionFactory(new ASM::InstructionFactory()){
+  ptrGenericDetailFactory(new ASM::GenericDetailFactory()){
 }
 /*************************************************************************/
 DiscoveredSymbols::~DiscoveredSymbols() throw(){

@@ -54,6 +54,13 @@ public:
 			 return pCursor;
 		 }
 
+		inline Item& operator*(){
+			 if(!pCursor){
+				 throw Tools::Exception()<<"Referenced a null operator";
+			 }
+			 return *pCursor;
+		 }
+
 		 inline bool operator!()const{
 			 return !pCursor;
 		 }
@@ -85,13 +92,22 @@ public:
 			return *this;
 		}
 
+		inline iterator next()const{
+			 if(pCursor != nullptr){
+				return pCursor->pNext;
+			 }
+			 throw Tools::Exception()<<"Referenced a null operator";
+		}
+
 		inline iterator(const iterator& o){
 			this->pCursor = o.pCursor;
 		}
 
+		//TODO temporary quick fix for ARMOB::Symbol constructor.
+			iterator(Item* pCursor = nullptr):pCursor(pCursor){};
+
 		protected:
 
-			iterator(Item* pCursor):pCursor(pCursor){};
 			Item* pCursor;
 
 		friend class ItemList;
@@ -107,7 +123,7 @@ public:
 	}
 
 
-	inline void insertAfter(iterator& it, Item* pNew){
+	inline iterator insertAfter(iterator& it, Item* pNew){
 		
 		if(!it){
 			throw Tools::Exception()<<"insertAfter cannot use an invalid interator";
@@ -124,9 +140,10 @@ public:
 		pNew->pPrev = it.pCursor;
 		it.pCursor->pNext = pNew;
 
+		return iterator(pNew);
 	}
 
-	inline void append(Item* pNew){
+	inline iterator append(Item* pNew){
 
 		if(!pHead){
 			pHead = pNew;
@@ -137,6 +154,8 @@ public:
 			pNew->pNext = nullptr;
 			pTail = pNew;
 		}
+
+		return iterator(pNew);
 	}
 
 protected:

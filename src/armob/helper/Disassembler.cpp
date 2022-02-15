@@ -9,8 +9,8 @@
 
 #include <armob/DiscoveredSymbols.h>
 
-#include <asm/GenericInstruction.h>
-#include <asm/arm/arm64/Decoder.h>
+#include <asm/ItemList.h>
+#include <asm/arm/arm64/DecodedInstruction.h>
 
 #include <elf/elf.h>
 
@@ -27,7 +27,7 @@ Disassembler::~Disassembler() throw(){
 
 }
 /*************************************************************************/
-class SymbolResolver : public ASM::ARM::ARM64::Decoder::SymbolResolver {
+class SymbolResolver : public ASM::ARM::ARM64::DecodedInstruction::SymbolResolver {
 	public:
         SymbolResolver(DiscoveredSymbols* pDiscoveredSymbols):
             pDiscoveredSymbols(pDiscoveredSymbols),
@@ -60,24 +60,12 @@ void Disassembler::print(const std::string& strName, std::ostream& os){
 
     SymbolResolver sr(pDiscoveredSymbols);
 
-    if(!pSymbol->hasInstructions()){
-        return;
-    }
-
-    ASM::GenericInstruction* pInstruction = pSymbol->getStart();
-
-  while(true){
-
-        ASM::ARM::ARM64::Decoder d(pInstruction);
+    pSymbol->forAll([&os, &sr](auto& it){
+        ASM::ARM::ARM64::DecodedInstruction d(*it);
         d.print(std::cout, &sr);
         std::cout<<std::endl;   
+    });
 
-        if( pInstruction->isTail() ||
-            pInstruction == pSymbol->getEnd())
-                break; //strange ...
-
-        pInstruction = pInstruction->getNext();
-  }
 }
 /*************************************************************************/
 }

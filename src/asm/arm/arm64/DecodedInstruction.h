@@ -37,7 +37,8 @@ public:
 
 	DecodedInstruction(GenericDetail* pGenericDetail);
 	DecodedInstruction(GenericDetail* pGenericDetail, Spec::EncodingId iEncodingId);
-	DecodedInstruction(Item* pItem);
+	DecodedInstruction(Item& item);
+	DecodedInstruction(Item& item, Spec::EncodingId iEncodingId);
 
 	virtual void print(std::ostream& os, const SymbolResolver* pSymbolResover = nullptr);
 	

@@ -10,11 +10,12 @@
 #define _ASM_GenericDetailFactory_H_
 
 #include <tools/common.h>
+#include "GenericDetail.h"
+#include "Item.h"
 
 namespace ASM
 {
-	class GenericDetail;
-	class Item;
+
 	/*************************************************************************/
 	/** The GenericDetailFactory class.
 	 *
@@ -27,6 +28,11 @@ namespace ASM
 
 		GenericDetail *allocateGenericDetail();
 		Item *allocateItem();
+
+		template<class... Args>
+			Item* create(Args... args){
+				return new(allocateItem())Item(new (allocateGenericDetail())GenericDetail(args...));
+			}
 
 	protected:
 		

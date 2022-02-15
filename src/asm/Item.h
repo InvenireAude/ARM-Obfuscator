@@ -23,9 +23,15 @@ class GenericDetail;
  */
 class Item {
 public:
+	
+	enum EncodedTagType : uint8_t {
+		ET_None  = 0,
+		ET_ARMv8 = 0x01
+	};
 
 	Item(GenericDetail *pGenericDetail):
-		pGenericDetail(pGenericDetail){}
+		pGenericDetail(pGenericDetail),
+		iTagId(ET_None){}
 
 	inline Item* getNext()const{
 		return pNext;
@@ -42,13 +48,9 @@ public:
 	inline bool isTail()const{
 		return !pNext;
 	}
-	
-	enum EncodedType : uint8_t {
-		ET_None  = 0,
-		ET_ARMv8 = 0x01
-	};
 
-	typedef uint8_t  EncodedTagType;
+
+	typedef uint64_t EncodedType;
 
 	template<EncodedTagType iTagId, typename T>
 		void setEncoded(T iEncodedValue){
@@ -59,10 +61,22 @@ public:
 	template<EncodedTagType iTagId, typename T>
 		T getEncoded()const{
 			if(this->iTagId != iTagId){
-				throw Tools::Exception()<<"Inconsisted tags: this: "<<(int)this->iTagId<<", got:"<<(int)iTagId;
+				throw Tools::Exception()<<"Inconsisted tags: this->iTagId: "<<(int)this->iTagId<<", got:"<<(int)iTagId<<", this: "<<(void*)this;
 			}
 			return reinterpret_cast<T>(iEncodedValue);			
 		}
+
+	inline bool hasEncoded()const{
+		return iTagId != ET_None;
+	}
+
+	inline GenericDetail* getGenericDetail(){
+		return pGenericDetail;
+	}
+
+	inline const GenericDetail* getGenericDetail()const{
+		return pGenericDetail;
+	}
 
 protected:
 

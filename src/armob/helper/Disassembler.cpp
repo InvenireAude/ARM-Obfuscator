@@ -78,7 +78,6 @@ void Disassembler::print(const std::string& strName, std::ostream& os){
 
         pInstruction = pInstruction->getNext();
   }
-
 }
 /*************************************************************************/
 }

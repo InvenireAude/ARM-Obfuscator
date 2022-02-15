@@ -50,6 +50,17 @@ public:
 		return lstSymbols;
 	}
 
+
+	Symbol<S>* lookup(const std::string& strName){
+		
+		typename SymbolByNameMap::const_iterator it = hmSymbolByName.find(strName);
+
+		if(it == hmSymbolByName.end())
+			throw Tools::Exception()<<"Symbol not found : ["<<strName<<"]";
+
+		return it->second;
+	}
+
 	const Symbol<S>* lookup(const std::string& strName)const{
 		
 		typename SymbolByNameMap::const_iterator it = hmSymbolByName.find(strName);

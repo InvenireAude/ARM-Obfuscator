@@ -89,6 +89,8 @@ public:
 	inline bool hasInstructions()const{
 		return pStart != nullptr;
 	}
+
+	void updateSize();
 	
 protected:
 	uint64_t     iAddress;

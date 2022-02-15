@@ -57,6 +57,8 @@ public:
 		return getEncodingOperands(pd->iEncodingId);
 	}
 
+	const Encoding* get(EncodingId iEncodingId)const;
+
 	static const EncodingBook TheInstance;
 
 protected:

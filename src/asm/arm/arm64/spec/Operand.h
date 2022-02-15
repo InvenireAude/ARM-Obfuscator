@@ -29,7 +29,8 @@ public:
 
     virtual void    setValue(uint32_t& iOpCode, int32_t iValue) const = 0;
     virtual int32_t getValue(uint32_t iOpCode) const = 0;
-    virtual int32_t applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const;
+    virtual int64_t applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const;
+    virtual void    setMemoryReference(uint32_t& iOpCode, uint64_t iAddress, int64_t iReference)const;
 
     virtual void    disassemble(uint32_t iOpCode, std::ostream& os) const = 0;
 

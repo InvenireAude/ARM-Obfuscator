@@ -107,6 +107,10 @@ typename S::Half get_shndx()const{
 	    symbol.st_value =  pSymbolTable->getConverter()->convert(iValue);
    }
 
+  void set_size(typename S::Addr iValue) {
+	  std::cout<<"New (set_size) size: "<<(void*)(long)iValue<<std::endl;
+	    symbol.st_size = pSymbolTable->getConverter()->convert(iValue);
+   }
 
 /*************************************************************************/
  void write(typename S::Symbol_* pSymbolData){

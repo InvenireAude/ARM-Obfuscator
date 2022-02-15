@@ -86,18 +86,23 @@ void SymbolDiscoverer::build(){
 
     ARMOB::DiscoveredSymbols::SymbolSet::iterator it = setCodeSymbols.begin();
 
+    int iCounter = 0;
     for(size_t  iOffset = 0; iOffset < iSize; iOffset += iStep){
         
         while(it != setCodeSymbols.end() && 
                 it->second->getAddress() + it->second->getSize() <= iAddress + iOffset){
+                std::cout<<"Skiping"<<it->second->getName()<<", sz: "<<it->second->getSize()<<" "<<iCounter<<std::endl;
                 it++;
+                iCounter = 0;
         }
 
         lstInstructions.append(new (pFactory->allocate())ASM::GenericInstruction(pData + iOffset, iStep, iAddress + iOffset));
-   
+        iCounter ++;
+
         if( it->first  == iAddress + iOffset){
             it->second->setStart(lstInstructions.getTail());
         }else if( it->second->getAddress() + it->second->getSize() - iStep  == iAddress + iOffset){
+            std::cout<<"End of instructions for: "<<it->second->getName()<<std::endl;
             it->second->setEnd(lstInstructions.getTail());
         }
     }

@@ -14,6 +14,7 @@
 #include "spec/EncodingBook.h"
 #include "spec/FieldBook.h"
 #include "spec/Operand.h"
+#include "spec/OperandBook.h"
 
 #include <iomanip>
 #include <bitset>
@@ -31,6 +32,12 @@ Decoder::Decoder(const GenericInstruction* pGenericInstruction):
  uint32_t opCode = pGenericInstruction->getOpcodeW();
  pEncoding = EncodingBook::TheInstance.match(opCode);
 		
+}
+/*************************************************************************/
+Decoder::Decoder(const GenericInstruction* pGenericInstruction, Spec::EncodingId iEncodingId):
+ pGenericInstruction(pGenericInstruction){
+
+ pEncoding = EncodingBook::TheInstance.get(iEncodingId);		
 }
 /*************************************************************************/
 Decoder::~Decoder() throw(){
@@ -130,6 +137,63 @@ bool Decoder::checkMemoryReference()const{
 	}
 
 	return false;
+}
+
+//
+// TODO !!!!!!!!!!!!!!!!!!11
+// redesign class - create a new one for modifications and get rid of these const_casts.
+
+/*************************************************************************/
+void Decoder::setOperand(Spec::OperandId iOperand, uint32_t iValue)const{
+
+	const EncodingBook::OperandList& lstOperands(EncodingBook::TheInstance.getEncodingOperands(pEncoding));
+ 	uint32_t& opCode(const_cast<ASM::GenericInstruction*>(pGenericInstruction)->getOpcodeW());
+
+	for(const auto&o : lstOperands){
+		if(o->getOperandId())
+			std::cout<<OperandBook::TheInstance.getSpec(o->getOperandId())<<std::endl;
+
+		std::cout<<(int)o->getOperandId()<<std::endl;
+		if(o->getOperandId() == iOperand){
+			o->setValue(opCode, iValue);
+		}
+	}
+
+	std::cout<<"updated [1]: "<<(void*)(long)opCode<<" "<<lstOperands.size()<<std::endl;
+}
+/*************************************************************************/
+void Decoder::updateOpcodeReference(size_t iDataSegmentShift)const{
+
+ 	uint32_t& opCode(const_cast<ASM::GenericInstruction*>(pGenericInstruction)->getOpcodeW());
+
+	//TODO move to another class ??
+	ASM::GenericInstruction::Addresses& refAddresses(
+		const_cast<ASM::GenericInstruction*>(pGenericInstruction)->getCurrentAddresses());
+
+	const EncodingBook::OperandList& lstOperands(EncodingBook::TheInstance.getEncodingOperands(pEncoding));
+
+	for(const auto& o: lstOperands){
+		if(o->isMemoryReference()){
+			ASM::GenericInstruction *pOther = pGenericInstruction->getReference();
+			if(pOther != nullptr){
+				std::cout<<"updateOpcodeReference: "<<(void*)refAddresses.iOpCode<<(void*)(long)opCode<<std::endl;
+				o->setMemoryReference(opCode, refAddresses.iOpCode,pGenericInstruction->getReference()->getCurrentAddresses().iOpCode); 
+				std::cout<<"updated: "<<(void*)(long)opCode<<std::endl;
+			}else{
+				//if(pEncoding->iClass == Spec::C_pcreladdr){
+				
+				if(refAddresses.iReference){
+
+					std::cout<<"setValue:"<<(void*)(long)refAddresses.iOpCode<<"\t"<<(void*)(long)refAddresses.iReference<<std::endl;
+					o->setMemoryReference(opCode, refAddresses.iOpCode, refAddresses.iReference + iDataSegmentShift); 
+
+				}
+			}
+		}else{
+			//throw Tools::Exception()<<"Instruction has no memory reference.";
+		}
+	}
+
 }	
 /*************************************************************************/
 }

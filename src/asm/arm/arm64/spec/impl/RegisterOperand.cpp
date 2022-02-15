@@ -31,8 +31,8 @@ const std::string& _sizeToRegisterName(uint8_t iSize){
 	return _r;
 }
 /*************************************************************************/
-RegisterOperand::RegisterOperand(const Field* tabFields, OperandId iOperand, uint8_t iSize):
-DefaultOperand(tabFields, iOperand, 0),
+RegisterOperand::RegisterOperand(const Field* tabFields, OperandId iOperandId, uint8_t iSize):
+DefaultOperand(tabFields, iOperandId, 0),
 strRegisterName(_sizeToRegisterName(iSize)){}
 /*************************************************************************/
 RegisterOperand::~RegisterOperand() throw(){

@@ -35,11 +35,12 @@ class PatternOperand : public Spec::Operand {
 public:
 
 	virtual ~PatternOperand() throw();
-	PatternOperand(const Field* tabFields, OperandId iOperand, uint8_t iShift, const std::string& strSpec, bool bIsMemoryReference = false, uint32_t iMask = 0xffffffff);
+	PatternOperand(const Field* tabFields, OperandId iOperandId, uint8_t iShift, const std::string& strSpec, bool bIsMemoryReference = false, uint32_t iMask = 0xffffffff);
 
 	virtual void    setValue(uint32_t& iOpCode, int32_t iValue) const;
     virtual int32_t getValue(uint32_t iOpCode) const;
-    virtual int32_t applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const;
+    virtual int64_t applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const;
+    virtual void    setMemoryReference(uint32_t& iOpCode, uint64_t iAddress, int64_t iReference)const;
 
     virtual void disassemble(uint32_t iOpCode, std::ostream& os) const;
 

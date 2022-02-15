@@ -12,14 +12,14 @@
 
 #include <tools/common.h>
 
+#include <asm/arm/arm64/spec/enums.h>
+#include <asm/arm/arm64/spec/Encoding.h>
+
 namespace ASM {
 class GenericInstruction;
 namespace ARM {
 namespace ARM64 {
 
-namespace Spec{
-	class Encoding;
-}
 /*************************************************************************/
 /** The Decoder class.
  *
@@ -34,9 +34,15 @@ public:
 
 	virtual ~Decoder() throw();
 	Decoder(const GenericInstruction* pGenericInstruction);
+	Decoder(const GenericInstruction* pGenericInstruction, Spec::EncodingId iEncodingId);
 
 	virtual void print(std::ostream& os, const SymbolResolver* pSymbolResover = nullptr);
+	
 	bool checkMemoryReference()const;
+	
+	void updateOpcodeReference(size_t iDataSegmentShift)const;
+
+	void setOperand(Spec::OperandId iOperand, uint32_t iValue)const;
 
 protected:
 	const GenericInstruction *pGenericInstruction;

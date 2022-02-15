@@ -29,7 +29,7 @@ class MemoryReferenceOperand : public DefaultOperand {
 public:
 
 	virtual ~MemoryReferenceOperand() throw();
-	MemoryReferenceOperand(const Field* tabFields, OperandId iOperand, uint8_t iShift);
+	MemoryReferenceOperand(const Field* tabFields, OperandId iOperandId, uint8_t iShift);
 
 	virtual void    setValue(uint32_t& iOpCode, int32_t iValue) const;
     virtual int32_t getValue(uint32_t iOpCode) const;

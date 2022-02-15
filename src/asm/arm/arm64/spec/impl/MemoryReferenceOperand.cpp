@@ -15,14 +15,15 @@ namespace Spec {
 namespace Impl {
 
 /*************************************************************************/
-MemoryReferenceOperand::MemoryReferenceOperand(const Field* tabFields, OperandId iOperand, uint8_t iShift):
-DefaultOperand(tabFields, iOperand, iShift, true){}
+MemoryReferenceOperand::MemoryReferenceOperand(const Field* tabFields, OperandId iOperandId, uint8_t iShift):
+DefaultOperand(tabFields, iOperandId, iShift, true){}
 /*************************************************************************/
 MemoryReferenceOperand::~MemoryReferenceOperand() throw(){
 }
 /*************************************************************************/
 void MemoryReferenceOperand::setValue(uint32_t& iOpCode, int32_t iValue) const{
-	//pField->setValue(iOpCode, iValue >> iShift);
+	pField->setValue(iOpCode, iValue >> iShift);
+	std::cout<<"updated field[3]"<<sName<<"::"<<(void*)(long)iOpCode<<std::endl;
 }
 /*************************************************************************/
 int32_t MemoryReferenceOperand::getValue(uint32_t iOpCode) const{

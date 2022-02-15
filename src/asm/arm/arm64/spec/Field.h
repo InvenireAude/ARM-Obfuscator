@@ -48,6 +48,16 @@ public:
 		}
 
 
+		void setValue(uint32_t& opCode, int32_t iValue)const{
+			static const uint32_t CFullMask = ~(uint32_t)0x0;
+			uint32_t iMask = ~(CFullMask << iWidth);			
+			iMask <<= iHiBit + 1 - iWidth;
+			opCode &= ~iMask;
+			iValue <<= iHiBit + 1 - iWidth;
+			iValue &= iMask;
+			opCode |= iValue;
+		}
+
 };
 
 /*************************************************************************/

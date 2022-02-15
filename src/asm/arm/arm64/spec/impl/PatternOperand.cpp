@@ -30,7 +30,7 @@ static inline const Field* _fieldForOperand(const Field* tabFields, const std::s
 	throw Tools::Exception()<<"Cannot determine field for pattern operand, field: "<<strField;
 }
 /*************************************************************************/
-PatternOperand::PatternOperand(const Field* tabFields, OperandId iOperand, uint8_t iShift,const std::string& strSpec, bool bIsMemoryReference, uint32_t iMask):
+PatternOperand::PatternOperand(const Field* tabFields, OperandId iOperandId, uint8_t iShift,const std::string& strSpec, bool bIsMemoryReference, uint32_t iMask):
  Spec::Operand(iOperandId, bIsMemoryReference),
  iShift(iShift),
  strName(strSpec),
@@ -62,7 +62,26 @@ PatternOperand::~PatternOperand() throw(){
 
 /*************************************************************************/
 void PatternOperand::setValue(uint32_t& iOpCode, int32_t iValue) const{
-	//pField->setValue(iOpCode, iValue >> iShift);
+
+	int iLastIdx = 0;
+
+	iValue >>= iShift;
+
+	std::cout<<"setValue:"<<(void*)(long)iValue<<std::endl;
+
+	while(tabUsedFields[iLastIdx] != nullptr){
+		iLastIdx++;
+	}	
+
+	while(iLastIdx != 0){
+		 iLastIdx--;
+		 static uint32_t CFullMask = ~0;
+		 uint32_t iMask = ~(CFullMask << tabUsedFields[iLastIdx]->iWidth);
+		 std::cout<<"setValue:"<<(void*)(long)(iMask&iValue)<<FieldBook::TheInstance.getName(tabUsedFields[iLastIdx]->iFieldId)<<std::endl;
+		 tabUsedFields[iLastIdx]->setValue(iOpCode, iMask & iValue);
+		 iValue >>= tabUsedFields[iLastIdx]->iWidth;
+	}
+
 }
 /*************************************************************************/
 int32_t PatternOperand::getValue(uint32_t iOpCode) const{
@@ -81,9 +100,20 @@ void PatternOperand::disassemble(uint32_t iOpCode, std::ostream& os)const{
 	printHex(getValue(iOpCode), os);
 }
 /*************************************************************************/
-int32_t PatternOperand::applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const{
+int64_t PatternOperand::applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const{
 	if(bIsMemoryReference){
 		return (iAddress + getValue(iOpCode)) & iMask;
+	}else{
+		
+		throw Tools::Exception()<<"Operand ["<<OperandBook::TheInstance.getSpec(iOperandId)
+				<<"]apply memory reference called on non-memory operand.";
+	}
+}
+/*************************************************************************/
+void PatternOperand::setMemoryReference(uint32_t& iOpCode, uint64_t iAddress, int64_t iReference)const{
+	
+	if(bIsMemoryReference){
+		setValue(iOpCode, iReference - iAddress - iMask);
 	}else{
 		
 		throw Tools::Exception()<<"Operand ["<<OperandBook::TheInstance.getSpec(iOperandId)

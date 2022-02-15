@@ -120,6 +120,17 @@ const char* EncodingBook::getName(EncodingId iEncodingId)const{
     return it->second;
 };
 /*************************************************************************/
+const Encoding* EncodingBook::get(EncodingId iEncodingId)const{
+
+    EncodingByIdMap::const_iterator it = hmEncodingById.find(iEncodingId);
+
+    if(it == hmEncodingById.end()){
+        throw Tools::Exception()<<"No encoding for id: "<<(int)iEncodingId;
+    }
+
+    return it->second;
+};
+/*************************************************************************/
 const char* EncodingBook::getMnemonic(EncodingId iEncodingId)const{
 
     MnemonicByIdMap::const_iterator it = TheMnemonicById.find(iEncodingId);

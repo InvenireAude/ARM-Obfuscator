@@ -32,9 +32,9 @@ static inline const Field* _fieldForOperand(const Field* tabFields, OperandId iO
 		<<OperandBook::TheInstance.getSpec(iOperandId);
 }
 /*************************************************************************/
-DefaultOperand::DefaultOperand(const Field* tabFields, OperandId iOperand, uint8_t iShift, bool bIsMemoryReference):
+DefaultOperand::DefaultOperand(const Field* tabFields, OperandId iOperandId, uint8_t iShift, bool bIsMemoryReference):
  Spec::Operand(iOperandId, bIsMemoryReference),
- pField(_fieldForOperand(tabFields, iOperand)),
+ pField(_fieldForOperand(tabFields, iOperandId)),
  iShift(iShift),
  sName(FieldBook::TheInstance.getName(pField->iFieldId)){
 }
@@ -44,7 +44,8 @@ DefaultOperand::~DefaultOperand() throw(){
 
 /*************************************************************************/
 void DefaultOperand::setValue(uint32_t& iOpCode, int32_t iValue) const{
-	//pField->setValue(iOpCode, iValue >> iShift);
+	pField->setValue(iOpCode, iValue >> iShift);
+	std::cout<<"updated field[1]:"<<sName<<"::"<<(void*)(long)iOpCode<<std::endl;
 }
 /*************************************************************************/
 int32_t DefaultOperand::getValue(uint32_t iOpCode) const{

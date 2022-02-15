@@ -29,7 +29,7 @@ class DefaultSignedOperand : public DefaultOperand {
 public:
 
 	virtual ~DefaultSignedOperand() throw();
-	DefaultSignedOperand(const Field* tabFields, OperandId iOperand, uint8_t iShift);
+	DefaultSignedOperand(const Field* tabFields, OperandId iOperandId, uint8_t iShift);
 
 	virtual void    setValue(uint32_t& iOpCode, int32_t iValue) const;
     virtual int32_t getValue(uint32_t iOpCode) const;

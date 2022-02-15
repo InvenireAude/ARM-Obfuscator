@@ -43,9 +43,11 @@ protected:
 	void insertSpaceAfter(Elf64::S::Off iOffset, size_t iSize);
 
 	size_t iDataSegmentShift;
-
 	size_t iOrginalDataStart;
-	
+
+	size_t iAfterTextShift;
+	size_t iOrginalAfterText;
+
 	ELF::Elf64::Section *pTextSection;
     ELF::Elf64::Section *pEhFrameSection;
     ELF::Elf64::Section *pDynamicSection;

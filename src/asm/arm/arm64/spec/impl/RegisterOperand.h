@@ -29,7 +29,7 @@ class RegisterOperand : public DefaultOperand {
 public:
 
 	virtual ~RegisterOperand() throw();
-	RegisterOperand(const Field* tabFields, OperandId iOperand, uint8_t iSize);
+	RegisterOperand(const Field* tabFields, OperandId iOperandId, uint8_t iSize);
 
    virtual void disassemble(uint32_t iOpCode, std::ostream& os) const;
 

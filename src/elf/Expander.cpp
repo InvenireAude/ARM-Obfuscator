@@ -28,9 +28,11 @@ void Expander::expand(size_t iNeededSpace){
     pEhFrameSection = pHeader->lookup(".eh_frame");
     pDynamicSection = pHeader->lookup(".dynamic");
 
-    iOrginalDataStart = pHeader->lookup(".data")->get_addr();
-
-    size_t iSpaceAvailable = pDynamicSection->get_offset() - (pEhFrameSection->get_offset() + pEhFrameSection->get_size());
+    iOrginalDataStart = pDynamicSection->get_addr();
+	iOrginalAfterText = pEhFrameSection->get_addr();
+	iAfterTextShift   = iNeededSpace;
+    
+	size_t iSpaceAvailable = pDynamicSection->get_offset() - (pEhFrameSection->get_offset() + pEhFrameSection->get_size());
 
     std::cout<<"iSpaceAvailable ?  iRemaing"<<(void*)iSpaceAvailable<<" ?? "<<(void*)iRemaing<<std::endl;
 
@@ -101,7 +103,7 @@ void Expander::insertSpaceAfter(Elf64::S::Off iOffset, size_t iSize){
 				s->set_vaddr(s->get_vaddr() + iSize);
 			}
 		}
-	
+
 }
 
 /*************************************************************************/
@@ -149,8 +151,11 @@ void Expander::updateDataSegmentSymbols(){
 
 		for(auto& s : lstSymbols){
 			if(s->get_value() >= iOrginalDataStart){
-				std::cout<<"Setting symbol"<<s->getName()<<std::endl;
+				std::cout<<"Setting symbol [1] "<<s->getName()<<std::endl;
 				s->set_value(s->get_value() + iDataSegmentShift);
+			}else if(s->get_value() >= iOrginalAfterText){
+				std::cout<<"Setting symbol [2] "<<s->getName()<<std::endl;
+				s->set_value(s->get_value() + iAfterTextShift);
 			}
 		}
 	}

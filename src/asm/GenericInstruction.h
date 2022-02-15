@@ -88,6 +88,13 @@ public:
 		return *reinterpret_cast<const uint32_t*>(tOpCode);
 	};
 
+	inline uint32_t& getOpcodeW(){
+		if(iLength != 4)
+			throw Tools::Exception()<<"Opcode is not 32bit size: "<<iLength;
+
+		return *reinterpret_cast<uint32_t*>(tOpCode);
+	};
+
 	inline GenericInstruction* getNext()const{
 		return pNext;
 	}
@@ -111,6 +118,7 @@ public:
 	inline void setReference(GenericInstruction* pReference){
 	 this->pReference = pReference;
 	}
+	
 	
 protected:
 	//TODO larger opcodes and data content as a malloc on demand;
@@ -166,6 +174,21 @@ public:
 
 	inline const GenericInstruction* getTail()const{
 		return pTail;
+	}
+
+	inline void insertAfter(GenericInstruction *pPosition, GenericInstruction* pNew){
+		
+		if(pPosition == pTail){
+			pTail = pNew;
+			pNew->pNext = nullptr;
+		}else{
+			pPosition->pNext->pPrev = pNew;
+			pNew->pNext = pPosition->pNext;
+		}
+
+		pNew->pPrev = pPosition;
+		pPosition->pNext = pNew;
+
 	}
 
 protected:

@@ -48,6 +48,26 @@ public:
 
 	void setOperand(Spec::OperandId iOperand, uint32_t iValue)const;
 
+	template<Spec::OperandId iOperand1, Spec::OperandId iOperand2>
+	  inline void setOperands(uint32_t iValue1, uint32_t iValue2){
+		  setOperand(iOperand1, iValue1);
+		  setOperand(iOperand2, iValue2);
+	  }
+
+	template<Spec::OperandId iOperand1, Spec::OperandId iOperand2, Spec::OperandId iOperand3>
+	  inline void setOperands(uint32_t iValue1, uint32_t iValue2, uint32_t iValue3){
+		  setOperand(iOperand1, iValue1);
+		  setOperand(iOperand2, iValue2);
+		  setOperand(iOperand3, iValue3);
+	  }
+
+	template<Spec::OperandId iOperand1, Spec::OperandId iOperand2, Spec::OperandId iOperand3, Spec::OperandId iOperand4>
+	  inline void setOperands(uint32_t iValue1, uint32_t iValue2, uint32_t iValue3, uint32_t iValue4 ){
+		  setOperand(iOperand1, iValue1);
+		  setOperand(iOperand2, iValue2);
+		  setOperand(iOperand3, iValue3);
+		  setOperand(iOperand4, iValue4);
+	  }
 
 protected:
 

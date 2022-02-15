@@ -32,7 +32,8 @@ void info(char *s){
   std::cout << "Usage: " << s << " <input_file> <output_file>" << std::endl;
 }
 
-
+using namespace ASM::ARM::ARM64;
+using namespace ASM::ARM::ARM64::Spec;
 
 int main(int argc, char *argv[]){
 
@@ -75,33 +76,31 @@ int main(int argc, char *argv[]){
         pFunSymbol->withFirst([&b](auto& itInstruction){
 
             for(int i=0; i<5; i++){
-              b.createBlankInstruction(itInstruction, ASM::ARM::ARM64::Spec::E_NOP_HI_hints);
+              b.createBlankInstruction(itInstruction, Spec::E_NOP_HI_hints);
             }
         
         });
 
        pFunSymbol->forAll([&b](auto& itInstruction){
 
-            if( itInstruction->template getEncoded<ASM::Item::ET_ARMv8, ASM::ARM::ARM64::Spec::Encoding*>()->iEncodingId == 
-                      ASM::ARM::ARM64::Spec::E_LDR_32_ldst_pos){
+            if( itInstruction->template getEncoded<ASM::Item::ET_ARMv8, Spec::Encoding*>()->iEncodingId == 
+                      Spec::E_LDR_32_ldst_pos){
                         for(int i=0; i<20; i++){
 
-                        itInstruction = b.createBlankInstruction(itInstruction, ASM::ARM::ARM64::Spec::E_ADD_32_addsub_imm);
+                        itInstruction = b.createBlankInstruction(itInstruction, Spec::E_ADD_32_addsub_imm);
 
                         ASM::ARM::ARM64::DecodedInstruction d(*itInstruction);
-                        
-                        d.setOperand(ASM::ARM::ARM64::Spec::O_imm12, i);
-                        d.setOperand(ASM::ARM::ARM64::Spec::O_Rd,  i%5);
-                        d.setOperand(ASM::ARM::ARM64::Spec::O_Rn,  (i+1)%5);
-          
+                      
+                        d.setOperands<O_Rd, O_Rn, O_imm12>( (i+1) % 5, i % 5, i);
+
                     }
                 }
         
         });
 
-        pFunSymbol->forAllSkipNew([&b](auto& itInstruction){
-          b.createBlankInstruction(itInstruction, ASM::ARM::ARM64::Spec::E_NOP_HI_hints);
-        });
+        // pFunSymbol->forAllSkipNew([&b](auto& itInstruction){
+        //   b.createBlankInstruction(itInstruction, Spec::E_NOP_HI_hints);
+        // });
 
         pFunSymbol->updateSize();
 

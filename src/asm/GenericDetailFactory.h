@@ -24,7 +24,7 @@ namespace ASM
 	{
 	public:
 		virtual ~GenericDetailFactory() throw();
-		GenericDetailFactory(size_t iSize = 100000);
+		GenericDetailFactory(size_t iSize = 1000000);
 
 		GenericDetail *allocateGenericDetail();
 		Item *allocateItem();

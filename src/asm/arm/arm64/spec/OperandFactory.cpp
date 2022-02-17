@@ -44,6 +44,10 @@ Operand* OperandFactory::CreateOperand(const Encoding* pEncoding, OperandId iOpe
         return new Impl::MemoryReferenceOperand(pEncoding->fields, iOperandId, 2);
     }
 
+    if(pEncoding->iClass == C_condbranch && strSpec.compare("imm19") == 0){
+        return new Impl::MemoryReferenceOperand(pEncoding->fields, iOperandId, 2);
+    }
+
     if(_TheRegisterOperands.count(strSpec)){
         return new Impl::RegisterOperand(pEncoding->fields, iOperandId, 64);
     }

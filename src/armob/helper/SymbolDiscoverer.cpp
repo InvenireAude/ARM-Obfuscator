@@ -40,7 +40,9 @@ void SymbolDiscoverer::discover(){
 
     const ELF::Elf64::Header* pHeader = pArtefact->getHeader64();
 
-    const typename ELF::Elf64::SymbolTable::SymbolList& lstSymbols(pHeader->getSymbolTable()->getSymbols());
+    
+    const typename ELF::Elf64::SymbolTable::SymbolList& lstSymbols(
+        pHeader->hasSymbolTable() ? pHeader->getSymbolTable()->getSymbols() : pHeader->getDynSymbolTable()->getSymbols());
 
 	int iIdx = 0;
 

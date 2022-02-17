@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
 
   try{
 
-    if(argc < 3){
+    if(argc < 4){
       throw Tools::Exception()<<"Bad parameters.";
     }
 
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]){
         ARMOB::Helper::SymbolBuilder b(ptrArtefactCopy.get(), ptrSymbols.get());
 
 
-        ARMOB::Symbol* pFunSymbol = ptrSymbols->getSymbol("fun");
+        ARMOB::Symbol* pFunSymbol = ptrSymbols->getSymbol(argv[3]);
 
         pFunSymbol->withFirst([&b](auto& itInstruction){
 
@@ -153,7 +153,7 @@ int main(int argc, char *argv[]){
 
         pHeader->lookup(".text")->set_size(pCursor - pTextStart);
 
-        pHeader->getSymbolTable()->lookup("fun")->set_size(ptrSymbols->getSymbol("fun")->getSize());
+        pHeader->getSymbolTable()->lookup(argv[3])->set_size(ptrSymbols->getSymbol(argv[3])->getSize());
 
         ARMOB::Helper::Disassembler dis(ptrSymbols.get());
 

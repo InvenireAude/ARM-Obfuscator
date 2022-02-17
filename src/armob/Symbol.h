@@ -80,7 +80,7 @@ public:
 
 	void setStart(ASM::ItemList::iterator itStart){
 		this->itStart = itStart;
-		this->itStart = itStart;
+		this->itEnd = itStart;
 	}
 
 	void setEnd(ASM::ItemList::iterator itEnd){

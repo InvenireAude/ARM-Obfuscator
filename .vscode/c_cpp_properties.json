@@ -5,7 +5,7 @@
             "includePath": [
                 "/usr/include/**",
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/src",
+                "${workspaceFolder}/src/**",
                 "/usr/include/libxml++-3.0"
             ],
             "defines": [],

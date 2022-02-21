@@ -13,8 +13,11 @@
 
 #include <asm/GenericInstruction.h>
 #include <asm/arm/arm64/Decoder.h>
+
+#include <armob/WorkContext.h>
 #include <armob/DiscoveredSymbols.h>
-#include <armob/helper/SymbolDiscoverer.h>
+
+#include <armob/helper/Discoverer.h>
 #include <armob/helper/Disassembler.h>
 
 using namespace ELF;
@@ -38,15 +41,14 @@ int main(int argc, char *argv[]){
 	  
       if(ptrArtefact->getIdentification()->getClass() == ELFCLASS64){
 
-        std::unique_ptr<ARMOB::DiscoveredSymbols> ptrSymbols(new ARMOB::DiscoveredSymbols());
 
-        ARMOB::Helper::SymbolDiscoverer d(ptrArtefact.get(), ptrSymbols.get());
+        ARMOB::WorkContext ctx(ptrArtefact.get());
+        ARMOB::Helper::Discoverer d(&ctx);
 
         d.discover();
-        d.build();
-        d.resolve();
-        ARMOB::Helper::Disassembler dis(ptrSymbols.get());
-       dis.print(argv[2], std::cout);
+
+        ARMOB::Helper::Disassembler dis(ctx.getSymbols());
+        dis.print(argv[2], std::cout);
 
       //   const ELF::Elf64::Header* pHeader = ptrArtefact->getHeader64();
       //   const ELF::Elf64::Symbol* pSymbol = pHeader->getSymbolTable()->lookup(argv[2]);

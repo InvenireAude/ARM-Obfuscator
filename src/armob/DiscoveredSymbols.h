@@ -54,19 +54,6 @@ public:
 		return tabSymbolSets[iType];
 	}
 
-	// inline bool checkType(Symbol::Type iType, uint64_t iAddress){
-	// 	SymbolMap::iterator it = mapSymbols.lower_bound(iAddress);
-	// 	if(it == mapSymbols.begin())
-	// 		return false;
-	// 	it--;
-	// 	return  (iAddress >= it->second->getAddress()) &&
-	// 			(iAddress <= it->second->getAddress() + it->second->getSize());
-	// }
-
-	ASM::ItemList& getInstructions(){
-		return lstInstructions;
-	}
-
 	Symbol* getSymbol(const std::string& strName){
 		SymbolMap::iterator it = mapSymbols.find(strName);
 
@@ -77,23 +64,12 @@ public:
 		return it->second.get();
 	}
 
-	inline ASM::GenericDetailFactory* getGenericDetailFactory()const{
-		return ptrGenericDetailFactory.get();
-	}
-	
-
-  	ASM::ItemList::iterator appendNewInstruction(const uint8_t *pOpCode, uint8_t  iLength, uint64_t iOpCodeAddress){
-  		return lstInstructions.append(ptrGenericDetailFactory->create(pOpCode, iLength, iOpCodeAddress));
-	}
 
 protected:
 
 	SymbolMap mapSymbols;
 	SymbolSet tabSymbolSets[Symbol::ST_NumTypes];
 
-	ASM::ItemList lstInstructions;
-
-	std::unique_ptr<ASM::GenericDetailFactory> ptrGenericDetailFactory;
 };
 /*************************************************************************/
 }

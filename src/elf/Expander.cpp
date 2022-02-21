@@ -59,6 +59,16 @@ void Expander::expand(size_t iNeededSpace){
 
     pTextSection->set_size(pTextSection->get_size() + iRemaing);     
 
+    (*pHeader->getSegments().begin())->set_filesz(
+            pEhFrameSection->get_offset() + pEhFrameSection->get_size() + 1
+        );
+
+        (*pHeader->getSegments().begin())->set_memsz(
+            pEhFrameSection->get_offset() + pEhFrameSection->get_size() + 1
+        );
+
+    pHeader->write();
+
 	iDataSegmentShift = iDataMovementAligned;
 }
 /*************************************************************************/

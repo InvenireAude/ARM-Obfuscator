@@ -1,5 +1,5 @@
 /*
- * File: SymbolDiscoverer.h
+ * File: Discoverer.h
  *
  * Copyright (C) 2021, Albert Krzymowski
  *
@@ -7,8 +7,8 @@
  */
 
 
-#ifndef _ARMOB_Helper_SymbolDiscoverer_H_
-#define _ARMOB_Helper_SymbolDiscoverer_H_
+#ifndef _ARMOB_Helper_Discoverer_H_
+#define _ARMOB_Helper_Discoverer_H_
 
 #include <tools/common.h>
 
@@ -24,6 +24,7 @@ namespace ASM{
 }
 
 namespace ARMOB {
+class WorkContext;
 class DiscoveredSymbols;
 
 namespace Helper {
@@ -35,27 +36,28 @@ namespace ARMOB {
 namespace Helper {
 
 /*************************************************************************/
-/** The SymbolDiscoverer class.
+/** The Discoverer class.
  *
  */
-class SymbolDiscoverer {
+class Discoverer {
 public:
 
-	virtual ~SymbolDiscoverer() throw();
+	virtual ~Discoverer() throw();
 
-	SymbolDiscoverer(const ELF::Artefact* pArtefact, 
-					 DiscoveredSymbols*   pDiscoveredSymbols);
+	Discoverer(WorkContext* pWorkContext);
 
 	void discover();
-	void build();
-	void resolve();
 	
 protected:
-	const ELF::Artefact* pArtefact;
-	DiscoveredSymbols*   pDiscoveredSymbols;
-	
-	const ELF::Elf64::Header* pHeader;
 
+	WorkContext               *pWorkContext;
+	DiscoveredSymbols         *pDiscoveredSymbols;
+	const ELF::Elf64::Header  *pHeader;
+	
+	void build(const std::string& strSectionName);
+	void resolve(const std::string& strSectionName);
+
+	void discoverSymbols();
 	void discoverPLTSymbols();
 };
 
@@ -63,4 +65,4 @@ protected:
 }
 }
 
-#endif /* _ARMOB_Helper_SymbolDiscoverer_H_ */
+#endif /* _ARMOB_Helper_Discoverer_H_ */

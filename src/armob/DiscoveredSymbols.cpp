@@ -11,12 +11,10 @@
 namespace ARMOB {
 
 /*************************************************************************/
-DiscoveredSymbols::DiscoveredSymbols():
-  ptrGenericDetailFactory(new ASM::GenericDetailFactory()){
+DiscoveredSymbols::DiscoveredSymbols(){
 }
 /*************************************************************************/
 DiscoveredSymbols::~DiscoveredSymbols() throw(){
-	
 }
 /*************************************************************************/
 Symbol* DiscoveredSymbols::add(Symbol::Type iType, uint64_t iAddress, uint64_t iSize, const std::string& strName){

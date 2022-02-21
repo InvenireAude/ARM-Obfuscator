@@ -1,19 +1,20 @@
 /*
- * File: SymbolDiscoverer.cpp
+ * File: Discoverer.cpp
  *
  * Copyright (C) 2021, Albert Krzymowski
  *
  */
 
-#include "SymbolDiscoverer.h"
+#include "Discoverer.h"
 
 #include <asm/arm/arm64/DecodedInstruction.h>
 
 #include <armob/DiscoveredSymbols.h>
+#include <armob/DiscoveredDetails.h>
+#include <armob/WorkContext.h>
 
 #include <asm/GenericDetail.h>
 #include <asm/GenericDetailFactory.h>
-
 
 
 
@@ -21,24 +22,27 @@ namespace ARMOB {
 namespace Helper {
 
 /*************************************************************************/
-SymbolDiscoverer::SymbolDiscoverer(const ELF::Artefact* pArtefact, 
-                                   DiscoveredSymbols* pDiscoveredSymbols):
-    pArtefact(pArtefact),
-    pDiscoveredSymbols(pDiscoveredSymbols),
-    pHeader(pArtefact->getHeader64()){
+Discoverer::Discoverer(WorkContext* pWorkContext):
+    pWorkContext(pWorkContext),
+    pDiscoveredSymbols(pWorkContext->getSymbols()),
+    pHeader(pWorkContext->getHeader64()){
 }
 /*************************************************************************/
-SymbolDiscoverer::~SymbolDiscoverer() throw(){
+Discoverer::~Discoverer() throw(){
 
 }
 /*************************************************************************/
-void SymbolDiscoverer::discover(){
+void Discoverer::discover(){
     
-    if(pArtefact->getIdentification()->getClass() != ELF::ELFCLASS64){
-        throw Tools::Exception()<<"Only 64bit elfs are supported.";
-    }
-
-    
+    discoverSymbols();
+    discoverPLTSymbols();    
+   
+    build(WorkContext::CTextSection);
+    resolve(WorkContext::CTextSection);
+}
+/*************************************************************************/
+void Discoverer::discoverSymbols(){
+        
     const typename ELF::Elf64::SymbolTable::SymbolList& lstSymbols(
         pHeader->hasSymbolTable() ? pHeader->getSymbolTable()->getSymbols() : pHeader->getDynSymbolTable()->getSymbols());
 
@@ -51,10 +55,9 @@ void SymbolDiscoverer::discover(){
         }
 	}
 
-    discoverPLTSymbols();
 }
 /*************************************************************************/
-void SymbolDiscoverer::discoverPLTSymbols(){
+void Discoverer::discoverPLTSymbols(){
 
 
     ELF::SectionBook::PLTInfo pltInfo;
@@ -100,21 +103,21 @@ void SymbolDiscoverer::discoverPLTSymbols(){
     }
 }
 /*************************************************************************/
-void SymbolDiscoverer::build(){
+void Discoverer::build(const std::string& strSectionName){
     
     ARMOB::DiscoveredSymbols::SymbolSet setCodeSymbols(
         pDiscoveredSymbols->getSymbols(Symbol::ST_Code));
     
-    const ELF::Elf64::Header* pHeader = pArtefact->getHeader64();
+    const ELF::Elf64::Section* pSection = pHeader->lookup(strSectionName);
 
-    const ELF::Elf64::Section* pSection = pHeader->lookup(".text");
+	DiscoveredDetails *pDiscoveredDetails = pWorkContext->getDetails(strSectionName);
 
     const uint8_t* pData         = pSection->getData<uint8_t>();
     ELF::Elf64::S::Addr iAddress = pSection->get_addr();
     size_t  iSize                = pSection->get_size();
     const   int  iStep           = 4;
 
-    ASM::ItemList& lstInstructions(pDiscoveredSymbols->getInstructions());
+    ASM::ItemList& lstInstructions(pDiscoveredDetails->getInstructions());
 
     for(  ARMOB::DiscoveredSymbols::SymbolSet::iterator it = setCodeSymbols.begin();
             it != setCodeSymbols.end(); it++){
@@ -143,7 +146,7 @@ void SymbolDiscoverer::build(){
                 iCounter = 0;
         }
 
-        ASM::ItemList::iterator itNew = pDiscoveredSymbols->appendNewInstruction(pData + iOffset, iStep, iAddress + iOffset);
+        ASM::ItemList::iterator itNew = pDiscoveredDetails->appendNewInstruction(pData + iOffset, iStep, iAddress + iOffset);
         ASM::ARM::ARM64::DecodedInstruction d(*itNew);
 
         iCounter ++;
@@ -158,12 +161,12 @@ void SymbolDiscoverer::build(){
 }
 /*************************************************************************/
 
+void Discoverer::resolve(const std::string& strSectionName){
 
-/*************************************************************************/
+	DiscoveredDetails *pDiscoveredDetails = pWorkContext->getDetails(strSectionName);
 
-void SymbolDiscoverer::resolve(){
 
-for(auto& item : pDiscoveredSymbols->getInstructions()){
+    for(auto& item : pDiscoveredDetails->getInstructions()){
 
       ASM::ARM::ARM64::DecodedInstruction d(item); 
  

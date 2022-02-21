@@ -1,7 +1,10 @@
 add_library(ARMOB-Armob OBJECT
+src/armob/DiscoveredDetails.cpp
+src/armob/WorkContext.cpp
+src/armob/helper/InstructionFactory.cpp
+src/armob/helper/Builder.cpp
 src/armob/helper/Disassembler.cpp
-src/armob/helper/SymbolBuilder.cpp
-src/armob/helper/SymbolDiscoverer.cpp
+src/armob/helper/Discoverer.cpp
 src/armob/DiscoveredSymbols.cpp
 src/armob/Symbol.cpp
 )

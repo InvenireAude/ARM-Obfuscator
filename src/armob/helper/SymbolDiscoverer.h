@@ -12,6 +12,9 @@
 
 #include <tools/common.h>
 
+#include <elf/elf.h>
+
+
 namespace ELF {
 	class Artefact;
 }
@@ -50,6 +53,10 @@ public:
 protected:
 	const ELF::Artefact* pArtefact;
 	DiscoveredSymbols*   pDiscoveredSymbols;
+	
+	const ELF::Elf64::Header* pHeader;
+
+	void discoverPLTSymbols();
 };
 
 /*************************************************************************/

@@ -13,5 +13,6 @@
 #include "ArtefactFromFile.h"
 #include "ArtefactCopy.h"
 
+#include "SectionBook.h"
 
 #endif

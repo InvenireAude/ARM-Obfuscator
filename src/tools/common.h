@@ -15,6 +15,7 @@
 #include <string>
 #include <iostream>
 #include <memory>
+#include <iomanip>
 
 #include "Exception.h"
 #include "ValueMap.h"

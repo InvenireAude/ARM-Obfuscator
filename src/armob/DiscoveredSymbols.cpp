@@ -27,6 +27,8 @@ Symbol* DiscoveredSymbols::add(Symbol::Type iType, uint64_t iAddress, uint64_t i
     // SymbolMap::iterator it = mapSymbols.find(iAddress);
     SymbolMap::iterator it = mapSymbols.find(strName);
 
+    std::cout<<"Adding discovered: "<<strName<<"\t 0x"<<std::hex<<iAddress<<std::dec<<std::endl;
+
     if(it == mapSymbols.end()){
         mapSymbols[strName].reset(pResult = new Symbol(iType, iAddress, iSize, strName));
         tabSymbolSets[iType][iAddress] = pResult;

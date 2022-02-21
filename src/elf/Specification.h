@@ -536,14 +536,16 @@ enum DynamicTags : uint32_t {
 };
 
 namespace Map {
-	extern ::Tools::ValueMap Class;
-	extern ::Tools::ValueMap Data;
-	extern ::Tools::ValueMap Version;
+  	 extern ::Tools::ValueMap Class;
+	 extern ::Tools::ValueMap Data;
+	 extern ::Tools::ValueMap Version;
     extern ::Tools::ValueMap SegmentType;
     extern ::Tools::ValueMap SectionType;
     extern ::Tools::ValueMap SymbolBind;
     extern ::Tools::ValueMap SymbolType;
     extern ::Tools::ValueMap DynamicTag;
+    extern ::Tools::ValueMap MachineType;
+    extern ::Tools::ValueMap MachineName;
 }
 
 

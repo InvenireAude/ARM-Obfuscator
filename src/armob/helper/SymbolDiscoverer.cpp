@@ -15,7 +15,6 @@
 #include <asm/GenericDetailFactory.h>
 
 
-#include <elf/elf.h>
 
 
 namespace ARMOB {
@@ -25,7 +24,8 @@ namespace Helper {
 SymbolDiscoverer::SymbolDiscoverer(const ELF::Artefact* pArtefact, 
                                    DiscoveredSymbols* pDiscoveredSymbols):
     pArtefact(pArtefact),
-    pDiscoveredSymbols(pDiscoveredSymbols){
+    pDiscoveredSymbols(pDiscoveredSymbols),
+    pHeader(pArtefact->getHeader64()){
 }
 /*************************************************************************/
 SymbolDiscoverer::~SymbolDiscoverer() throw(){
@@ -37,8 +37,6 @@ void SymbolDiscoverer::discover(){
     if(pArtefact->getIdentification()->getClass() != ELF::ELFCLASS64){
         throw Tools::Exception()<<"Only 64bit elfs are supported.";
     }
-
-    const ELF::Elf64::Header* pHeader = pArtefact->getHeader64();
 
     
     const typename ELF::Elf64::SymbolTable::SymbolList& lstSymbols(
@@ -52,6 +50,54 @@ void SymbolDiscoverer::discover(){
 		    pDiscoveredSymbols->addCode(s->get_value(), s->get_size(), strName);
         }
 	}
+
+    discoverPLTSymbols();
+}
+/*************************************************************************/
+void SymbolDiscoverer::discoverPLTSymbols(){
+
+
+    ELF::SectionBook::PLTInfo pltInfo;
+
+    if(!ELF::SectionBook::TheInstance.getPLTInfo(pHeader, &pltInfo)){
+        return;
+    }
+
+    typedef std::list< const char* > NamesList;
+    
+    NamesList lstPLTNames;
+
+    if(pHeader->hasRelocationPltInfo()){
+        const ELF::Elf64::RelocationInfo::RelocationTable& tabRelocations(
+            pHeader->getRelocationPltInfo()->getRelocationTable());
+        
+        for(const auto& d: tabRelocations){
+            lstPLTNames.push_back(pHeader->getDynSymbolTable()->get(d->getSymbolOffset())->getName());
+        }
+    } 
+
+
+    const typename ELF::Elf64::Section* pPLTSection = pHeader->lookup(".plt");
+
+    ELF::Elf64::S::Addr iAddrData    = pPLTSection->get_addr();
+    ELF::Elf64::S::Addr iCursor      = iAddrData;
+    ELF::Elf64::S::Addr iAddrDataEnd = iAddrData + pPLTSection->get_size();
+
+    iCursor += pltInfo.iPLTPrologSize;
+    NamesList::const_iterator it = lstPLTNames.begin();
+
+    while(iCursor < iAddrDataEnd){
+        std::stringstream ssName;
+        if(it != lstPLTNames.end()){
+          ssName << (*it);  
+        }else{
+          ssName <<"0x"<<std::hex<<(iCursor-iAddrData)<<std::dec;
+        }
+        ssName<<"@PLT";
+        pDiscoveredSymbols->addCode(iCursor, pltInfo.iPLTEntrySize, ssName.str());
+        iCursor += pltInfo.iPLTEntrySize;
+        it++;
+    }
 }
 /*************************************************************************/
 void SymbolDiscoverer::build(){

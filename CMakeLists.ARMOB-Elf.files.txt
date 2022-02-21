@@ -1,6 +1,7 @@
 add_library(ARMOB-Elf OBJECT
 src/elf/impl/Component.cpp
 src/elf/Printer.cpp
+src/elf/SectionBook.cpp
 src/elf/Specification.cpp
 src/elf/ContentFile.cpp
 src/elf/Content.cpp

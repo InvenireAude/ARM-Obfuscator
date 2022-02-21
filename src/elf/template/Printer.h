@@ -68,7 +68,8 @@ void printHeader(){
 	printIdentification(pHeader	->getContent()->getIdentification());
 
 	os<<"\t type:     \t"<<pHeader->get_type()<<std::endl;
-	os<<"\t machine:  \t"<<pHeader->get_machine()<<std::endl;
+	os<<"\t machine:  \t"<<Map::MachineName.getString(pHeader->get_machine());
+	os<<"  ("<<Map::MachineType.getString(pHeader->get_machine())<<")"<<std::endl;
 	os<<"\t version:  \t"<<pHeader->get_version()<<std::endl;
 	os<<"\t entry:    \t0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<pHeader->get_entry()<<std::dec<<std::endl;
 	os<<"\t phoff:    \t0x"<<std::hex<<std::setfill('0')<<std::setw(8)<<pHeader->get_phoff()<<std::dec<<std::endl;

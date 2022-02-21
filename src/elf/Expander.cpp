@@ -182,6 +182,7 @@ void Expander::updateDataSegmentSymbols(){
 		}
 	}
 
+    pHeader->write();
 }
 /*************************************************************************/
 }

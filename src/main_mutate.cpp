@@ -86,13 +86,13 @@ int main(int argc, char *argv[]){
 
             if( itInstruction->template getEncoded<ASM::Item::ET_ARMv8, Spec::Encoding*>()->iEncodingId == 
                       Spec::E_LDR_32_ldst_pos){
-                        for(int i=0; i<20; i++){
+                        for(int i=0; i<10000; i++){
 
                         itInstruction = factory.createBlankInstruction(itInstruction, Spec::E_ADD_32_addsub_imm);
 
                         ASM::ARM::ARM64::DecodedInstruction d(*itInstruction);
                       
-                        d.setOperands<O_Rd, O_Rn, O_imm12>( (i+1) % 5, i % 5, i);
+                        d.setOperands(O_Rd, (i+1) % 5, O_Rn, i % 5, O_imm12, 2);
 
                     }
                 }

@@ -38,7 +38,10 @@ void Discoverer::discover(){
     discoverPLTSymbols();    
    
     build(WorkContext::CTextSection);
+    build(WorkContext::CPltSection);
+    
     resolve(WorkContext::CTextSection);
+    resolve(WorkContext::CPltSection);
 }
 /*************************************************************************/
 void Discoverer::discoverSymbols(){

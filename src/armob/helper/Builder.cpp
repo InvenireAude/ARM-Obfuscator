@@ -51,8 +51,10 @@ void Builder::build(){
     }  
 
     updateReferences(WorkContext::CTextSection);
-
+    updateReferences(WorkContext::CPltSection);
     write(WorkContext::CTextSection);
+    write(WorkContext::CPltSection);
+
 }
 /*************************************************************************/
 size_t Builder::recomputeAddresses(const std::string& strSectionName){

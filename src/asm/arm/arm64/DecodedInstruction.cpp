@@ -199,7 +199,7 @@ void DecodedInstruction::updateOpcodeReference(size_t iDataSegmentShift)const{
 		if(o->isMemoryReference()){
 			ASM::GenericDetail *pOther = pGenericDetail->getReference();
 			if(pOther != nullptr){
-				std::cout<<"updateOpcodeReference: "<<(void*)refAddresses.iOpCode<<(void*)(long)opCode<<std::endl;
+				std::cout<<"updateOpcodeReference: "<<(void*)refAddresses.iOpCode<<" "<<(void*)(long)opCode<<std::endl;
 				o->setMemoryReference(opCode, refAddresses.iOpCode,pGenericDetail->getReference()->getCurrentAddresses().iOpCode); 
 				std::cout<<"updated: "<<(void*)(long)opCode<<std::endl;
 			}else{

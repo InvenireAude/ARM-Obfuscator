@@ -74,10 +74,20 @@ int main(int argc, char *argv[]){
 
         Symbol* pFunSymbol = ctx.getSymbols()->getSymbol(argv[3]);
 
+
         pFunSymbol->withFirst([&factory](auto& itInstruction){
 
+            auto itNext(itInstruction);
+            ++itNext;
+            factory.createJump(itInstruction, Spec::E_BL_only_branch_imm, itNext);
+        
+        });
+
+        pFunSymbol->withFirst([&factory](auto& itInstruction){
+          
+            ++itInstruction;
             for(int i=0; i<5; i++){
-              factory.createBlankInstruction(itInstruction, Spec::E_NOP_HI_hints);
+              factory.create(itInstruction, Spec::E_NOP_HI_hints);
             }
         
         });
@@ -86,13 +96,13 @@ int main(int argc, char *argv[]){
 
             if( itInstruction->template getEncoded<ASM::Item::ET_ARMv8, Spec::Encoding*>()->iEncodingId == 
                       Spec::E_LDR_32_ldst_pos){
-                        for(int i=0; i<10000; i++){
+                        for(int i=0; i<20; i++){
 
-                        itInstruction = factory.createBlankInstruction(itInstruction, Spec::E_ADD_32_addsub_imm);
+                        itInstruction = factory.create(itInstruction, Spec::E_ADD_32_addsub_imm);
 
                         ASM::ARM::ARM64::DecodedInstruction d(*itInstruction);
                       
-                        d.setOperands(O_Rd, (i+1) % 5, O_Rn, i % 5, O_imm12, 2);
+                        d.setOperands(O_Rd, (i+1) % 5, O_Rn, i % 5, O_imm12, 3 * i);
 
                     }
                 }
@@ -111,6 +121,7 @@ int main(int argc, char *argv[]){
         ctx.save(argv[2]);    
         
         if(argc == 4){
+          std::cout<<std::endl<<"Function: "<<argv[3]<<std::endl;
           Helper::Disassembler dis(ctx.getSymbols());
           dis.print(argv[3], std::cout);
         }

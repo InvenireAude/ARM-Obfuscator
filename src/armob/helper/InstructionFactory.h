@@ -41,8 +41,12 @@ public:
 	InstructionFactory(DiscoveredDetails*   pDiscoveredDetails);
 
 	
-	 ASM::ItemList::iterator createBlankInstruction(ASM::ItemList::iterator it, 
+	 ASM::ItemList::iterator create(ASM::ItemList::iterator it, 
 	 												ASM::ARM::ARM64::Spec::EncodingId iEncodingId);
+
+ 	 ASM::ItemList::iterator createJump(ASM::ItemList::iterator it, 
+	 								    ASM::ARM::ARM64::Spec::EncodingId iEncodingId,
+										ASM::ItemList::iterator itReference);
 
 protected:
 	DiscoveredDetails*   pDiscoveredDetails;

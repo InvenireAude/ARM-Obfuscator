@@ -99,6 +99,14 @@ public:
 			return *this;
 		 }
 
+		inline iterator operator--(int){
+			iterator itOld(pCursor);
+			 if(pCursor != nullptr && pCursor->pPrev != nullptr){
+				 pCursor = pCursor->pPrev;
+			 }
+			 return itOld;
+		 } 
+
 		inline iterator& operator=(const iterator& o){
 			this->pCursor = o.pCursor;
 			return *this;

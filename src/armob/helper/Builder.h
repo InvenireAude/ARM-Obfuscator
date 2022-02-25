@@ -48,8 +48,8 @@ public:
 
 	Builder(WorkContext* pWorkContext);
 
-	void syncSizes(Symbol* pSymbol);
-	
+	void syncSize(Symbol* pSymbol);
+
 	void build();
 
 protected:
@@ -61,7 +61,11 @@ protected:
 
 	size_t recomputeAddresses(const std::string& strSectionName);
 	void   updateReferences(const std::string& strSectionName);
+
 	void   write(const std::string& strSectionName);
+
+	void syncAddresses();
+	void syncAddresses(ELF::Elf64::SymbolTable *pSymbolTable);
 };
 
 /*************************************************************************/

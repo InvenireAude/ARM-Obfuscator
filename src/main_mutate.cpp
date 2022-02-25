@@ -169,7 +169,6 @@ int main(int argc, char *argv[]){
 
        while(true){
 
-
           if(!it || it == pFunSymbol->getEnd()){
             
             if(it && it != itChunkStart){
@@ -179,7 +178,6 @@ int main(int argc, char *argv[]){
             break;
           }
 
-
           if(++iCounter % 5 == 0){
 
             ASM::ItemList::iterator itTmp = it;
@@ -187,24 +185,29 @@ int main(int argc, char *argv[]){
 
             static const int CRegisterNo = 2;
 
-            it = factory.create(it, Spec::E_ADRP_only_pcreladdr);                    
+            it = factory.create(it, Spec::E_ADR_only_pcreladdr);                    
             ASM::ARM::ARM64::DecodedInstruction(*it)
-              .setOperand(Spec::O_Rd, CRegisterNo)
-              .setOperand(Spec::O_immhi_immlo, 1);
-            
+              .setOperand(Spec::O_Rd, CRegisterNo);          
+
             it = factory.create(it, Spec::E_ADD_64_addsub_imm);                    
-            ASM::ARM::ARM64::DecodedInstruction(*it)
+              ASM::ARM::ARM64::DecodedInstruction(*it)
               .setOperand(Spec::O_Rd, CRegisterNo)
               .setOperand(Spec::O_Rn, CRegisterNo);
-             
 
             it->getGenericDetail()->setReference(itTmp->getGenericDetail());
             it->setUpdateReference([](ASM::Item* pItem){
 
-                uint64_t iTargetAddress = pItem->getGenericDetail()->getReference()->getCurrentAddresses().iOpCode;
+                uint64_t iFromAddress  = pItem->getPrev()->getGenericDetail()->getCurrentAddresses().iOpCode;
+                uint64_t iTargetAddress  = pItem->getGenericDetail()->getReference()->getCurrentAddresses().iOpCode;
+    
+                int64_t iJump = iTargetAddress - iFromAddress;
+
+                ASM::ARM::ARM64::DecodedInstruction(*pItem->getPrev())
+                  .setOperand(Spec::O_immhi_immlo, iJump - 5);
 
                 ASM::ARM::ARM64::DecodedInstruction(*pItem)
-                  .setOperand(Spec::O_imm12, iTargetAddress);
+                  .setOperand(Spec::O_imm12, 5);
+
             });
 
             it = factory.create(it, Spec::E_BR_64_branch_reg); 
@@ -250,7 +253,6 @@ int main(int argc, char *argv[]){
         }
 
         Helper::Builder builder(&ctx);
-        builder.syncSizes(pFunSymbol);
         builder.build();
 
         ctx.save(argv[2]);    

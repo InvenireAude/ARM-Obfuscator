@@ -86,7 +86,7 @@ static inline void _printHex(std::ostream& os, long v){
 	os<<std::dec;
 }
 /*************************************************************************/
-void DecodedInstruction::print(std::ostream& os, const SymbolResolver* pSymbolResover){
+void DecodedInstruction::print(std::ostream& os, const SymbolResolver* pSymbolResover)const{
 
 	uint64_t iOpCodeAddress = pGenericDetail->getCurrentAddresses().iOpCode;
 
@@ -205,18 +205,20 @@ void DecodedInstruction::updateOpcodeReference(size_t iDataSegmentShift)const{
 	const EncodingBook::OperandList& lstOperands(EncodingBook::TheInstance.getEncodingOperands(pEncoding));
 
 	for(const auto& o: lstOperands){
+
 		if(o->isMemoryReference()){
 			ASM::GenericDetail *pOther = pGenericDetail->getReference();
+				
 			if(pOther != nullptr){
-				std::cout<<"updateOpcodeReference: "<<(void*)refAddresses.iOpCode<<" "<<(void*)(long)opCode<<std::endl;
-				o->setMemoryReference(opCode, refAddresses.iOpCode,pGenericDetail->getReference()->getCurrentAddresses().iOpCode); 
-				std::cout<<"updated: "<<(void*)(long)opCode<<std::endl;
+				print(std::cout);
+				o->setMemoryReference(opCode, refAddresses.iOpCode, pGenericDetail->getReference()->getCurrentAddresses().iOpCode); 
+
 			}else{
 				//if(pEncoding->iClass == Spec::C_pcreladdr){
 				
 				if(refAddresses.iReference){
-
 					std::cout<<"iReference:"<<(void*)(long)refAddresses.iOpCode<<"\t"<<(void*)(long)refAddresses.iReference<<std::endl;
+					//TODO +4 is a hack for PC being a head ???
 					o->setMemoryReference(opCode, refAddresses.iOpCode, refAddresses.iReference + iDataSegmentShift); 
 
 				}
@@ -226,7 +228,24 @@ void DecodedInstruction::updateOpcodeReference(size_t iDataSegmentShift)const{
 		}
 	}
 
-}	
+}
+/*************************************************************************/
+uint64_t DecodedInstruction::getOpCodeReference()const{
+
+ 	uint32_t& opCode(pGenericDetail->getOpcodeW());
+
+	uint64_t iOpCodeAddress = pGenericDetail->getCurrentAddresses().iOpCode;
+
+	const EncodingBook::OperandList& lstOperands(EncodingBook::TheInstance.getEncodingOperands(pEncoding));
+
+	for(const auto& o: lstOperands){
+		if(o->isMemoryReference()){
+			return o->applyMemoryReference(iOpCodeAddress, opCode);
+		}
+	}
+
+	throw Tools::Exception()<<"Instruction has no memory reference.";
+}
 /*************************************************************************/
 }
 }

@@ -67,7 +67,7 @@ void PatternOperand::setValue(uint32_t& iOpCode, int32_t iValue) const{
 
 	iValue >>= iShift;
 
-	std::cout<<"setValue:"<<(void*)(long)iValue<<std::endl;
+	std::cout<<"TEST setValue:"<<(void*)(long)iValue<<std::endl;
 
 	while(tabUsedFields[iLastIdx] != nullptr){
 		iLastIdx++;
@@ -100,7 +100,7 @@ void PatternOperand::disassemble(uint32_t iOpCode, std::ostream& os)const{
 	printHex(getValue(iOpCode), os);
 }
 /*************************************************************************/
-int64_t PatternOperand::applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const{
+uint64_t PatternOperand::applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const{
 	if(bIsMemoryReference){
 		return (iAddress + getValue(iOpCode)) & iMask;
 	}else{
@@ -112,8 +112,15 @@ int64_t PatternOperand::applyMemoryReference(uint64_t iAddress, uint32_t iOpCode
 /*************************************************************************/
 void PatternOperand::setMemoryReference(uint32_t& iOpCode, uint64_t iAddress, int64_t iReference)const{
 	
+	            // std::cout<<"TEST set: "
+                //   <<"\t"<<(void*)iAddress
+                //    <<"\t"<<(void*)iReference
+                //    <<"\t"<<(void*)(iReference - iAddress)
+				//    <<"\t"<<(void*)(iReference - iAddress + ~iMask)
+                //   <<std::endl;
+
 	if(bIsMemoryReference){
-		setValue(iOpCode, iReference - iAddress - iMask);
+		setValue(iOpCode, iReference - iAddress  + ~iMask);
 	}else{
 		
 		throw Tools::Exception()<<"Operand ["<<OperandBook::TheInstance.getSpec(iOperandId)

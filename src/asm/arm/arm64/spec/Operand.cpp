@@ -33,7 +33,7 @@ void Operand::printHex(int32_t iValue, std::ostream& os)const{
 	os<<"0x"<<std::hex<<iValue<<std::dec;
 }
 /*************************************************************************/
-int64_t Operand::applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const{
+uint64_t Operand::applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const{
 	if(bIsMemoryReference){
 		return iAddress + getValue(iOpCode);
 	}else{
@@ -44,7 +44,7 @@ int64_t Operand::applyMemoryReference(uint64_t iAddress, uint32_t iOpCode) const
 }
 /*************************************************************************/
 void Operand::setMemoryReference(uint32_t& iOpCode, uint64_t iAddress, int64_t iReference)const{
-	
+
 	if(bIsMemoryReference){
 		setValue(iOpCode, iReference - iAddress);
 	}else{

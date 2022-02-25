@@ -40,11 +40,12 @@ public:
 	DecodedInstruction(Item& item);
 	DecodedInstruction(Item& item, Spec::EncodingId iEncodingId);
 
-	virtual void print(std::ostream& os, const SymbolResolver* pSymbolResover = nullptr);
+	virtual void print(std::ostream& os, const SymbolResolver* pSymbolResover = nullptr)const;
 	
 	bool checkMemoryReference()const;
 	
 	void updateOpcodeReference(size_t iDataSegmentShift)const;
+	uint64_t getOpCodeReference()const;
 
 	const DecodedInstruction& setOperand(Spec::OperandId iOperand, uint32_t iValue)const;
 

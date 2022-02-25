@@ -52,6 +52,10 @@ const char* getName()const{
 	return pSymbolTable->getSymStrSection()->getString(get_name());
 }
 /*************************************************************************/
+bool isHidden()const{
+	return pSymbolTable->getSymStrSection()->getString(get_name())[0] == '$';
+}
+/*************************************************************************/
 const uint8_t* getData()const{
 	
 	std::cerr<<" 1: "<<(void*)(long)get_value()<<std::endl;
@@ -108,7 +112,7 @@ typename S::Half get_shndx()const{
    }
 
   void set_size(typename S::Addr iValue) {
-	  std::cout<<"New (set_size) size: "<<(void*)(long)iValue<<std::endl;
+	//  std::cout<<"New (set_size) size: "<<(void*)(long)iValue<<std::endl;
 	    symbol.st_size = pSymbolTable->getConverter()->convert(iValue);
    }
 

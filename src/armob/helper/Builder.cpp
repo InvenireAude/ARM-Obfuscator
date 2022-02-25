@@ -33,7 +33,7 @@ Builder::~Builder() throw(){
 
 }
 /*************************************************************************/
-void Builder::syncSizes(Symbol* pSymbol){
+void Builder::syncSize(Symbol* pSymbol){
       
     pSymbol->updateSize();
 
@@ -41,15 +41,44 @@ void Builder::syncSizes(Symbol* pSymbol){
     pHeader->getSymbolTable()->lookup(pSymbol->getName())->set_size(pSymbol->getSize());   
 }
 /*************************************************************************/
+void Builder::syncAddresses(ELF::Elf64::SymbolTable *pSymbolTable){
+
+    ELF::Elf64::SymbolTable::SymbolList& lstElfSymbols(pSymbolTable->getSymbols());
+
+    for(auto& s: lstElfSymbols){
+
+        if(!s->isHidden()){
+
+            ARMOB::Symbol* pSymbol = pDiscoveredSymbols->getSymbol(s->getName());
+
+            if(pSymbol->hasInstructions()){
+                pSymbol->updateSize();
+                ELF::Elf64::Symbol *pElfSymbol = pSymbolTable->lookup(pSymbol->getName());
+                pElfSymbol->set_size(pSymbol->getSize());   
+                pElfSymbol->set_value(pSymbol->getStart()->getGenericDetail()->getCurrentAddresses().iOpCode);
+                //TOOD other tabales -> header method ?
+                std::cout<<"TEST update: "<<pSymbol->getName()<<", v: "<<(void*)pElfSymbol->get_value()<<" "<<lstElfSymbols.size()<<std::endl;
+            }
+        }
+    }
+}
+/*************************************************************************/
+void Builder::syncAddresses(){
+    syncAddresses(pHeader->getSymbolTable());
+    syncAddresses(pHeader->getDynSymbolTable());
+}
+/*************************************************************************/
 void Builder::build(){
 
     size_t iExpansion = recomputeAddresses(WorkContext::CTextSection);
-
+    
     if(iExpansion){
         ptrExpander->expand(iExpansion);
         ptrExpander->updateDataSegmentSymbols();
     }  
 
+    syncAddresses();
+    pHeader->write();
     updateReferences(WorkContext::CTextSection);
     updateReferences(WorkContext::CPltSection);
     write(WorkContext::CTextSection);
@@ -92,8 +121,7 @@ void Builder::updateReferences(const std::string& strSectionName){
         if(item.getGenericDetail()->getCurrentAddresses().iReference){
             
             ASM::ARM::ARM64::DecodedInstruction d(item);
-            d.updateOpcodeReference(ptrExpander->getDataSegmentShift());
-            
+            d.updateOpcodeReference(ptrExpander->getDataSegmentShift());            
             item.callUpdateReference();
         }
         

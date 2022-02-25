@@ -53,8 +53,15 @@ Operand* OperandFactory::CreateOperand(const Encoding* pEncoding, OperandId iOpe
     }
     //TODO this is not correct PC is 2 words ahead hower dissasemblers use the current opcode address,
      // and the value shoud be rounded to 4096 upon the difference application ??? 
-    if(pEncoding->iClass == C_pcreladdr && strSpec.find(':') != std::string::npos){
+    if(pEncoding->iEncodingId == E_ADRP_only_pcreladdr && strSpec.find(':') != std::string::npos){
+        std::cout<<"TEST: class1s"<<std::endl;
         return new Impl::PatternOperand(pEncoding->fields, iOperandId, 12, strSpec, true, 0xfffff000);
+    }
+
+    if(pEncoding->iEncodingId == E_ADR_only_pcreladdr && strSpec.find(':') != std::string::npos){
+        auto p = new Impl::PatternOperand(pEncoding->fields, iOperandId, 0, strSpec, true);
+         std::cout<<"TEST: class2s"<<p->isMemoryReference()<<" "<<(void*)p<<std::endl;
+        return p;
     }
 
     if(strSpec.find(':') != std::string::npos){

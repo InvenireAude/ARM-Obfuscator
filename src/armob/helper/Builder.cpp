@@ -90,8 +90,11 @@ void Builder::updateReferences(const std::string& strSectionName){
     for(auto& item: pDetails->getInstructions()){
             
         if(item.getGenericDetail()->getCurrentAddresses().iReference){
+            
             ASM::ARM::ARM64::DecodedInstruction d(item);
             d.updateOpcodeReference(ptrExpander->getDataSegmentShift());
+            
+            item.callUpdateReference();
         }
         
     }

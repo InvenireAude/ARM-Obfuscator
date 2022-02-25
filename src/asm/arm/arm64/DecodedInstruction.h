@@ -46,20 +46,20 @@ public:
 	
 	void updateOpcodeReference(size_t iDataSegmentShift)const;
 
-	void setOperand(Spec::OperandId iOperand, uint32_t iValue)const;
+	const DecodedInstruction& setOperand(Spec::OperandId iOperand, uint32_t iValue)const;
 
-	inline void setOperands(Spec::OperandId iOperand1, uint32_t iValue1, 
+	inline const DecodedInstruction& setOperands(Spec::OperandId iOperand1, uint32_t iValue1, 
 							Spec::OperandId iOperand2, uint32_t iValue2){
 		  setOperand(iOperand1, iValue1);
-		  setOperand(iOperand2, iValue2);
+		  return setOperand(iOperand2, iValue2);
 	  }
 
-	inline void setOperands(Spec::OperandId iOperand1, uint32_t iValue1, 
+	inline const DecodedInstruction& setOperands(Spec::OperandId iOperand1, uint32_t iValue1, 
 							Spec::OperandId iOperand2, uint32_t iValue2,
 							Spec::OperandId iOperand3, uint32_t iValue3){
 		  setOperand(iOperand1, iValue1);
 		  setOperand(iOperand2, iValue2);
-		  setOperand(iOperand3, iValue3);
+		  return setOperand(iOperand3, iValue3);
 	  }
 
 

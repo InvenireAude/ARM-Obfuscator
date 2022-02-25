@@ -52,7 +52,6 @@ ASM::ItemList::iterator InstructionFactory::createJump(ASM::ItemList::iterator i
     ASM::ARM::ARM64::DecodedInstruction d(*pNew, iEncodingId);
     
     pNew->getGenericDetail()->setReference(itReference->getGenericDetail());
-    pNew->getGenericDetail()->getCurrentAddresses().iReference = 0x1;
     return pDiscoveredDetails->getInstructions().insertAfter(it, pNew);
 }
 /*************************************************************************/

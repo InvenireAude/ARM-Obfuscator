@@ -98,10 +98,17 @@ public:
 	}
 	
 	inline void setReference(GenericDetail* pReference){
-	 this->pReference = pReference;
+		
+		if(!adrCurrent.iReference){
+			adrCurrent.iReference = ~0L; //TODO is hack to tell everyone that this item has a reference
+		}
+
+	 	this->pReference = pReference;
 	}
 	
-	
+
+
+
 protected:
 	//TODO larger opcodes and data content as a malloc on demand;
 

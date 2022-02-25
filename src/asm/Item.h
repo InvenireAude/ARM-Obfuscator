@@ -12,6 +12,7 @@
 
 #include <tools/common.h>
 #include <string.h>
+#include <functional>
 
 namespace ASM {
 
@@ -31,7 +32,8 @@ public:
 
 	Item(GenericDetail *pGenericDetail):
 		pGenericDetail(pGenericDetail),
-		iTagId(ET_None){}
+		iTagId(ET_None),
+		onUpdateReference(nullptr){}
 
 	inline Item* getNext()const{
 		return pNext;
@@ -78,6 +80,16 @@ public:
 		return pGenericDetail;
 	}
 
+	void setUpdateReference(std::function<void(Item*)> onUpdateReference){
+		this->onUpdateReference = onUpdateReference;
+	}
+
+	void callUpdateReference(){
+		if(onUpdateReference != nullptr){
+			onUpdateReference(this);
+		}
+	}
+
 protected:
 
 	GenericDetail *pGenericDetail;
@@ -87,6 +99,8 @@ protected:
 
     EncodedTagType  iTagId;
 	EncodedType     iEncodedValue;
+
+	std::function<void(Item*)> onUpdateReference;
 
 	friend class ItemList;
 };

@@ -65,6 +65,10 @@ public:
 			 return !pCursor;
 		 }
 
+		inline operator bool()const{
+			 return pCursor != nullptr;
+		 }
+
 		 inline bool operator==(const iterator& other)const{
 			 return pCursor == other.pCursor;
 		 }
@@ -78,6 +82,14 @@ public:
 				 pCursor = pCursor->pNext;
 			 }
 			 return *this;
+		 }
+
+		inline iterator operator++(int){
+			iterator itOld(pCursor);
+			 if(pCursor != nullptr){
+				 pCursor = pCursor->pNext;
+			 }
+			 return itOld;
 		 }
 
 		inline iterator& operator--(){
@@ -141,6 +153,38 @@ public:
 		it.pCursor->pNext = pNew;
 
 		return iterator(pNew);
+	}
+
+	inline iterator insertAfter(iterator& it, iterator& itStart, iterator& itEnd){
+		
+		if(!it || (itStart.pCursor == pHead && itEnd.pCursor == pTail)){
+			throw Tools::Exception()<<"insertAfter invalid parameters.";
+		}
+
+		if(itEnd.pCursor == pTail){
+			pTail = itStart->pPrev;
+		}else{
+			itEnd.pCursor->pNext->pPrev = itStart.pCursor->pPrev;
+		}
+		
+		if(itStart.pCursor == pHead){
+			pHead = itEnd->pNext;
+		}else{
+			itStart.pCursor->pPrev->pNext = itEnd.pCursor->pNext;
+		}
+
+		if(it.pCursor == pTail){
+			itEnd.pCursor->pNext = nullptr;
+			pTail = itEnd.pCursor;
+		}else{
+			it.pCursor->pNext->pPrev = itEnd.pCursor;
+			itEnd.pCursor->pNext = it.pCursor->pNext;
+		}
+
+		it.pCursor->pNext = itStart.pCursor;
+		itStart.pCursor->pPrev = it.pCursor;
+		
+		return iterator(itEnd);
 	}
 
 	inline iterator append(Item* pNew){

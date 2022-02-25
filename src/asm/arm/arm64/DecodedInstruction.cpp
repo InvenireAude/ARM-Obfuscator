@@ -167,10 +167,12 @@ bool DecodedInstruction::checkMemoryReference()const{
 // redesign class - create a new one for modifications and get rid of these const_casts.
 
 /*************************************************************************/
-void DecodedInstruction::setOperand(Spec::OperandId iOperand, uint32_t iValue)const{
+const DecodedInstruction& DecodedInstruction::setOperand(Spec::OperandId iOperand, uint32_t iValue)const{
 
 	const EncodingBook::OperandList& lstOperands(EncodingBook::TheInstance.getEncodingOperands(pEncoding));
  	uint32_t& opCode(pGenericDetail->getOpcodeW());
+
+	bool bFound = false;
 
 	for(const auto&o : lstOperands){
 		if(o->getOperandId())
@@ -179,10 +181,17 @@ void DecodedInstruction::setOperand(Spec::OperandId iOperand, uint32_t iValue)co
 		std::cout<<(int)o->getOperandId()<<std::endl;
 		if(o->getOperandId() == iOperand){
 			o->setValue(opCode, iValue);
+			bFound = true;
 		}
 	}
 
+	if(!bFound){
+		throw Tools::Exception()<<"Operand not found :"<<OperandBook::TheInstance.getSpec(iOperand)<<" for: "
+			<<EncodingBook::TheInstance.getName(pEncoding->iEncodingId);
+	}
 	std::cout<<"updated [1]: "<<(void*)(long)opCode<<" "<<lstOperands.size()<<std::endl;
+
+	return *this;
 }
 /*************************************************************************/
 void DecodedInstruction::updateOpcodeReference(size_t iDataSegmentShift)const{
